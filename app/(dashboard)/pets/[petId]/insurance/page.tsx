@@ -15,6 +15,7 @@ import { PetInsurance } from '@/lib/types/pet'
 import { DocumentUpload } from '@/components/pets/document-upload'
 import { InsuranceExtractionProgress } from '@/components/insurance/insurance-extraction-progress'
 import { ExtractedInsuranceReview } from '@/components/insurance/extracted-insurance-review'
+import { InsuranceComparison } from '@/components/insurance/insurance-comparison'
 import { toast } from 'sonner'
 import { EmptyState } from '@/components/ui/empty-state'
 
@@ -42,6 +43,7 @@ export default function InsurancePage() {
   const supabase = createClient()
 
   const [insurance, setInsurance] = useState<PetInsurance | null>(null)
+  const [petName, setPetName] = useState('your pet')
   const [loading, setLoading] = useState(true)
   const [editing, setEditing] = useState(false)
   const [saving, setSaving] = useState(false)
@@ -77,6 +79,17 @@ export default function InsurancePage() {
   }, [petId])
 
   const loadInsurance = async () => {
+    // Fetch pet name
+    const { data: pet } = await supabase
+      .from('pets')
+      .select('name')
+      .eq('id', petId)
+      .single()
+
+    if (pet) {
+      setPetName(pet.name)
+    }
+
     const { data } = await supabase
       .from('pet_insurance')
       .select('*')
@@ -691,6 +704,9 @@ export default function InsurancePage() {
           )}
         </div>
       )}
+
+      {/* Insurance Comparison - Affiliate Section */}
+      <InsuranceComparison petName={petName} />
 
       {/* Extraction Progress Dialog */}
       <InsuranceExtractionProgress

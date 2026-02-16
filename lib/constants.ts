@@ -95,15 +95,20 @@ export const daysOfWeek = [
   { value: 'sunday', label: 'Sun' },
 ]
 
-// Shopping link helpers
+// Shopping link helpers with affiliate support
 export function getAmazonSearchUrl(brand: string, variant?: string) {
   const query = variant ? `${brand} ${variant} pet food` : `${brand} pet food`
-  return `https://www.amazon.com/s?k=${encodeURIComponent(query)}`
+  const tag = process.env.NEXT_PUBLIC_AMAZON_AFFILIATE_TAG
+  const baseUrl = `https://www.amazon.com/s?k=${encodeURIComponent(query)}`
+  return tag ? `${baseUrl}&tag=${tag}` : baseUrl
 }
 
 export function getChewySearchUrl(brand: string, variant?: string) {
   const query = variant ? `${brand} ${variant}` : brand
-  return `https://www.chewy.com/s?query=${encodeURIComponent(query)}`
+  const affiliateId = process.env.NEXT_PUBLIC_CHEWY_AFFILIATE_ID
+  const baseUrl = `https://www.chewy.com/s?query=${encodeURIComponent(query)}`
+  // Chewy uses different affiliate link formats depending on network
+  return affiliateId ? `${baseUrl}&ref=${affiliateId}` : baseUrl
 }
 
 export function getPetcoSearchUrl(brand: string, variant?: string) {
@@ -115,3 +120,92 @@ export function getPetSmartSearchUrl(brand: string, variant?: string) {
   const query = variant ? `${brand} ${variant}` : brand
   return `https://www.petsmart.com/search/?q=${encodeURIComponent(query)}`
 }
+
+// Pet pharmacy affiliate links
+export function getChewyPharmacyUrl() {
+  const affiliateId = process.env.NEXT_PUBLIC_CHEWY_AFFILIATE_ID
+  const baseUrl = 'https://www.chewy.com/app/content/pharmacy'
+  return affiliateId ? `${baseUrl}?ref=${affiliateId}` : baseUrl
+}
+
+export function getAmazonPharmacyUrl() {
+  const tag = process.env.NEXT_PUBLIC_AMAZON_AFFILIATE_TAG
+  const baseUrl = 'https://www.amazon.com/s?k=pet+pharmacy'
+  return tag ? `${baseUrl}&tag=${tag}` : baseUrl
+}
+
+// Pet insurance affiliate data
+export const petInsuranceProviders = [
+  {
+    name: 'Lemonade Pet',
+    description: 'AI-powered claims, customizable coverage, and instant payouts.',
+    features: ['90% reimbursement option', 'No upper age limits', 'Covers hereditary conditions'],
+    url: process.env.NEXT_PUBLIC_LEMONADE_AFFILIATE_URL || 'https://www.lemonade.com/pet',
+    logo: '🍋',
+    highlight: 'Best for Tech-Savvy Pet Parents',
+  },
+  {
+    name: 'Healthy Paws',
+    description: 'Unlimited lifetime benefits with no caps on claims.',
+    features: ['No annual or lifetime limits', 'Fast claim processing', 'One simple plan'],
+    url: process.env.NEXT_PUBLIC_HEALTHYPAWS_AFFILIATE_URL || 'https://www.healthypawspetinsurance.com',
+    logo: '🐾',
+    highlight: 'Best Unlimited Coverage',
+  },
+  {
+    name: 'Embrace',
+    description: 'Comprehensive coverage with a diminishing deductible reward.',
+    features: ['Wellness rewards program', 'Diminishing deductible', 'Covers exam fees'],
+    url: process.env.NEXT_PUBLIC_EMBRACE_AFFILIATE_URL || 'https://www.embracepetinsurance.com',
+    logo: '🤗',
+    highlight: 'Best Wellness Add-Ons',
+  },
+  {
+    name: 'Pets Best',
+    description: 'Affordable plans with flexible coverage options.',
+    features: ['Budget-friendly options', 'Direct vet payment', '24/7 pet helpline'],
+    url: process.env.NEXT_PUBLIC_PETSBEST_AFFILIATE_URL || 'https://www.petsbest.com',
+    logo: '⭐',
+    highlight: 'Best Budget Option',
+  },
+  {
+    name: 'Trupanion',
+    description: 'Pay at the vet with direct hospital payments.',
+    features: ['90% coverage', 'No payout limits', 'Direct vet payment'],
+    url: process.env.NEXT_PUBLIC_TRUPANION_AFFILIATE_URL || 'https://www.trupanion.com',
+    logo: '🏥',
+    highlight: 'Best for Direct Vet Pay',
+  },
+]
+
+// Pet medication/pharmacy providers
+export const petPharmacyProviders = [
+  {
+    name: 'Chewy Pharmacy',
+    description: 'Licensed pharmacy with vet prescription management.',
+    url: getChewyPharmacyUrl(),
+    logo: '💊',
+    color: 'bg-blue-500',
+  },
+  {
+    name: '1-800-PetMeds',
+    description: 'America\'s largest pet pharmacy.',
+    url: process.env.NEXT_PUBLIC_1800PETMEDS_AFFILIATE_URL || 'https://www.1800petmeds.com',
+    logo: '💉',
+    color: 'bg-green-500',
+  },
+  {
+    name: 'PetCareRx',
+    description: 'Discount pet medications and supplies.',
+    url: process.env.NEXT_PUBLIC_PETCARERX_AFFILIATE_URL || 'https://www.petcarerx.com',
+    logo: '🩺',
+    color: 'bg-purple-500',
+  },
+  {
+    name: 'Amazon Pet Pharmacy',
+    description: 'Convenient delivery with Prime benefits.',
+    url: getAmazonPharmacyUrl(),
+    logo: '📦',
+    color: 'bg-orange-500',
+  },
+]

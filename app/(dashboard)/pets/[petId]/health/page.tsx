@@ -30,6 +30,7 @@ import { DocumentUpload } from '@/components/pets/document-upload'
 import { toast } from 'sonner'
 import { RecordCardSkeleton } from '@/components/ui/skeletons'
 import { EmptyState } from '@/components/ui/empty-state'
+import { MedicationAffiliates } from '@/components/health/medication-affiliates'
 import { sanitizeFileName } from '@/lib/utils'
 
 const recordTypes = [
@@ -47,6 +48,7 @@ export default function HealthRecordsPage() {
 
   const [records, setRecords] = useState<HealthRecord[]>([])
   const [documents, setDocuments] = useState<PetDocument[]>([])
+  const [petName, setPetName] = useState('your pet')
   const [loading, setLoading] = useState(true)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [docDialogOpen, setDocDialogOpen] = useState(false)
@@ -72,7 +74,7 @@ export default function HealthRecordsPage() {
   }, [petId])
 
   const loadData = async () => {
-    const [recordsResult, docsResult] = await Promise.all([
+    const [recordsResult, docsResult, petResult] = await Promise.all([
       supabase
         .from('health_records')
         .select('*')
@@ -83,11 +85,19 @@ export default function HealthRecordsPage() {
         .select('*')
         .eq('pet_id', petId)
         .eq('category', 'health')
-        .order('uploaded_at', { ascending: false })
+        .order('uploaded_at', { ascending: false }),
+      supabase
+        .from('pets')
+        .select('name')
+        .eq('id', petId)
+        .single()
     ])
 
     setRecords(recordsResult.data || [])
     setDocuments(docsResult.data || [])
+    if (petResult.data) {
+      setPetName(petResult.data.name)
+    }
     setLoading(false)
   }
 
@@ -529,6 +539,9 @@ export default function HealthRecordsPage() {
               </div>
             )}
           </div>
+
+          {/* Medication Affiliates */}
+          <MedicationAffiliates petName={petName} />
         </>
       )}
     </div>
