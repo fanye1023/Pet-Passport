@@ -9,9 +9,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { LogOut, User as UserIcon, Menu, PawPrint } from 'lucide-react'
+import { LogOut, User as UserIcon, Menu, PawPrint, LayoutDashboard, CalendarDays, Activity, Plus } from 'lucide-react'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { ThemeToggle } from '@/components/theme-toggle'
+
+const mobileNavItems = [
+  { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+  { label: 'Calendar', href: '/calendar', icon: CalendarDays },
+  { label: 'Activity', href: '/activity', icon: Activity },
+  { label: 'Add Pet', href: '/pets/new', icon: Plus },
+]
 
 interface DashboardHeaderProps {
   user: User
@@ -36,18 +43,16 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
               </Link>
             </div>
             <nav className="p-4 space-y-2">
-              <Link
-                href="/dashboard"
-                className="flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium bg-primary text-primary-foreground shadow-md"
-              >
-                Dashboard
-              </Link>
-              <Link
-                href="/pets/new"
-                className="flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-muted-foreground hover:bg-white/50 dark:hover:bg-white/10"
-              >
-                Add Pet
-              </Link>
+              {mobileNavItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-muted-foreground hover:bg-white/50 dark:hover:bg-white/10 active:bg-white/70 dark:active:bg-white/20 transition-colors"
+                >
+                  <item.icon className="h-4 w-4" />
+                  {item.label}
+                </Link>
+              ))}
             </nav>
           </SheetContent>
         </Sheet>
