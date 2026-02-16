@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Pet } from '@/lib/types/pet'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -12,9 +12,16 @@ interface PetStickyHeaderProps {
   pet: Pet
 }
 
+function calculateAge(birthday: string): number | null {
+  if (!birthday) return null
+  const [year, month, day] = birthday.split('-')
+  const birthDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day))
+  return Math.floor((Date.now() - birthDate.getTime()) / (365.25 * 24 * 60 * 60 * 1000))
+}
+
 export function PetStickyHeader({ pet }: PetStickyHeaderProps) {
   const [isVisible, setIsVisible] = useState(false)
-  const [isExpanded, setIsExpanded] = useState(false)
+  const age = pet.birthday ? calculateAge(pet.birthday) : null
 
   useEffect(() => {
     const handleScroll = () => {
@@ -47,9 +54,16 @@ export function PetStickyHeader({ pet }: PetStickyHeaderProps) {
                 </AvatarFallback>
               </Avatar>
               <div className="flex flex-col">
-                <span className="font-semibold text-sm leading-tight group-hover:text-primary transition-colors">
-                  {pet.name}
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="font-semibold text-sm leading-tight group-hover:text-primary transition-colors">
+                    {pet.name}
+                  </span>
+                  {age !== null && (
+                    <span className="text-xs px-1.5 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
+                      {age === 0 ? '<1y' : `${age}y`}
+                    </span>
+                  )}
+                </div>
                 <span className="text-xs text-muted-foreground leading-tight">
                   {pet.breed ? `${pet.breed} ` : ''}{pet.species}
                 </span>

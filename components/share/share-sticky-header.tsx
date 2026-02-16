@@ -11,10 +11,19 @@ interface ShareStickyHeaderProps {
   petPhotoUrl?: string | null
   breed?: string | null
   species: string
+  birthday?: string | null
 }
 
-export function ShareStickyHeader({ petName, petPhotoUrl, breed, species }: ShareStickyHeaderProps) {
+function calculateAge(birthday: string): number | null {
+  if (!birthday) return null
+  const [year, month, day] = birthday.split('-')
+  const birthDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day))
+  return Math.floor((Date.now() - birthDate.getTime()) / (365.25 * 24 * 60 * 60 * 1000))
+}
+
+export function ShareStickyHeader({ petName, petPhotoUrl, breed, species, birthday }: ShareStickyHeaderProps) {
   const [isVisible, setIsVisible] = useState(false)
+  const age = birthday ? calculateAge(birthday) : null
 
   useEffect(() => {
     const handleScroll = () => {
@@ -44,9 +53,16 @@ export function ShareStickyHeader({ petName, petPhotoUrl, breed, species }: Shar
                 </AvatarFallback>
               </Avatar>
               <div className="flex flex-col">
-                <span className="font-semibold text-sm leading-tight">
-                  {petName}
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="font-semibold text-sm leading-tight">
+                    {petName}
+                  </span>
+                  {age !== null && (
+                    <span className="text-xs px-1.5 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
+                      {age === 0 ? '<1y' : `${age}y`}
+                    </span>
+                  )}
+                </div>
                 <span className="text-xs text-muted-foreground leading-tight">
                   {breed ? `${breed} ` : ''}{species}
                 </span>

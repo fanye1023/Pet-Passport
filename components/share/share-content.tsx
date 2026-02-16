@@ -82,6 +82,7 @@ export function ShareContent({ data }: ShareContentProps) {
         petPhotoUrl={pet.photo_url}
         breed={pet.breed}
         species={pet.species}
+        birthday={pet.birthday}
       />
 
       {/* Hero section with blurred pet photo background */}
@@ -114,17 +115,17 @@ export function ShareContent({ data }: ShareContentProps) {
             </p>
             <div className="flex flex-wrap justify-center gap-2 mt-4">
               {age !== null && (
-                <Badge variant="secondary" className="bg-white/80 backdrop-blur-sm">
+                <Badge variant="secondary" className="bg-white/80 dark:bg-white/20 backdrop-blur-sm text-foreground">
                   {age === 0 ? '< 1 year old' : `${age} year${age !== 1 ? 's' : ''} old`}
                 </Badge>
               )}
               {pet.birthday && (
-                <Badge variant="outline" className="bg-white/80 backdrop-blur-sm border-white/50">
+                <Badge variant="outline" className="bg-white/80 dark:bg-white/20 backdrop-blur-sm border-white/50 dark:border-white/30 text-foreground">
                   Birthday: {formatDate(pet.birthday)}
                 </Badge>
               )}
               {pet.microchip_number && (
-                <Badge variant="outline" className="bg-white/80 backdrop-blur-sm border-white/50">
+                <Badge variant="outline" className="bg-white/80 dark:bg-white/20 backdrop-blur-sm border-white/50 dark:border-white/30 text-foreground">
                   Microchip: {pet.microchip_number}
                 </Badge>
               )}
