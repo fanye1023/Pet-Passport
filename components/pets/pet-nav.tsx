@@ -40,8 +40,33 @@ export function PetNav({ petId }: PetNavProps) {
   const basePath = `/pets/${petId}`
 
   return (
-    <nav className="glass-nav rounded-2xl p-2 overflow-x-auto -mx-4 px-4 md:mx-0">
-      <div className="flex gap-1">
+    <nav className="glass-nav rounded-2xl p-2 md:overflow-x-auto md:-mx-0 -mx-4 px-4">
+      {/* Mobile: Grid layout */}
+      <div className="grid grid-cols-3 gap-2 md:hidden">
+        {navItems.map((item) => {
+          const href = `${basePath}${item.href}`
+          const isActive = pathname === href || pathname.startsWith(href)
+
+          return (
+            <Link
+              key={item.href}
+              href={href}
+              className={cn(
+                'flex flex-col items-center gap-1.5 px-2 py-3 text-xs font-medium rounded-xl transition-all text-center',
+                isActive
+                  ? 'bg-primary text-primary-foreground shadow-md'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-white/50 dark:hover:bg-white/10'
+              )}
+            >
+              <item.icon className="h-5 w-5" />
+              <span>{item.label}</span>
+            </Link>
+          )
+        })}
+      </div>
+
+      {/* Desktop: Horizontal tabs */}
+      <div className="hidden md:flex gap-1">
         {navItems.map((item) => {
           const href = `${basePath}${item.href}`
           const isActive = pathname === href || pathname.startsWith(href)
@@ -58,7 +83,7 @@ export function PetNav({ petId }: PetNavProps) {
               )}
             >
               <item.icon className="h-4 w-4" />
-              <span className="hidden sm:inline">{item.label}</span>
+              <span>{item.label}</span>
             </Link>
           )
         })}
