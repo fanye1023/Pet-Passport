@@ -1,9 +1,19 @@
 'use client'
 
-import { ReactNode } from 'react'
+import { ReactNode, useState } from 'react'
 import { LucideIcon, ChevronLeft } from 'lucide-react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 
 interface OnboardingStepProps {
   icon: LucideIcon
@@ -32,6 +42,17 @@ export function OnboardingStep({
   isLastStep = false,
   isFirstStep = false,
 }: OnboardingStepProps) {
+  const [showSkipDialog, setShowSkipDialog] = useState(false)
+
+  const handleSkipClick = () => {
+    setShowSkipDialog(true)
+  }
+
+  const handleConfirmSkip = () => {
+    setShowSkipDialog(false)
+    onSkip()
+  }
+
   return (
     <div className="animate-fade-in">
       <Card className="border-0 shadow-lg">
@@ -59,7 +80,7 @@ export function OnboardingStep({
             ) : null}
             <Button
               variant="ghost"
-              onClick={onSkip}
+              onClick={handleSkipClick}
               disabled={isLoading}
               className="sm:flex-1 order-2"
             >
@@ -75,6 +96,21 @@ export function OnboardingStep({
           </div>
         </CardContent>
       </Card>
+
+      <AlertDialog open={showSkipDialog} onOpenChange={setShowSkipDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Skip this step?</AlertDialogTitle>
+            <AlertDialogDescription>
+              You can always add this information later from your pet&apos;s profile. Skipped steps won&apos;t count toward your profile completion.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Go Back</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmSkip}>Skip Step</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

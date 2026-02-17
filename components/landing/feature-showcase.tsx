@@ -452,16 +452,16 @@ const sections: FeatureSection[] = [
   {
     title: 'Unified Calendar for All Your Pets',
     description:
-      'See appointments, medications, and care events for all your pets in one calendar. Color-coded by pet so you never miss a thing.',
-    bullets: ['Multi-pet support', 'Color-coded events', 'Medication reminders'],
+      'See appointments, medications, and care events for all your pets in one calendar. Color-coded by pet so you never miss a thing. Syncs with Google Calendar, Apple Calendar, and Outlook.',
+    bullets: ['Multi-pet support', 'Color-coded events', 'Sync with Google, Apple & Outlook'],
     mock: <MockCalendar />,
     reversed: true,
     muted: true,
   },
   {
-    title: 'Food, Routines & Sitter Instructions',
+    title: 'Food, Routine, and Sitter Instructions',
     description:
-      'Track feeding schedules, daily routines, and care instructions in one place. Everything is automatically included when you share with pet sitters or dog walkers.',
+      'Track feeding schedules, daily routines, and care instructions in one place. Keep everything organized so pet care is consistent whether you\'re home or away.',
     bullets: ['Meal schedules & portion sizes', 'Daily routines & activities', 'House access & sitter notes'],
     mock: <MockFoodRoutine />,
     reversed: false,
@@ -477,10 +477,10 @@ const sections: FeatureSection[] = [
     muted: true,
   },
   {
-    title: 'Instant Sharing with Emergency Access',
+    title: 'Shareable Links You Control',
     description:
-      'Generate a shareable link for pet sitters, dog walkers, or boarding facilities. Includes a one-tap emergency button with vet contacts and nearest emergency vet finder.',
-    bullets: ['Shareable pet profiles', 'Key info at a glance', 'One-tap emergency contacts'],
+      'Create custom share links for different people — one for your pet sitter, another for your dog walker — each with exactly the info they need. Links are PIN-protected, can expire, and update automatically when you add or change information.',
+    bullets: ['Choose what to share with each person', 'PIN-protected & expiring links', 'One-tap emergency contacts'],
     mock: <MockSharePage />,
     reversed: false,
     muted: false,

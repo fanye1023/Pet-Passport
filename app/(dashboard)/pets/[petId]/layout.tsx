@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { PetHeader } from '@/components/pets/pet-header'
 import { PetNav } from '@/components/pets/pet-nav'
 import { PetStickyHeader } from '@/components/pets/pet-sticky-header'
+import { OnboardingPrompt } from '@/components/pets/onboarding-prompt'
 
 export default async function PetLayout({
   children,
@@ -29,6 +30,7 @@ export default async function PetLayout({
       <PetStickyHeader pet={pet} />
       <div className="space-y-6">
         <PetHeader pet={pet} />
+        <OnboardingPrompt petId={petId} petName={pet.name} />
         <PetNav petId={petId} />
         {children}
       </div>

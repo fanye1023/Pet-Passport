@@ -86,7 +86,7 @@ export default function CollaboratorsPage({
             Collaborators
           </h1>
           <p className="text-muted-foreground mt-1">
-            Manage who has access to {pet.name}s profile
+            Manage who has access to {pet.name}&apos;s profile
           </p>
         </div>
 
@@ -124,7 +124,7 @@ export default function CollaboratorsPage({
           <CardHeader>
             <CardTitle className="text-lg">Current Collaborators</CardTitle>
             <CardDescription>
-              People with access to view or edit {pet.name}s information
+              People with access to view or edit {pet.name}&apos;s information
             </CardDescription>
           </CardHeader>
           <CardContent>

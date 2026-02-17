@@ -47,39 +47,50 @@ interface OnboardingState {
   skippedSteps: number[]
 }
 
-function getStorageKey(petId: string) {
-  return `onboarding_${petId}`
-}
+// Database operations for onboarding progress
+async function loadStateFromDB(petId: string, supabase: ReturnType<typeof createClient>): Promise<OnboardingState | null> {
+  const { data } = await supabase
+    .from('onboarding_progress')
+    .select('completed_steps, skipped_steps')
+    .eq('pet_id', petId)
+    .single()
 
-function loadState(petId: string): OnboardingState {
-  if (typeof window === 'undefined') return { completedSteps: [], skippedSteps: [] }
-  try {
-    const stored = localStorage.getItem(getStorageKey(petId))
-    if (stored) {
-      return JSON.parse(stored)
+  if (data) {
+    return {
+      completedSteps: data.completed_steps || [],
+      skippedSteps: data.skipped_steps || []
     }
-  } catch {
-    // Ignore errors
   }
-  return { completedSteps: [], skippedSteps: [] }
+  return null
 }
 
-function saveState(petId: string, state: OnboardingState) {
-  if (typeof window === 'undefined') return
-  try {
-    localStorage.setItem(getStorageKey(petId), JSON.stringify(state))
-  } catch {
-    // Ignore errors
-  }
+async function saveStateToDB(
+  petId: string,
+  state: OnboardingState,
+  currentStep: number,
+  isCompleted: boolean,
+  supabase: ReturnType<typeof createClient>
+) {
+  await supabase
+    .from('onboarding_progress')
+    .upsert({
+      pet_id: petId,
+      current_step: currentStep,
+      completed_steps: state.completedSteps,
+      skipped_steps: state.skippedSteps,
+      is_completed: isCompleted,
+      updated_at: new Date().toISOString()
+    }, { onConflict: 'pet_id' })
 }
 
-function clearState(petId: string) {
-  if (typeof window === 'undefined') return
-  try {
-    localStorage.removeItem(getStorageKey(petId))
-  } catch {
-    // Ignore errors
-  }
+async function markCompleteInDB(petId: string, supabase: ReturnType<typeof createClient>) {
+  await supabase
+    .from('onboarding_progress')
+    .upsert({
+      pet_id: petId,
+      is_completed: true,
+      updated_at: new Date().toISOString()
+    }, { onConflict: 'pet_id' })
 }
 
 export function OnboardingContainer({ petId, petName, petSpecies }: OnboardingContainerProps) {
@@ -128,12 +139,14 @@ export function OnboardingContainer({ petId, petName, petSpecies }: OnboardingCo
       if ((routineCount ?? 0) > 0) existingCompleted.push(4)
       if ((insuranceCount ?? 0) > 0) existingCompleted.push(5)
 
-      // Load localStorage state and merge with existing data
-      const state = loadState(petId)
-      const mergedCompleted = [...new Set([...existingCompleted, ...state.completedSteps])]
+      // Load database state and merge with existing data
+      const dbState = await loadStateFromDB(petId, supabase)
+      const savedCompleted = dbState?.completedSteps || []
+      const savedSkipped = dbState?.skippedSteps || []
+      const mergedCompleted = [...new Set([...existingCompleted, ...savedCompleted])]
 
       setCompletedSteps(mergedCompleted)
-      setSkippedSteps(state.skippedSteps)
+      setSkippedSteps(savedSkipped)
 
       // Get step from URL or find first incomplete step
       const urlStep = searchParams.get('step')
@@ -150,7 +163,7 @@ export function OnboardingContainer({ petId, petName, petSpecies }: OnboardingCo
       }
 
       // Find first incomplete step
-      const allDone = [...mergedCompleted, ...state.skippedSteps]
+      const allDone = [...mergedCompleted, ...savedSkipped]
       const firstIncomplete = STEPS.findIndex((_, i) => !allDone.includes(i))
       if (firstIncomplete === -1) {
         // All steps done, show completion
@@ -173,13 +186,14 @@ export function OnboardingContainer({ petId, petName, petSpecies }: OnboardingCo
     }
   }, [currentStep, isComplete])
 
-  const goToNextStep = useCallback(() => {
+  const goToNextStep = useCallback(async () => {
     const allDone = [...completedSteps, ...skippedSteps]
     const nextIncomplete = STEPS.findIndex((_, i) => i > currentStep && !allDone.includes(i))
 
     if (nextIncomplete === -1) {
-      // All steps done
-      clearState(petId)
+      // All steps done - mark complete in database
+      const supabase = createClient()
+      await markCompleteInDB(petId, supabase)
       setIsComplete(true)
       setMascotMood('celebrating')
       setShowConfetti(true)
@@ -189,10 +203,13 @@ export function OnboardingContainer({ petId, petName, petSpecies }: OnboardingCo
     }
   }, [completedSteps, skippedSteps, currentStep, petId])
 
-  const handleStepComplete = useCallback(() => {
+  const handleStepComplete = useCallback(async () => {
     const newCompleted = [...completedSteps, currentStep]
     setCompletedSteps(newCompleted)
-    saveState(petId, { completedSteps: newCompleted, skippedSteps })
+
+    // Save to database
+    const supabase = createClient()
+    await saveStateToDB(petId, { completedSteps: newCompleted, skippedSteps }, currentStep, false, supabase)
 
     // Show celebration
     setMascotMood('excited')
@@ -204,10 +221,13 @@ export function OnboardingContainer({ petId, petName, petSpecies }: OnboardingCo
     }, 1500)
   }, [completedSteps, currentStep, petId, skippedSteps, goToNextStep])
 
-  const handleStepSkip = useCallback(() => {
+  const handleStepSkip = useCallback(async () => {
     const newSkipped = [...skippedSteps, currentStep]
     setSkippedSteps(newSkipped)
-    saveState(petId, { completedSteps, skippedSteps: newSkipped })
+
+    // Save to database
+    const supabase = createClient()
+    await saveStateToDB(petId, { completedSteps, skippedSteps: newSkipped }, currentStep, false, supabase)
 
     goToNextStep()
   }, [completedSteps, currentStep, petId, skippedSteps, goToNextStep])
@@ -219,8 +239,10 @@ export function OnboardingContainer({ petId, petName, petSpecies }: OnboardingCo
     }
   }, [currentStep])
 
-  const handleExit = () => {
-    saveState(petId, { completedSteps, skippedSteps })
+  const handleExit = async () => {
+    // Save progress to database before exiting
+    const supabase = createClient()
+    await saveStateToDB(petId, { completedSteps, skippedSteps }, currentStep, false, supabase)
     router.push(`/pets/${petId}`)
   }
 

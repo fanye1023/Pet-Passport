@@ -25,6 +25,19 @@ export async function GET(request: Request) {
         return NextResponse.redirect(`${origin}/invite/${pendingInvitation.token}`)
       }
 
+      // Check if this is a new user (no pets yet)
+      if (next === '/dashboard') {
+        const { count } = await supabase
+          .from('pets')
+          .select('*', { count: 'exact', head: true })
+          .eq('owner_id', data.user.id)
+
+        // If no pets, redirect to create first pet with welcome flag
+        if (count === 0) {
+          return NextResponse.redirect(`${origin}/pets/new?welcome=true`)
+        }
+      }
+
       return NextResponse.redirect(`${origin}${next}`)
     }
   }
