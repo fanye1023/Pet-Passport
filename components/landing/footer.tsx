@@ -6,7 +6,7 @@ const footerLinks = {
     { label: 'Features', href: '#features' },
   ],
   company: [
-    { label: 'About', href: '#about' },
+    { label: 'About', href: '/about' },
     { label: 'Contact', href: 'mailto:support@petpassport.app' },
   ],
   resources: [
@@ -29,7 +29,7 @@ export function Footer() {
     <footer className="border-t bg-muted/30">
       <div className="container mx-auto px-4 py-16">
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-6">
-          <div id="about" className="lg:col-span-2 scroll-mt-20">
+          <div className="lg:col-span-2">
             <Link href="/" className="flex items-center gap-2 mb-4 group">
               <PawPrint className="h-6 w-6 text-primary transition-transform group-hover:scale-110" />
               <span className="text-xl font-bold bg-gradient-to-r from-primary to-teal-600 bg-clip-text text-transparent">Pet Passport</span>
