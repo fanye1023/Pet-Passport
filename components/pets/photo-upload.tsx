@@ -13,6 +13,65 @@ interface PhotoUploadProps {
   petId?: string
 }
 
+// Optimize image: resize if too large, maintain high quality
+async function optimizeImage(file: File, maxSize = 1600, quality = 0.92): Promise<Blob> {
+  return new Promise((resolve, reject) => {
+    const img = new Image()
+    img.onload = () => {
+      // Only resize if image is larger than maxSize
+      let { width, height } = img
+      if (width <= maxSize && height <= maxSize) {
+        // Image is small enough, return original
+        resolve(file)
+        return
+      }
+
+      // Calculate new dimensions maintaining aspect ratio
+      if (width > height) {
+        if (width > maxSize) {
+          height = Math.round((height * maxSize) / width)
+          width = maxSize
+        }
+      } else {
+        if (height > maxSize) {
+          width = Math.round((width * maxSize) / height)
+          height = maxSize
+        }
+      }
+
+      // Create canvas and draw resized image
+      const canvas = document.createElement('canvas')
+      canvas.width = width
+      canvas.height = height
+      const ctx = canvas.getContext('2d')
+      if (!ctx) {
+        reject(new Error('Could not get canvas context'))
+        return
+      }
+
+      // Use high-quality image smoothing
+      ctx.imageSmoothingEnabled = true
+      ctx.imageSmoothingQuality = 'high'
+      ctx.drawImage(img, 0, 0, width, height)
+
+      // Convert to blob with high quality
+      canvas.toBlob(
+        (blob) => {
+          if (blob) {
+            resolve(blob)
+          } else {
+            reject(new Error('Could not create blob'))
+          }
+        },
+        'image/jpeg',
+        quality
+      )
+    }
+    img.onerror = () => reject(new Error('Could not load image'))
+    img.src = URL.createObjectURL(file)
+  })
+}
+
 export function PhotoUpload({ value, onChange, petId }: PhotoUploadProps) {
   const [uploading, setUploading] = useState(false)
   const supabase = createClient()
@@ -27,13 +86,16 @@ export function PhotoUpload({ value, onChange, petId }: PhotoUploadProps) {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) throw new Error('Not authenticated')
 
-      const safeName = sanitizeFileName(file.name)
-      const fileExt = safeName.split('.').pop()
-      const fileName = `${user.id}/${petId ?? 'new'}/${Date.now()}.${fileExt}`
+      // Optimize image (resize if > 1600px, 92% quality JPEG)
+      const optimizedBlob = await optimizeImage(file, 1600, 0.92)
+      const fileName = `${user.id}/${petId ?? 'new'}/${Date.now()}.jpg`
 
       const { data, error } = await supabase.storage
         .from('pet-photos')
-        .upload(fileName, file, { upsert: true })
+        .upload(fileName, optimizedBlob, {
+          upsert: true,
+          contentType: 'image/jpeg'
+        })
 
       if (error) throw error
 
