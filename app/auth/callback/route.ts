@@ -30,7 +30,7 @@ export async function GET(request: Request) {
         const { count } = await supabase
           .from('pets')
           .select('*', { count: 'exact', head: true })
-          .eq('owner_id', data.user.id)
+          .eq('user_id', data.user.id)
 
         // If no pets, redirect to create first pet with welcome flag
         if (count === 0) {
