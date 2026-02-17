@@ -34,7 +34,7 @@ export function Footer() {
               <Logo href="/" />
             </div>
             <p className="text-sm text-muted-foreground max-w-xs mb-6">
-              The modern way to manage your pet&apos;s health records and travel documents.
+              Share your pet&apos;s care instructions, health records, and emergency info instantly with sitters, walkers, and vets.
             </p>
             <div className="flex gap-4">
               {socialLinks.map((social) => (
