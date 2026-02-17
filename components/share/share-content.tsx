@@ -362,14 +362,35 @@ export function ShareContent({ data }: ShareContentProps) {
             }
           }
 
-          const slotOrderKeys = Object.keys(timeOfDayOrder)
+          // Helper to parse time strings like "7:00 AM" or "18:00" to minutes since midnight
+          const parseTimeToMinutes = (time: string): number => {
+            // Handle predefined slots first
+            if (timeOfDayOrder[time] !== undefined) {
+              return timeOfDayOrder[time] * 100 // Convert order to pseudo-minutes
+            }
+
+            // Handle "HH:MM AM/PM" format
+            const amPmMatch = time.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i)
+            if (amPmMatch) {
+              let hours = parseInt(amPmMatch[1])
+              const minutes = parseInt(amPmMatch[2])
+              const isPM = amPmMatch[3].toUpperCase() === 'PM'
+              if (isPM && hours !== 12) hours += 12
+              if (!isPM && hours === 12) hours = 0
+              return hours * 60 + minutes
+            }
+
+            // Handle "HH:MM" 24-hour format
+            const h24Match = time.match(/^(\d{1,2}):(\d{2})$/)
+            if (h24Match) {
+              return parseInt(h24Match[1]) * 60 + parseInt(h24Match[2])
+            }
+
+            return 9999 // Unknown format, put at end
+          }
+
           const sortedSlots = Array.from(timeSlotMap.entries()).sort(([a], [b]) => {
-            const ia = slotOrderKeys.indexOf(a)
-            const ib = slotOrderKeys.indexOf(b)
-            if (ia !== -1 && ib !== -1) return timeOfDayOrder[a] - timeOfDayOrder[b]
-            if (ia !== -1) return -1
-            if (ib !== -1) return 1
-            return a.localeCompare(b)
+            return parseTimeToMinutes(a) - parseTimeToMinutes(b)
           })
 
           const hasMealSchedule = sortedSlots.length > 0 || freeFeedingFoods.length > 0
