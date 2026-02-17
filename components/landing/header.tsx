@@ -34,10 +34,10 @@ export async function Header() {
           <Link href="#features" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
             Features
           </Link>
-          <Link href="#" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+          <Link href="#about" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
             About
           </Link>
-          <Link href="#" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+          <Link href="mailto:support@petpassport.app" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
             Contact
           </Link>
         </nav>
