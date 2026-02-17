@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { PawPrint } from 'lucide-react'
+import { Logo } from '@/components/ui/logo'
 
 const footerLinks = {
   product: [
@@ -30,10 +30,9 @@ export function Footer() {
       <div className="container mx-auto px-4 py-16">
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-6">
           <div className="lg:col-span-2">
-            <Link href="/" className="flex items-center gap-2 mb-4 group">
-              <PawPrint className="h-6 w-6 text-primary transition-transform group-hover:scale-110" />
-              <span className="text-xl font-bold bg-gradient-to-r from-primary to-teal-600 bg-clip-text text-transparent">Pet Passport</span>
-            </Link>
+            <div className="mb-4">
+              <Logo href="/" />
+            </div>
             <p className="text-sm text-muted-foreground max-w-xs mb-6">
               The modern way to manage your pet&apos;s health records and travel documents.
             </p>

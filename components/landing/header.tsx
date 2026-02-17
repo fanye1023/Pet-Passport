@@ -9,8 +9,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { User, LogOut, PawPrint } from 'lucide-react'
+import { User, LogOut } from 'lucide-react'
 import { ThemeToggle } from '@/components/theme-toggle'
+import { Logo } from '@/components/ui/logo'
 
 export async function Header() {
   let user = null
@@ -25,10 +26,7 @@ export async function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
-        <Link href="/" className="flex items-center gap-2 group">
-          <PawPrint className="h-6 w-6 text-primary transition-transform group-hover:scale-110" />
-          <span className="text-xl font-bold bg-gradient-to-r from-primary to-teal-600 bg-clip-text text-transparent">Pet Passport</span>
-        </Link>
+        <Logo href="/" />
 
         <nav className="hidden md:flex items-center gap-6">
           <Link href="#features" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
