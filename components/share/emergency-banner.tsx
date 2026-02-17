@@ -26,11 +26,11 @@ export function EmergencyBanner({ emergencyContacts, veterinarians, petName }: E
       {isOpen && (
         <div className="fixed inset-0 bg-black/50 z-40" onClick={() => setIsOpen(false)}>
           <div
-            className="fixed bottom-0 left-0 right-0 bg-white rounded-t-2xl p-6 z-50 max-h-[80vh] overflow-y-auto"
+            className="fixed bottom-0 left-0 right-0 bg-background rounded-t-2xl p-6 z-50 max-h-[80vh] overflow-y-auto"
             onClick={e => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-red-600 flex items-center gap-2">
+              <h2 className="text-xl font-bold text-red-600 dark:text-red-400 flex items-center gap-2">
                 <AlertTriangle className="h-6 w-6" />
                 Emergency Options
               </h2>
@@ -44,7 +44,7 @@ export function EmergencyBanner({ emergencyContacts, veterinarians, petName }: E
               {emergencyContacts && emergencyContacts.length > 0 && (
                 <div className="border rounded-lg p-4">
                   <h3 className="font-semibold flex items-center gap-2 mb-3">
-                    <Phone className="h-5 w-5 text-red-600" />
+                    <Phone className="h-5 w-5 text-red-600 dark:text-red-400" />
                     Emergency Contacts
                   </h3>
                   <div className="space-y-3">
@@ -52,15 +52,15 @@ export function EmergencyBanner({ emergencyContacts, veterinarians, petName }: E
                       <a
                         key={contact.id}
                         href={`tel:${contact.phone}`}
-                        className="flex items-center justify-between p-3 bg-red-50 rounded-lg hover:bg-red-100 transition-colors"
+                        className="flex items-center justify-between p-3 bg-red-50 dark:bg-red-950/50 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors"
                       >
                         <div>
-                          <p className="font-medium">{contact.name}</p>
+                          <p className="font-medium text-foreground">{contact.name}</p>
                           {contact.relationship && (
                             <p className="text-sm text-muted-foreground">{contact.relationship}</p>
                           )}
                         </div>
-                        <div className="flex items-center gap-2 text-red-600 font-medium">
+                        <div className="flex items-center gap-2 text-red-600 dark:text-red-400 font-medium">
                           <Phone className="h-4 w-4" />
                           {contact.phone}
                         </div>
@@ -74,28 +74,28 @@ export function EmergencyBanner({ emergencyContacts, veterinarians, petName }: E
               {primaryVet && (
                 <div className="border rounded-lg p-4">
                   <h3 className="font-semibold flex items-center gap-2 mb-3">
-                    <Stethoscope className="h-5 w-5 text-red-600" />
+                    <Stethoscope className="h-5 w-5 text-red-600 dark:text-red-400" />
                     {petName}&apos;s Veterinarian
                   </h3>
                   {primaryVet.phone ? (
                     <a
                       href={`tel:${primaryVet.phone}`}
-                      className="flex items-center justify-between p-3 bg-red-50 rounded-lg hover:bg-red-100 transition-colors"
+                      className="flex items-center justify-between p-3 bg-red-50 dark:bg-red-950/50 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors"
                     >
                       <div>
-                        <p className="font-medium">{primaryVet.clinic_name}</p>
+                        <p className="font-medium text-foreground">{primaryVet.clinic_name}</p>
                         {primaryVet.name && (
                           <p className="text-sm text-muted-foreground">{primaryVet.name}</p>
                         )}
                       </div>
-                      <div className="flex items-center gap-2 text-red-600 font-medium">
+                      <div className="flex items-center gap-2 text-red-600 dark:text-red-400 font-medium">
                         <Phone className="h-4 w-4" />
                         {primaryVet.phone}
                       </div>
                     </a>
                   ) : (
                     <div className="p-3 bg-muted rounded-lg">
-                      <p className="font-medium">{primaryVet.clinic_name}</p>
+                      <p className="font-medium text-foreground">{primaryVet.clinic_name}</p>
                       {primaryVet.name && (
                         <p className="text-sm text-muted-foreground">{primaryVet.name}</p>
                       )}
@@ -108,7 +108,7 @@ export function EmergencyBanner({ emergencyContacts, veterinarians, petName }: E
               {/* 24/7 Emergency Rooms */}
               <div className="border rounded-lg p-4">
                 <h3 className="font-semibold flex items-center gap-2 mb-3">
-                  <MapPin className="h-5 w-5 text-red-600" />
+                  <MapPin className="h-5 w-5 text-red-600 dark:text-red-400" />
                   24/7 Emergency Vet Clinics
                 </h3>
                 <Button
@@ -128,12 +128,12 @@ export function EmergencyBanner({ emergencyContacts, veterinarians, petName }: E
       )}
 
       {/* Fixed Emergency Button */}
-      <div className="fixed bottom-0 left-0 right-0 z-30 p-3">
+      <div className="fixed bottom-0 left-0 right-0 z-30 p-3 print:hidden">
         <div className="max-w-3xl mx-auto">
           <Button
             onClick={() => setIsOpen(true)}
             variant="outline"
-            className="w-full border-red-400 text-red-600 hover:bg-red-50 hover:text-red-700 font-medium py-5 shadow-sm bg-white/95 backdrop-blur-sm"
+            className="w-full border-red-400 dark:border-red-500/50 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/50 hover:text-red-700 dark:hover:text-red-300 font-medium py-5 shadow-sm bg-background/95 backdrop-blur-sm"
           >
             <AlertTriangle className="h-4 w-4 mr-2" />
             Emergency
