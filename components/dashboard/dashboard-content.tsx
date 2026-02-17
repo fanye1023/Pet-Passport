@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -27,6 +28,7 @@ interface PetWithStats extends Pet {
 }
 
 export function DashboardContent() {
+  const router = useRouter()
   const [petsWithStats, setPetsWithStats] = useState<PetWithStats[]>([])
   const [vaccinationsByPet, setVaccinationsByPet] = useState<Map<string, Vaccination[]>>(new Map())
   const [eventsByPet, setEventsByPet] = useState<Map<string, CareEvent[]>>(new Map())
@@ -43,8 +45,8 @@ export function DashboardContent() {
         .order('created_at', { ascending: false })
 
       if (!pets || pets.length === 0) {
-        setPetsWithStats([])
-        setIsLoading(false)
+        // Redirect new users to create their first pet
+        router.push('/pets/new?welcome=true')
         return
       }
 
