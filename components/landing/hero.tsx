@@ -235,7 +235,7 @@ export function Hero() {
             </Link>
             {DEMO_URL && (
               <Link href={DEMO_URL} target="_blank">
-                <Button size="lg" variant="ghost" className="w-full sm:w-auto btn-press">
+                <Button size="lg" variant="secondary" className="w-full sm:w-auto btn-press border-2 border-primary/20 bg-primary/10 hover:bg-primary/20 text-primary font-semibold">
                   <Eye className="h-4 w-4 mr-2" />
                   See Live Demo
                 </Button>
