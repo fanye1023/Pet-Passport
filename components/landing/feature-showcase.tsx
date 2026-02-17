@@ -16,6 +16,12 @@ import {
   Heart,
   Clock,
   Shield,
+  Utensils,
+  Moon,
+  Sun,
+  ClipboardList,
+  Key,
+  Wifi,
 } from 'lucide-react'
 import { useScrollAnimation } from '@/hooks/use-scroll-animation'
 
@@ -73,9 +79,9 @@ function MockExtraction() {
 
           <div className="space-y-2">
             {[
-              { label: 'Rabies Vaccine', date: 'Mar 15, 2025', status: 'Current' },
-              { label: 'DHPP Vaccine', date: 'Jan 8, 2025', status: 'Current' },
-              { label: 'Bordetella', date: 'Nov 22, 2024', status: 'Due Soon' },
+              { label: 'Rabies Vaccine', date: 'Mar 15, 2025', status: 'Current', dueDate: 'Mar 15, 2026' },
+              { label: 'DHPP Vaccine', date: 'Jan 8, 2025', status: 'Current', dueDate: 'Jan 8, 2026' },
+              { label: 'Bordetella', date: 'Nov 22, 2024', status: 'Due Soon', dueDate: 'Nov 22, 2025' },
             ].map((item) => (
               <div
                 key={item.label}
@@ -100,6 +106,16 @@ function MockExtraction() {
               </div>
             ))}
           </div>
+        </div>
+
+        {/* Calendar sync indicator */}
+        <div className="mt-3 rounded-lg border border-primary/30 bg-primary/5 p-2.5 flex items-center gap-2">
+          <Calendar className="w-4 h-4 text-primary" />
+          <div className="flex-1">
+            <p className="text-[11px] font-medium text-primary">Auto-synced to Calendar</p>
+            <p className="text-[10px] text-muted-foreground">Due dates added automatically</p>
+          </div>
+          <CheckCircle2 className="w-4 h-4 text-green-500" />
         </div>
       </div>
     </div>
@@ -175,6 +191,99 @@ function MockCalendar() {
               <span className="text-[10px] text-muted-foreground">{item.time}</span>
             </div>
           ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ─── Mock: Food, Routine & Sitter Info ──────────────────────────────────────
+
+function MockFoodRoutine() {
+  return (
+    <div className="rounded-2xl bg-gradient-to-br from-primary/20 via-accent/20 to-transparent p-4">
+      <div className="rounded-xl bg-card/80 backdrop-blur border shadow-2xl overflow-hidden p-5 animate-float-slow">
+        {/* Header with share indicator */}
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <ClipboardList className="w-4 h-4 text-primary" />
+            <p className="text-sm font-semibold">Care Instructions</p>
+          </div>
+          <div className="flex items-center gap-1.5 text-[10px] font-medium text-primary bg-primary/10 px-2 py-1 rounded-full">
+            <Share2 className="w-3 h-3" />
+            Shared with sitters
+          </div>
+        </div>
+
+        {/* Food Schedule */}
+        <div className="rounded-lg border bg-muted/30 p-3 mb-3">
+          <div className="flex items-center gap-2 mb-2">
+            <Utensils className="w-3.5 h-3.5 text-orange-500" />
+            <span className="text-[11px] font-semibold">Feeding Schedule</span>
+          </div>
+          <div className="space-y-1.5">
+            {[
+              { time: 'Morning (8am)', food: 'Blue Buffalo, 1 cup', icon: Sun },
+              { time: 'Evening (6pm)', food: 'Blue Buffalo, 1 cup', icon: Moon },
+            ].map((meal) => (
+              <div key={meal.time} className="flex items-center gap-2 text-[11px]">
+                <meal.icon className="w-3 h-3 text-muted-foreground" />
+                <span className="text-muted-foreground">{meal.time}:</span>
+                <span className="font-medium">{meal.food}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Daily Routine */}
+        <div className="rounded-lg border bg-muted/30 p-3 mb-3">
+          <div className="flex items-center gap-2 mb-2">
+            <Clock className="w-3.5 h-3.5 text-purple-500" />
+            <span className="text-[11px] font-semibold">Daily Routine</span>
+          </div>
+          <div className="space-y-1.5">
+            {[
+              { icon: '🚶', activity: 'Morning walk', time: '7:30 AM', duration: '30 min' },
+              { icon: '🎾', activity: 'Play time', time: '12:00 PM', duration: '20 min' },
+              { icon: '🚶', activity: 'Evening walk', time: '6:30 PM', duration: '45 min' },
+              { icon: '😴', activity: 'Bedtime', time: '10:00 PM', duration: '' },
+            ].map((item) => (
+              <div key={item.activity} className="flex items-center gap-2 text-[11px]">
+                <span>{item.icon}</span>
+                <span className="font-medium flex-1">{item.activity}</span>
+                <span className="text-muted-foreground">{item.time}</span>
+                {item.duration && (
+                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
+                    {item.duration}
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Sitter Info */}
+        <div className="rounded-lg border border-primary/30 bg-primary/5 p-3">
+          <div className="flex items-center gap-2 mb-2">
+            <Key className="w-3.5 h-3.5 text-primary" />
+            <span className="text-[11px] font-semibold text-primary">Sitter Instructions</span>
+          </div>
+          <div className="grid grid-cols-2 gap-2 text-[10px]">
+            <div className="flex items-start gap-1.5">
+              <Key className="w-3 h-3 text-amber-500 mt-0.5" />
+              <div>
+                <p className="font-medium">House Access</p>
+                <p className="text-muted-foreground">Key under mat</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-1.5">
+              <Wifi className="w-3 h-3 text-blue-500 mt-0.5" />
+              <div>
+                <p className="font-medium">WiFi & Alarm</p>
+                <p className="text-muted-foreground">Code: 1234</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -334,8 +443,8 @@ const sections: FeatureSection[] = [
   {
     title: 'AI-Powered Document Extraction',
     description:
-      'Upload vaccine records or insurance PDFs and AI automatically extracts all relevant data — vaccine names, dates, policy numbers, coverage details.',
-    bullets: ['Vaccine records', 'Insurance policies', 'Instant data extraction'],
+      'Upload vaccine records or insurance PDFs and AI automatically extracts all relevant data — vaccine names, dates, policy numbers, coverage details. Due dates are automatically added to your calendar.',
+    bullets: ['Vaccine records & insurance policies', 'Instant data extraction', 'Auto-sync due dates to calendar'],
     mock: <MockExtraction />,
     reversed: false,
     muted: false,
@@ -350,13 +459,22 @@ const sections: FeatureSection[] = [
     muted: true,
   },
   {
+    title: 'Food, Routines & Sitter Instructions',
+    description:
+      'Track feeding schedules, daily routines, and care instructions in one place. Everything is automatically included when you share with pet sitters or dog walkers.',
+    bullets: ['Meal schedules & portion sizes', 'Daily routines & activities', 'House access & sitter notes'],
+    mock: <MockFoodRoutine />,
+    reversed: false,
+    muted: false,
+  },
+  {
     title: 'Share With Your Whole Family',
     description:
       'Invite family members, vets, or caretakers with role-based access. Owners control everything, editors can update records, viewers can see but not change.',
     bullets: ['Role-based permissions', 'Easy email invites', 'Full audit control'],
     mock: <MockCollaborators />,
-    reversed: false,
-    muted: false,
+    reversed: true,
+    muted: true,
   },
   {
     title: 'Instant Sharing with Emergency Access',
@@ -364,8 +482,8 @@ const sections: FeatureSection[] = [
       'Generate a shareable link for pet sitters, dog walkers, or boarding facilities. Includes a one-tap emergency button with vet contacts and nearest emergency vet finder.',
     bullets: ['Shareable pet profiles', 'Key info at a glance', 'One-tap emergency contacts'],
     mock: <MockSharePage />,
-    reversed: true,
-    muted: true,
+    reversed: false,
+    muted: false,
   },
 ]
 
