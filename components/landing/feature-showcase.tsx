@@ -534,7 +534,15 @@ function ShowcaseSection({ section }: { section: FeatureSection }) {
             }`}
             style={section.reversed ? { direction: 'ltr' } : undefined}
           >
-            {section.mock}
+            <div className="relative">
+              {/* Preview badge */}
+              <div className="absolute -top-2 right-4 z-10">
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-muted/80 text-muted-foreground backdrop-blur-sm border">
+                  Preview
+                </span>
+              </div>
+              {section.mock}
+            </div>
           </div>
         </div>
       </div>

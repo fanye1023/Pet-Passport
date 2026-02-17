@@ -307,10 +307,9 @@ export function ShareContent({ data }: ShareContentProps) {
             </CardHeader>
             <CardContent className="space-y-4">
               {behavioral_notes.temperament && (
-                <div>
-                  <Badge variant="secondary" className="text-sm">
-                    {behavioral_notes.temperament}
-                  </Badge>
+                <div className="space-y-1">
+                  <p className="text-sm font-medium">Temperament</p>
+                  <p className="text-sm text-muted-foreground whitespace-pre-wrap">{behavioral_notes.temperament}</p>
                 </div>
               )}
               {behavioral_notes.known_commands && (

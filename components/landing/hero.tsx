@@ -2,7 +2,10 @@
 
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { Shield, Globe, Sparkles } from 'lucide-react'
+import { Shield, Globe, Sparkles, Eye } from 'lucide-react'
+
+// Demo pet profile URL - update this when you have a demo pet
+const DEMO_URL = '/share/demo-buddy-golden'
 
 function AnimatedDogPassport() {
   return (
@@ -230,6 +233,14 @@ export function Hero() {
                 Login
               </Button>
             </Link>
+            {DEMO_URL && (
+              <Link href={DEMO_URL} target="_blank">
+                <Button size="lg" variant="ghost" className="w-full sm:w-auto btn-press">
+                  <Eye className="h-4 w-4 mr-2" />
+                  See Live Demo
+                </Button>
+              </Link>
+            )}
           </div>
           <div className="flex items-center gap-6 pt-4 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
