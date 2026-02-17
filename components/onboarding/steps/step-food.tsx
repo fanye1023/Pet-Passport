@@ -66,9 +66,9 @@ export function StepFood({ petId, onComplete, onSkip, onBack, isFirstStep }: Ste
       canProceed={foods.length > 0}
       isFirstStep={isFirstStep}
     >
-      <div className="space-y-4">
+      <div className="space-y-3">
         {foods.length > 0 && (
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             {foods.map((food, index) => (
               <FoodItemCard
                 key={index}
@@ -82,7 +82,7 @@ export function StepFood({ petId, onComplete, onSkip, onBack, isFirstStep }: Ste
         <FoodInlineForm onAdd={handleAddFood} />
 
         {foods.length === 0 && (
-          <p className="text-sm text-muted-foreground text-center">
+          <p className="text-xs text-muted-foreground text-center">
             Add at least one food to continue, or skip this step.
           </p>
         )}

@@ -53,29 +53,31 @@ export function StepInsurance({ petId, onComplete, onSkip, onBack, isFirstStep, 
       isFirstStep={isFirstStep}
       isLastStep={isLastStep}
     >
-      <div className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="provider">Insurance Provider *</Label>
+      <div className="space-y-3">
+        <div className="space-y-1.5">
+          <Label htmlFor="provider" className="text-sm">Insurance Provider *</Label>
           <Input
             id="provider"
             placeholder="e.g., Trupanion, Healthy Paws"
             value={providerName}
             onChange={(e) => setProviderName(e.target.value)}
+            className="h-9"
           />
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="policy">Policy Number</Label>
+        <div className="space-y-1.5">
+          <Label htmlFor="policy" className="text-sm">Policy Number</Label>
           <Input
             id="policy"
             placeholder="Enter policy number"
             value={policyNumber}
             onChange={(e) => setPolicyNumber(e.target.value)}
+            className="h-9"
           />
         </div>
 
-        <p className="text-sm text-muted-foreground">
-          Many pet owners skip insurance. Feel free to skip this step if you don&apos;t have coverage yet.
+        <p className="text-xs text-muted-foreground">
+          Feel free to skip if you don&apos;t have coverage yet.
         </p>
       </div>
     </OnboardingStep>

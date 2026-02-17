@@ -129,24 +129,23 @@ export function StepVet({ petId, onComplete, onSkip, onBack, isFirstStep }: Step
       canProceed={clinicName.trim().length > 0}
       isFirstStep={isFirstStep}
     >
-      <div className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="clinic">Clinic Name *</Label>
+      <div className="space-y-3">
+        <div className="space-y-1.5">
+          <Label htmlFor="clinic" className="text-sm">Clinic Name *</Label>
           <div className="relative" ref={dropdownRef}>
-            <div className="relative">
-              <Input
-                id="clinic"
-                placeholder="Search for vet clinic..."
-                value={clinicName}
-                onChange={(e) => handleClinicNameChange(e.target.value)}
-                onFocus={() => searchResults.length > 0 && setShowDropdown(true)}
-              />
-              {(searching || fetchingDetails) && (
-                <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground" />
-              )}
-            </div>
+            <Input
+              id="clinic"
+              placeholder="Search for vet clinic..."
+              value={clinicName}
+              onChange={(e) => handleClinicNameChange(e.target.value)}
+              onFocus={() => searchResults.length > 0 && setShowDropdown(true)}
+              className="h-9"
+            />
+            {(searching || fetchingDetails) && (
+              <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground" />
+            )}
             {showDropdown && searchResults.length > 0 && (
-              <div className="absolute z-50 w-full mt-1 bg-popover border rounded-md shadow-lg max-h-60 overflow-auto">
+              <div className="absolute z-50 w-full mt-1 bg-popover border rounded-md shadow-lg max-h-48 overflow-auto">
                 {searchResults.map((place) => (
                   <button
                     key={place.place_id}
@@ -161,24 +160,22 @@ export function StepVet({ petId, onComplete, onSkip, onBack, isFirstStep }: Step
               </div>
             )}
           </div>
-          <p className="text-xs text-muted-foreground">
-            Type to search and auto-fill clinic details
-          </p>
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="phone">Phone Number</Label>
+        <div className="space-y-1.5">
+          <Label htmlFor="phone" className="text-sm">Phone Number</Label>
           <Input
             id="phone"
             type="tel"
             placeholder="(555) 123-4567"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
+            className="h-9"
           />
         </div>
 
         {address && (
-          <p className="text-sm text-muted-foreground">{address}</p>
+          <p className="text-xs text-muted-foreground truncate">{address}</p>
         )}
       </div>
     </OnboardingStep>

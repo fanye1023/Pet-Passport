@@ -160,41 +160,41 @@ export function StepVaccination({ petId, petSpecies, onComplete, onSkip, onBack,
       canProceed={!!canProceed}
       isFirstStep={isFirstStep}
     >
-      <div className="space-y-4">
+      <div className="space-y-3">
         {/* Mode Toggle */}
-        <div className="flex gap-2 p-1 bg-muted rounded-lg">
+        <div className="flex gap-1 p-0.5 bg-muted rounded-lg">
           <button
             type="button"
             onClick={() => setMode('manual')}
-            className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+            className={`flex-1 flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-md text-xs font-medium transition-colors ${
               mode === 'manual'
                 ? 'bg-background shadow-sm text-foreground'
                 : 'text-muted-foreground hover:text-foreground'
             }`}
           >
-            <PenLine className="h-4 w-4" />
+            <PenLine className="h-3.5 w-3.5" />
             Enter Manually
           </button>
           <button
             type="button"
             onClick={() => setMode('upload')}
-            className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+            className={`flex-1 flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-md text-xs font-medium transition-colors ${
               mode === 'upload'
                 ? 'bg-background shadow-sm text-foreground'
                 : 'text-muted-foreground hover:text-foreground'
             }`}
           >
-            <FileText className="h-4 w-4" />
+            <FileText className="h-3.5 w-3.5" />
             Upload PDF
           </button>
         </div>
 
         {mode === 'manual' ? (
           <>
-            <div className="space-y-2">
-              <Label>Vaccine *</Label>
+            <div className="space-y-1.5">
+              <Label className="text-sm">Vaccine *</Label>
               <Select value={vaccineName} onValueChange={setVaccineName}>
-                <SelectTrigger>
+                <SelectTrigger className="h-9">
                   <SelectValue placeholder="Select vaccine type" />
                 </SelectTrigger>
                 <SelectContent>
@@ -208,69 +208,76 @@ export function StepVaccination({ petId, petSpecies, onComplete, onSkip, onBack,
             </div>
 
             {vaccineName === 'other' && (
-              <div className="space-y-2">
-                <Label htmlFor="customName">Vaccine Name *</Label>
+              <div className="space-y-1.5">
+                <Label htmlFor="customName" className="text-sm">Vaccine Name *</Label>
                 <Input
                   id="customName"
                   placeholder="Enter vaccine name"
                   value={customName}
                   onChange={(e) => setCustomName(e.target.value)}
+                  className="h-9"
                 />
               </div>
             )}
 
-            <div className="space-y-2">
-              <Label htmlFor="adminDate">Date Administered *</Label>
-              <Input
-                id="adminDate"
-                type="date"
-                value={administeredDate}
-                onChange={(e) => setAdministeredDate(e.target.value)}
-              />
-            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1.5">
+                <Label htmlFor="adminDate" className="text-sm">Date Given *</Label>
+                <Input
+                  id="adminDate"
+                  type="date"
+                  value={administeredDate}
+                  onChange={(e) => setAdministeredDate(e.target.value)}
+                  className="h-9"
+                />
+              </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="expDate">Expiration Date (if known)</Label>
-              <Input
-                id="expDate"
-                type="date"
-                value={expirationDate}
-                onChange={(e) => setExpirationDate(e.target.value)}
-              />
+              <div className="space-y-1.5">
+                <Label htmlFor="expDate" className="text-sm">Expires</Label>
+                <Input
+                  id="expDate"
+                  type="date"
+                  value={expirationDate}
+                  onChange={(e) => setExpirationDate(e.target.value)}
+                  className="h-9"
+                />
+              </div>
             </div>
           </>
         ) : (
-          <div className="space-y-4">
-            <p className="text-sm text-muted-foreground">
-              Upload your pet&apos;s vaccination records as a PDF. This is great for vet certificates or multi-vaccine documents.
+          <div className="space-y-3">
+            <p className="text-xs text-muted-foreground">
+              Upload vaccination records as PDF (vet certificates, etc.)
             </p>
 
             {documentUrl ? (
-              <div className="flex items-center gap-2 p-3 border rounded-lg bg-muted/50">
-                <FileText className="h-5 w-5 text-primary flex-shrink-0" />
+              <div className="flex items-center gap-2 p-2 border rounded-lg bg-muted/50">
+                <FileText className="h-4 w-4 text-primary flex-shrink-0" />
                 <span className="text-sm flex-1 truncate">{documentName}</span>
                 <Button
                   type="button"
                   variant="ghost"
                   size="sm"
+                  className="h-7 w-7 p-0"
                   onClick={() => window.open(documentUrl, '_blank')}
                 >
-                  <ExternalLink className="h-4 w-4" />
+                  <ExternalLink className="h-3.5 w-3.5" />
                 </Button>
                 <Button
                   type="button"
                   variant="ghost"
                   size="sm"
+                  className="h-7 w-7 p-0"
                   onClick={() => {
                     setDocumentUrl('')
                     setDocumentName('')
                   }}
                 >
-                  <X className="h-4 w-4" />
+                  <X className="h-3.5 w-3.5" />
                 </Button>
               </div>
             ) : (
-              <div className="border-2 border-dashed rounded-lg p-8 text-center">
+              <div className="border-2 border-dashed rounded-lg p-5 text-center">
                 <input
                   type="file"
                   id="vaccination-upload"
@@ -279,25 +286,23 @@ export function StepVaccination({ petId, petSpecies, onComplete, onSkip, onBack,
                   className="hidden"
                   disabled={uploading}
                 />
-                <FileText className="h-10 w-10 mx-auto text-muted-foreground mb-3" />
+                <FileText className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
                 <Button
                   type="button"
                   variant="outline"
+                  size="sm"
                   disabled={uploading}
                   onClick={() => document.getElementById('vaccination-upload')?.click()}
                 >
                   {uploading ? (
                     <>
-                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
                       Uploading...
                     </>
                   ) : (
                     'Choose PDF File'
                   )}
                 </Button>
-                <p className="text-xs text-muted-foreground mt-2">
-                  PDF files only
-                </p>
               </div>
             )}
           </div>

@@ -64,9 +64,9 @@ export function StepRoutine({ petId, petSpecies, onComplete, onSkip, onBack, isF
       canProceed={routines.length > 0}
       isFirstStep={isFirstStep}
     >
-      <div className="space-y-4">
+      <div className="space-y-3">
         {routines.length > 0 && (
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             {routines.map((routine, index) => (
               <RoutineItemCard
                 key={index}
@@ -83,7 +83,7 @@ export function StepRoutine({ petId, petSpecies, onComplete, onSkip, onBack, isF
         />
 
         {routines.length === 0 && (
-          <p className="text-sm text-muted-foreground text-center">
+          <p className="text-xs text-muted-foreground text-center">
             Add at least one routine to continue, or skip this step.
           </p>
         )}

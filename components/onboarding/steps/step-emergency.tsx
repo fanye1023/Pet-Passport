@@ -65,32 +65,34 @@ export function StepEmergency({ petId, onComplete, onSkip, onBack, isFirstStep }
       canProceed={name.trim().length > 0 && phoneNumber.trim().length > 0}
       isFirstStep={isFirstStep}
     >
-      <div className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="name">Contact Name *</Label>
+      <div className="space-y-3">
+        <div className="space-y-1.5">
+          <Label htmlFor="name" className="text-sm">Contact Name *</Label>
           <Input
             id="name"
             placeholder="John Smith"
             value={name}
             onChange={(e) => setName(e.target.value)}
+            className="h-9"
           />
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="phone">Phone Number *</Label>
+        <div className="space-y-1.5">
+          <Label htmlFor="phone" className="text-sm">Phone Number *</Label>
           <Input
             id="phone"
             type="tel"
             placeholder="(555) 123-4567"
             value={phoneNumber}
             onChange={(e) => setPhone(e.target.value)}
+            className="h-9"
           />
         </div>
 
-        <div className="space-y-2">
-          <Label>Relationship</Label>
+        <div className="space-y-1.5">
+          <Label className="text-sm">Relationship</Label>
           <Select value={relationship} onValueChange={setRelationship}>
-            <SelectTrigger>
+            <SelectTrigger className="h-9">
               <SelectValue placeholder="Select relationship" />
             </SelectTrigger>
             <SelectContent>
