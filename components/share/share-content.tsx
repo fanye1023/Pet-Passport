@@ -93,7 +93,7 @@ export function ShareContent({ data }: ShareContentProps) {
             className="absolute inset-0 bg-cover bg-center"
             style={{ backgroundImage: `url(${pet.photo_url})` }}
           >
-            <div className="absolute inset-0 backdrop-blur-3xl bg-gradient-to-b from-black/30 via-black/20 to-background" />
+            <div className="absolute inset-0 backdrop-blur-3xl bg-gradient-to-b from-black/50 via-black/40 to-background" />
           </div>
         )}
         {/* Fallback gradient when no photo */}
@@ -109,8 +109,8 @@ export function ShareContent({ data }: ShareContentProps) {
                 <PawPrint className="h-16 w-16 text-primary/60" />
               </AvatarFallback>
             </Avatar>
-            <h1 className="text-4xl font-bold mt-4 drop-shadow-sm">{pet.name}</h1>
-            <p className="text-lg text-muted-foreground mt-1">
+            <h1 className={`text-4xl font-bold mt-4 ${pet.photo_url ? 'text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]' : ''}`}>{pet.name}</h1>
+            <p className={`text-lg mt-1 ${pet.photo_url ? 'text-white/90 drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]' : 'text-muted-foreground'}`}>
               {pet.breed ? `${pet.breed} ` : ''}{pet.species}
             </p>
             <div className="flex flex-wrap justify-center gap-2 mt-4">
