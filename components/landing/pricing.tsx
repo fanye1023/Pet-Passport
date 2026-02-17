@@ -10,49 +10,35 @@ const tiers = [
   {
     name: 'Free',
     price: '$0',
-    description: 'Perfect for getting started',
+    description: 'Everything you need to get started',
     features: [
-      '1 pet profile',
-      'Basic health records',
-      'Vaccination tracking',
-      'Email reminders',
+      'Up to 2 pet profiles',
+      'Health records & vaccinations',
+      'Shareable pet links',
+      'Emergency contacts',
+      'Food & routine tracking',
+      'Calendar sync',
     ],
-    cta: 'Get Started',
+    cta: 'Get Started Free',
     href: '/signup',
     highlighted: false,
   },
   {
     name: 'Pro',
-    price: '$9',
+    price: '$5',
     period: '/month',
-    description: 'For pet owners who travel',
+    description: 'For families with multiple pets',
     features: [
-      'Up to 5 pet profiles',
-      'Complete health records',
-      'International travel documents',
+      'Unlimited pet profiles',
+      'Everything in Free, plus:',
+      'Expense tracking & reports',
+      'Insurance claim management',
       'Priority support',
-      'Document sharing',
-      'SMS reminders',
+      'Early access to new features',
     ],
     cta: 'Start Free Trial',
     href: '/signup',
     highlighted: true,
-  },
-  {
-    name: 'Enterprise',
-    price: 'Custom',
-    description: 'For breeders & organizations',
-    features: [
-      'Unlimited pet profiles',
-      'Team collaboration',
-      'API access',
-      'Custom integrations',
-      'Dedicated support',
-      'White-label options',
-    ],
-    cta: 'Contact Sales',
-    href: '#',
-    highlighted: false,
   },
 ]
 
@@ -78,7 +64,7 @@ export function Pricing() {
 
       <div
         ref={gridRef}
-        className={`grid gap-8 md:grid-cols-3 max-w-5xl mx-auto transition-all duration-700 ${
+        className={`grid gap-8 md:grid-cols-2 max-w-3xl mx-auto transition-all duration-700 ${
           gridVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}
       >

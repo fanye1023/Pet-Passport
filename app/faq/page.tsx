@@ -25,7 +25,7 @@ const faqs = [
       },
       {
         q: 'Is Pet Passport free to use?',
-        a: 'Yes! Pet Passport is completely free to use. You can create an account, add unlimited pets, and access all features at no cost.',
+        a: 'Yes! Pet Passport offers a generous free tier that includes up to 2 pet profiles with full access to health records, vaccinations, shareable links, emergency contacts, food & routine tracking, and calendar sync. For families with more pets or those who want expense tracking and insurance claim management, we offer a Pro plan at $5/month.',
       },
       {
         q: 'How do I add my pet?',
@@ -33,7 +33,11 @@ const faqs = [
       },
       {
         q: 'Can I add multiple pets?',
-        a: 'Absolutely! You can add as many pets as you have. Each pet gets their own profile with separate health records, vaccinations, and care information.',
+        a: 'Yes! The free plan includes up to 2 pet profiles, which is perfect for most households. If you have more pets, our Pro plan ($5/month) gives you unlimited pet profiles.',
+      },
+      {
+        q: 'What\'s included in the Pro plan?',
+        a: 'The Pro plan includes everything in Free, plus: unlimited pet profiles, expense tracking with reports, insurance claim management, priority support, and early access to new features. It\'s perfect for families with multiple pets or those who want to track pet-related spending.',
       },
     ],
   },
