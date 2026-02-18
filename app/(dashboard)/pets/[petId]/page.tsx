@@ -11,6 +11,7 @@ import {
   ClipboardList,
 } from 'lucide-react'
 import Link from 'next/link'
+import { SpeciesDecoration } from '@/components/ui/species-decoration'
 
 export default async function PetDetailPage({
   params,
@@ -19,6 +20,13 @@ export default async function PetDetailPage({
 }) {
   const { petId } = await params
   const supabase = await createClient()
+
+  // Fetch pet info for species decoration
+  const { data: pet } = await supabase
+    .from('pets')
+    .select('species')
+    .eq('id', petId)
+    .single()
 
   // Fetch counts for each section
   const [
@@ -120,16 +128,16 @@ export default async function PetDetailPage({
   ]
 
   return (
-    <>
+    <SpeciesDecoration species={pet?.species || 'other'} intensity="light">
       {/* Bento Grid Layout */}
       <div className="bento-grid">
         {sections.map((section) => (
           <div key={section.href} className={`bento-item ${section.span}`}>
             <Link href={section.href}>
-              <div className="glass-card rounded-2xl p-5 h-full transition-all hover:scale-[1.02] group">
+              <div className="glass-card rounded-2xl p-5 h-full card-interactive group">
                 <div className="flex items-start justify-between">
                   <div className="flex items-start gap-4">
-                    <div className={`p-3 rounded-xl ${section.color}`}>
+                    <div className={`p-3 rounded-xl ${section.color} transition-transform group-hover:scale-110`}>
                       <section.icon className="h-5 w-5" />
                     </div>
                     <div>
@@ -154,6 +162,6 @@ export default async function PetDetailPage({
           </div>
         ))}
       </div>
-    </>
+    </SpeciesDecoration>
   )
 }
