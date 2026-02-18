@@ -129,10 +129,23 @@ export default function InsurancePage() {
         await new Promise(resolve => setTimeout(resolve, 500))
         setExtractionStage('analyzing')
 
+        // Get signed URL for the PDF (works even for private buckets)
+        let pdfUrl = url
+        const urlPath = url.split('/pet-documents/')[1]
+        if (urlPath) {
+          const { data: signedUrlData } = await supabase.storage
+            .from('pet-documents')
+            .createSignedUrl(urlPath, 300) // 5 minute expiry
+
+          if (signedUrlData?.signedUrl) {
+            pdfUrl = signedUrlData.signedUrl
+          }
+        }
+
         const response = await fetch('/api/extract-insurance-data', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ pdfUrl: url }),
+          body: JSON.stringify({ pdfUrl }),
         })
 
         const result = await response.json()

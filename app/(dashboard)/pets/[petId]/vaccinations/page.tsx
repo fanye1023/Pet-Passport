@@ -235,10 +235,17 @@ export default function VaccinationsPage() {
       setExtractionStage('analyzing')
 
       try {
+        // Get signed URL for the PDF (works even for private buckets)
+        const { data: signedUrlData } = await supabase.storage
+          .from('pet-documents')
+          .createSignedUrl(data.path, 300) // 5 minute expiry
+
+        const pdfUrl = signedUrlData?.signedUrl || publicUrl
+
         const extractResponse = await fetch('/api/extract-vaccine-data', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ pdfUrl: publicUrl })
+          body: JSON.stringify({ pdfUrl })
         })
 
         const extractedData = await extractResponse.json()

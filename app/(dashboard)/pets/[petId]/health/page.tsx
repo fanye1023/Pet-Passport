@@ -267,10 +267,24 @@ export default function HealthRecordsPage() {
     setExtractedData(null)
 
     try {
+      // Get signed URL for the PDF (works even for private buckets)
+      const urlPath = pendingDocUrl.split('/pet-documents/')[1]
+      let pdfUrl = pendingDocUrl
+
+      if (urlPath) {
+        const { data: signedUrlData } = await supabase.storage
+          .from('pet-documents')
+          .createSignedUrl(urlPath, 300) // 5 minute expiry
+
+        if (signedUrlData?.signedUrl) {
+          pdfUrl = signedUrlData.signedUrl
+        }
+      }
+
       const response = await fetch('/api/extract-health-data', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ pdfUrl: pendingDocUrl })
+        body: JSON.stringify({ pdfUrl })
       })
 
       const data = await response.json()
