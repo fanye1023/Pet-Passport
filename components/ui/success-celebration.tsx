@@ -2,14 +2,17 @@
 
 import { useEffect, useState } from 'react'
 import { Check, Sparkles } from 'lucide-react'
+import { AnimatedMascot } from '@/components/ui/animated-mascot'
 
 interface SuccessCelebrationProps {
   show: boolean
   message?: string
   onComplete?: () => void
+  showMascot?: boolean
+  petSpecies?: string
 }
 
-export function SuccessCelebration({ show, message = 'Saved!', onComplete }: SuccessCelebrationProps) {
+export function SuccessCelebration({ show, message = 'Saved!', onComplete, showMascot = false, petSpecies = 'dog' }: SuccessCelebrationProps) {
   const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {
@@ -18,10 +21,10 @@ export function SuccessCelebration({ show, message = 'Saved!', onComplete }: Suc
       const timer = setTimeout(() => {
         setIsVisible(false)
         onComplete?.()
-      }, 2000)
+      }, showMascot ? 2500 : 2000)
       return () => clearTimeout(timer)
     }
-  }, [show, onComplete])
+  }, [show, onComplete, showMascot])
 
   if (!isVisible) return null
 
@@ -43,6 +46,13 @@ export function SuccessCelebration({ show, message = 'Saved!', onComplete }: Suc
         ))}
       </div>
 
+      {/* Mascot celebration */}
+      {showMascot && (
+        <div className="absolute -top-16 animate-bounce">
+          <AnimatedMascot species={petSpecies} mood="excited" size="md" />
+        </div>
+      )}
+
       {/* Success badge */}
       <div className="animate-scale-in bg-green-500 text-white px-4 py-2 rounded-full shadow-lg flex items-center gap-2">
         <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center">
@@ -59,14 +69,19 @@ export function SuccessCelebration({ show, message = 'Saved!', onComplete }: Suc
 export function useSuccessCelebration() {
   const [showCelebration, setShowCelebration] = useState(false)
   const [message, setMessage] = useState('Saved!')
+  const [showMascot, setShowMascot] = useState(false)
+  const [petSpecies, setPetSpecies] = useState('dog')
 
-  const celebrate = (msg?: string) => {
+  const celebrate = (msg?: string, options?: { showMascot?: boolean; petSpecies?: string }) => {
     if (msg) setMessage(msg)
+    if (options?.showMascot !== undefined) setShowMascot(options.showMascot)
+    if (options?.petSpecies) setPetSpecies(options.petSpecies)
     setShowCelebration(true)
   }
 
   const reset = () => {
     setShowCelebration(false)
+    setShowMascot(false)
   }
 
   return {
@@ -75,7 +90,13 @@ export function useSuccessCelebration() {
     celebrate,
     reset,
     CelebrationComponent: () => (
-      <SuccessCelebration show={showCelebration} message={message} onComplete={reset} />
+      <SuccessCelebration
+        show={showCelebration}
+        message={message}
+        onComplete={reset}
+        showMascot={showMascot}
+        petSpecies={petSpecies}
+      />
     ),
   }
 }

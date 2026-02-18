@@ -4,6 +4,7 @@ import { ReactNode } from 'react'
 import { LucideIcon, PawPrint, FileText, Syringe, Heart, Utensils, Clock, Phone, Shield, Stethoscope, Share2, ClipboardList, Receipt, Plus } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
+import { AnimatedMascot } from '@/components/ui/animated-mascot'
 
 interface EmptyStateProps {
   icon?: LucideIcon
@@ -14,6 +15,8 @@ interface EmptyStateProps {
   petName?: string
   petPhotoUrl?: string | null
   useIllustration?: boolean
+  showMascot?: boolean
+  petSpecies?: string
 }
 
 const variantIcons: Record<string, LucideIcon> = {
@@ -392,17 +395,40 @@ const illustrations: Record<string, ReactNode> = {
   ),
 }
 
-export function EmptyState({ icon, title, description, action, variant = 'default', petName, petPhotoUrl, useIllustration = true }: EmptyStateProps) {
+// Map variants to mascot moods
+const variantMoods: Record<string, 'idle' | 'happy' | 'thinking' | 'sleeping'> = {
+  default: 'thinking',
+  vaccinations: 'thinking',
+  health: 'thinking',
+  food: 'happy',
+  routine: 'idle',
+  emergency: 'thinking',
+  insurance: 'thinking',
+  vet: 'thinking',
+  share: 'happy',
+  documents: 'thinking',
+  pets: 'happy',
+  'sitter-info': 'thinking',
+  expenses: 'thinking',
+}
+
+export function EmptyState({ icon, title, description, action, variant = 'default', petName, petPhotoUrl, useIllustration = true, showMascot = false, petSpecies }: EmptyStateProps) {
   const Icon = icon || variantIcons[variant]
   const colorClass = variantColors[variant]
   const bgColorClass = variantBgColors[variant]
   const hasPetPhoto = petPhotoUrl || petName
   const illustration = illustrations[variant] || illustrations.default
+  const mascotMood = variantMoods[variant] || 'thinking'
 
   return (
     <div className="glass-card rounded-2xl flex flex-col items-center justify-center py-12 px-4 text-center animate-fade-in">
       <div className="relative mb-6">
-        {useIllustration ? (
+        {showMascot && petSpecies ? (
+          // Show animated mascot
+          <div className="mb-2">
+            <AnimatedMascot species={petSpecies} mood={mascotMood} size="lg" />
+          </div>
+        ) : useIllustration ? (
           // Show SVG illustration
           <div className="w-32 h-24 mb-2">
             {illustration}

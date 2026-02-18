@@ -9,6 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Plus, PawPrint, ChevronRight, AlertTriangle, Sparkles, CalendarDays, Activity } from 'lucide-react'
+import { AnimatedMascot } from '@/components/ui/animated-mascot'
 import { ProfileCompletion } from '@/components/pets/profile-completion'
 import { DeletePetButton } from '@/components/pets/delete-pet-button'
 import { AggregateAlerts } from '@/components/dashboard/aggregate-alerts'
@@ -205,8 +206,8 @@ export function DashboardContent() {
         ) : (
           <div className="bento-item span-full">
             <div className="glass-card rounded-2xl p-12 flex flex-col items-center justify-center text-center">
-              <div className="w-20 h-20 rounded-full glass-subtle flex items-center justify-center mb-4">
-                <PawPrint className="h-10 w-10 text-muted-foreground" />
+              <div className="mb-4">
+                <AnimatedMascot species="dog" mood="happy" size="lg" />
               </div>
               <h3 className="font-semibold text-lg mb-2">No pets yet</h3>
               <p className="text-muted-foreground mb-4">

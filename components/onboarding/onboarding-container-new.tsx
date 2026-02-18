@@ -8,6 +8,7 @@ import { Stethoscope, Syringe, Phone, Utensils, Clock, Shield } from 'lucide-rea
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { PawPrint } from 'lucide-react'
+import { AnimatedMascot } from '@/components/ui/animated-mascot'
 import { Confetti } from './confetti'
 import { StepVet } from './steps/step-vet'
 import { StepVaccination } from './steps/step-vaccination'
@@ -260,13 +261,16 @@ export function OnboardingContainerNew({ petId, petName, petSpecies, petPhotoUrl
     return (
       <div className="w-full max-w-md mx-auto text-center animate-fade-in">
         <div className="glass-card rounded-2xl p-8">
-          <Avatar className="h-20 w-20 mx-auto ring-4 ring-primary/20 mb-4">
+          <div className="flex justify-center mb-4">
+            <AnimatedMascot species={petSpecies} mood="thinking" size="lg" />
+          </div>
+          <Avatar className="h-16 w-16 mx-auto ring-4 ring-primary/20 mb-4">
             <AvatarImage src={petPhotoUrl || undefined} />
             <AvatarFallback className="bg-primary/10">
-              <PawPrint className="h-10 w-10 text-primary/60" />
+              <PawPrint className="h-8 w-8 text-primary/60" />
             </AvatarFallback>
           </Avatar>
-          <p className="text-muted-foreground">Loading {petName}&apos;s profile...</p>
+          <p className="text-muted-foreground animate-pulse">Loading {petName}&apos;s profile...</p>
         </div>
       </div>
     )
@@ -278,16 +282,21 @@ export function OnboardingContainerNew({ petId, petName, petSpecies, petPhotoUrl
         <Confetti trigger={showConfetti} intensity="high" onComplete={() => setShowConfetti(false)} />
         <div className="w-full max-w-md mx-auto text-center animate-fade-in">
           <div className="glass-card rounded-2xl p-8 shadow-xl">
-            {/* Success animation */}
-            <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center animate-scale-in">
-              <Check className="h-10 w-10 text-white" />
+            {/* Excited mascot */}
+            <div className="flex justify-center mb-4 animate-bounce">
+              <AnimatedMascot species={petSpecies} mood="excited" size="lg" />
+            </div>
+
+            {/* Success badge */}
+            <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center animate-scale-in">
+              <Check className="h-7 w-7 text-white" />
             </div>
 
             {/* Pet avatar */}
-            <Avatar className="h-16 w-16 mx-auto ring-4 ring-primary/20 mb-4">
+            <Avatar className="h-12 w-12 mx-auto ring-4 ring-primary/20 mb-4">
               <AvatarImage src={petPhotoUrl || undefined} />
               <AvatarFallback className="bg-primary/10">
-                <PawPrint className="h-8 w-8 text-primary/60" />
+                <PawPrint className="h-6 w-6 text-primary/60" />
               </AvatarFallback>
             </Avatar>
 

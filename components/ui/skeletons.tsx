@@ -1,5 +1,24 @@
 import { Skeleton } from '@/components/ui/skeleton'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { AnimatedMascot } from '@/components/ui/animated-mascot'
+
+// Mascot-based loading indicator
+export function MascotLoader({
+  species = 'dog',
+  message = 'Loading...',
+  size = 'md',
+}: {
+  species?: string
+  message?: string
+  size?: 'sm' | 'md' | 'lg'
+}) {
+  return (
+    <div className="flex flex-col items-center justify-center py-8 animate-fade-in">
+      <AnimatedMascot species={species} mood="thinking" size={size} />
+      <p className="mt-4 text-sm text-muted-foreground animate-pulse">{message}</p>
+    </div>
+  )
+}
 
 export function PetCardSkeleton() {
   return (
@@ -96,9 +115,14 @@ export function FormSkeleton() {
   )
 }
 
-export function DashboardSkeleton() {
+export function DashboardSkeleton({ showMascot = false }: { showMascot?: boolean }) {
   return (
     <div className="space-y-6">
+      {showMascot && (
+        <div className="flex justify-center mb-4">
+          <MascotLoader species="dog" message="Fetching your pets..." />
+        </div>
+      )}
       <div className="flex items-center justify-between">
         <div className="space-y-2">
           <Skeleton className="h-8 w-32 skeleton-shimmer" />
@@ -212,6 +236,21 @@ export function TableSkeleton({ rows = 5 }: { rows?: number }) {
           <Skeleton className="h-4 w-1/4 skeleton-shimmer" />
         </div>
       ))}
+    </div>
+  )
+}
+
+// Full-page loading with mascot
+export function PageLoadingWithMascot({
+  species = 'dog',
+  message = 'Loading...',
+}: {
+  species?: string
+  message?: string
+}) {
+  return (
+    <div className="min-h-[400px] flex flex-col items-center justify-center">
+      <MascotLoader species={species} message={message} size="lg" />
     </div>
   )
 }
