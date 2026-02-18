@@ -24,7 +24,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import { Plus, Trash2, Pencil, FileText, ExternalLink, Upload, Loader2 } from 'lucide-react'
+import { Plus, Trash2, Pencil, FileText, ExternalLink, Upload, Loader2, Sparkles, CheckCircle2 } from 'lucide-react'
 import { HealthRecord, PetDocument } from '@/lib/types/pet'
 import { DocumentUpload } from '@/components/pets/document-upload'
 import { toast } from 'sonner'
@@ -55,6 +55,32 @@ export default function HealthRecordsPage() {
   const [saving, setSaving] = useState(false)
   const [editingRecord, setEditingRecord] = useState<HealthRecord | null>(null)
   const [uploading, setUploading] = useState(false)
+  const [extracting, setExtracting] = useState(false)
+  const [extractDialogOpen, setExtractDialogOpen] = useState(false)
+  const [pendingDocUrl, setPendingDocUrl] = useState('')
+  const [extractedData, setExtractedData] = useState<{
+    records: Array<{
+      record_type: string
+      title: string
+      description: string | null
+      record_date: string | null
+      veterinarian: string | null
+    }>
+    medications: Array<{
+      name: string
+      dosage: string | null
+      frequency: string | null
+      notes: string | null
+    }>
+    allergies: string[]
+    chronic_conditions: string[]
+    surgeries: Array<{
+      name: string
+      date: string | null
+      notes: string | null
+    }>
+  } | null>(null)
+  const [importingRecords, setImportingRecords] = useState(false)
 
   // Form state for health records
   const [recordType, setRecordType] = useState('')
@@ -224,7 +250,8 @@ export default function HealthRecordsPage() {
 
       setDocUrl(publicUrl)
       setDocName(file.name.replace('.pdf', ''))
-      setDocDialogOpen(true)
+      setPendingDocUrl(publicUrl)
+      setExtractDialogOpen(true)
     } catch (error) {
       console.error('Upload error:', error)
       toast.error('Failed to upload document')
@@ -232,6 +259,156 @@ export default function HealthRecordsPage() {
       setUploading(false)
     }
   }, [supabase, petId])
+
+  const handleExtractData = async () => {
+    if (!pendingDocUrl) return
+
+    setExtracting(true)
+    setExtractedData(null)
+
+    try {
+      const response = await fetch('/api/extract-health-data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pdfUrl: pendingDocUrl })
+      })
+
+      const data = await response.json()
+
+      if (data.error) {
+        toast.error(data.error)
+        return
+      }
+
+      const hasData = data.records?.length > 0 ||
+                      data.medications?.length > 0 ||
+                      data.allergies?.length > 0 ||
+                      data.chronic_conditions?.length > 0 ||
+                      data.surgeries?.length > 0
+
+      if (!hasData) {
+        toast.info('No health data found in document')
+        setExtractDialogOpen(false)
+        setDocDialogOpen(true)
+        return
+      }
+
+      setExtractedData(data)
+      toast.success('Health data extracted successfully!')
+    } catch (error) {
+      console.error('Extraction error:', error)
+      toast.error('Failed to extract data')
+    } finally {
+      setExtracting(false)
+    }
+  }
+
+  const handleImportRecords = async () => {
+    if (!extractedData) return
+
+    setImportingRecords(true)
+
+    try {
+      // Import health records
+      const recordsToInsert = extractedData.records.map(r => ({
+        pet_id: petId,
+        record_type: r.record_type,
+        title: r.title,
+        description: r.description,
+        record_date: r.record_date || new Date().toISOString().split('T')[0],
+        veterinarian: r.veterinarian,
+        document_url: pendingDocUrl
+      }))
+
+      // Add surgeries as surgery records
+      const surgeryRecords = extractedData.surgeries.map(s => ({
+        pet_id: petId,
+        record_type: 'surgery',
+        title: s.name,
+        description: s.notes,
+        record_date: s.date || new Date().toISOString().split('T')[0],
+        veterinarian: null,
+        document_url: pendingDocUrl
+      }))
+
+      // Add allergies as allergy records
+      const allergyRecords = extractedData.allergies.map(a => ({
+        pet_id: petId,
+        record_type: 'allergy',
+        title: `Allergy: ${a}`,
+        description: null,
+        record_date: new Date().toISOString().split('T')[0],
+        veterinarian: null,
+        document_url: null
+      }))
+
+      // Add chronic conditions as condition records
+      const conditionRecords = extractedData.chronic_conditions.map(c => ({
+        pet_id: petId,
+        record_type: 'condition',
+        title: c,
+        description: null,
+        record_date: new Date().toISOString().split('T')[0],
+        veterinarian: null,
+        document_url: null
+      }))
+
+      // Add medications as treatment records
+      const medicationRecords = extractedData.medications.map(m => ({
+        pet_id: petId,
+        record_type: 'treatment',
+        title: `Medication: ${m.name}`,
+        description: [
+          m.dosage && `Dosage: ${m.dosage}`,
+          m.frequency && `Frequency: ${m.frequency}`,
+          m.notes
+        ].filter(Boolean).join('\n') || null,
+        record_date: new Date().toISOString().split('T')[0],
+        veterinarian: null,
+        document_url: null
+      }))
+
+      const allRecords = [
+        ...recordsToInsert,
+        ...surgeryRecords,
+        ...allergyRecords,
+        ...conditionRecords,
+        ...medicationRecords
+      ]
+
+      if (allRecords.length > 0) {
+        const { error } = await supabase.from('health_records').insert(allRecords)
+        if (error) throw error
+      }
+
+      // Save the document
+      await supabase.from('pet_documents').insert({
+        pet_id: petId,
+        category: 'health',
+        name: docName || 'Health Document',
+        document_url: pendingDocUrl,
+        notes: 'AI-extracted health records'
+      })
+
+      toast.success(`Imported ${allRecords.length} health records!`)
+      setExtractDialogOpen(false)
+      setExtractedData(null)
+      setPendingDocUrl('')
+      resetDocForm()
+      loadData()
+    } catch (error) {
+      console.error('Import error:', error)
+      toast.error('Failed to import records')
+    } finally {
+      setImportingRecords(false)
+    }
+  }
+
+  const handleSkipExtraction = () => {
+    setExtractDialogOpen(false)
+    setExtractedData(null)
+    setDocDialogOpen(true)
+  }
 
   const handleSaveDocument = async () => {
     if (!docUrl || !docName) return
@@ -385,6 +562,185 @@ export default function HealthRecordsPage() {
           </Dialog>
         </div>
       </div>
+
+      {/* AI Extraction dialog */}
+      <Dialog open={extractDialogOpen} onOpenChange={(open) => {
+        if (!open && !extracting && !importingRecords) {
+          setExtractDialogOpen(false)
+          setExtractedData(null)
+        }
+      }}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-primary" />
+              AI Health Record Extraction
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 pt-4">
+            {!extractedData ? (
+              <>
+                <p className="text-sm text-muted-foreground">
+                  Would you like to use AI to automatically extract health records, medications, allergies, and more from this document?
+                </p>
+                <div className="flex gap-2">
+                  <Button
+                    onClick={handleExtractData}
+                    disabled={extracting}
+                    className="flex-1"
+                  >
+                    {extracting ? (
+                      <>
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        Analyzing Document...
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="h-4 w-4 mr-2" />
+                        Extract Health Data
+                      </>
+                    )}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={handleSkipExtraction}
+                    disabled={extracting}
+                  >
+                    Skip
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="space-y-4">
+                  {/* Summary */}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    <div className="bg-muted rounded-lg p-3 text-center">
+                      <p className="text-2xl font-bold">{extractedData.records.length}</p>
+                      <p className="text-xs text-muted-foreground">Records</p>
+                    </div>
+                    <div className="bg-muted rounded-lg p-3 text-center">
+                      <p className="text-2xl font-bold">{extractedData.medications.length}</p>
+                      <p className="text-xs text-muted-foreground">Medications</p>
+                    </div>
+                    <div className="bg-muted rounded-lg p-3 text-center">
+                      <p className="text-2xl font-bold">{extractedData.allergies.length}</p>
+                      <p className="text-xs text-muted-foreground">Allergies</p>
+                    </div>
+                    <div className="bg-muted rounded-lg p-3 text-center">
+                      <p className="text-2xl font-bold">{extractedData.surgeries.length}</p>
+                      <p className="text-xs text-muted-foreground">Surgeries</p>
+                    </div>
+                  </div>
+
+                  {/* Health Records */}
+                  {extractedData.records.length > 0 && (
+                    <div>
+                      <h4 className="font-medium mb-2">Health Records</h4>
+                      <div className="space-y-2 max-h-32 overflow-y-auto">
+                        {extractedData.records.map((r, i) => (
+                          <div key={i} className="flex items-center gap-2 text-sm">
+                            <CheckCircle2 className="h-4 w-4 text-green-500 flex-shrink-0" />
+                            <span className="font-medium">{r.title}</span>
+                            <Badge variant="secondary" className="text-xs">{r.record_type}</Badge>
+                            {r.record_date && <span className="text-muted-foreground">({r.record_date})</span>}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Medications */}
+                  {extractedData.medications.length > 0 && (
+                    <div>
+                      <h4 className="font-medium mb-2">Medications</h4>
+                      <div className="space-y-2 max-h-32 overflow-y-auto">
+                        {extractedData.medications.map((m, i) => (
+                          <div key={i} className="flex items-center gap-2 text-sm">
+                            <CheckCircle2 className="h-4 w-4 text-green-500 flex-shrink-0" />
+                            <span className="font-medium">{m.name}</span>
+                            {m.dosage && <span className="text-muted-foreground">• {m.dosage}</span>}
+                            {m.frequency && <span className="text-muted-foreground">• {m.frequency}</span>}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Allergies */}
+                  {extractedData.allergies.length > 0 && (
+                    <div>
+                      <h4 className="font-medium mb-2">Allergies</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {extractedData.allergies.map((a, i) => (
+                          <Badge key={i} variant="destructive" className="text-xs">{a}</Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Chronic Conditions */}
+                  {extractedData.chronic_conditions.length > 0 && (
+                    <div>
+                      <h4 className="font-medium mb-2">Chronic Conditions</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {extractedData.chronic_conditions.map((c, i) => (
+                          <Badge key={i} variant="outline" className="text-xs">{c}</Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Surgeries */}
+                  {extractedData.surgeries.length > 0 && (
+                    <div>
+                      <h4 className="font-medium mb-2">Surgeries</h4>
+                      <div className="space-y-2 max-h-32 overflow-y-auto">
+                        {extractedData.surgeries.map((s, i) => (
+                          <div key={i} className="flex items-center gap-2 text-sm">
+                            <CheckCircle2 className="h-4 w-4 text-green-500 flex-shrink-0" />
+                            <span className="font-medium">{s.name}</span>
+                            {s.date && <span className="text-muted-foreground">({s.date})</span>}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <Separator />
+
+                <div className="flex gap-2">
+                  <Button
+                    onClick={handleImportRecords}
+                    disabled={importingRecords}
+                    className="flex-1"
+                  >
+                    {importingRecords ? (
+                      <>
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        Importing...
+                      </>
+                    ) : (
+                      <>
+                        <CheckCircle2 className="h-4 w-4 mr-2" />
+                        Import All Records
+                      </>
+                    )}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={handleSkipExtraction}
+                    disabled={importingRecords}
+                  >
+                    Save Document Only
+                  </Button>
+                </div>
+              </>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Document name dialog */}
       <Dialog open={docDialogOpen} onOpenChange={handleDocDialogChange}>

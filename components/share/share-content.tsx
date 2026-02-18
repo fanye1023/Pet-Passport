@@ -211,7 +211,14 @@ export function ShareContent({ data }: ShareContentProps) {
                     {vet.address && (
                       <p className="text-sm flex items-center gap-2">
                         <MapPin className="h-3 w-3" />
-                        {vet.address}
+                        <a
+                          href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(vet.address)}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-primary hover:underline"
+                        >
+                          {vet.address}
+                        </a>
                       </p>
                     )}
                   </div>
