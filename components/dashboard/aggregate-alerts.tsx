@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -55,116 +55,120 @@ export function AggregateAlerts({ pets, vaccinationsByPet, eventsByPet }: Aggreg
     setExpandedAlerts(newExpanded)
   }
 
-  // Calculate alerts
-  const today = new Date()
-  const thirtyDaysFromNow = addDays(today, 30)
-  const sevenDaysFromNow = addDays(today, 7)
+  // Memoize expensive alert calculations - only recalculate when data changes
+  const alerts = useMemo(() => {
+    const today = new Date()
+    const thirtyDaysFromNow = addDays(today, 30)
+    const sevenDaysFromNow = addDays(today, 7)
 
-  const alerts: AlertGroup[] = []
+    const alertGroups: AlertGroup[] = []
 
-  // Expired vaccinations
-  const expiredItems: AlertGroup['items'] = []
-  for (const pet of pets) {
-    const vaccinations = vaccinationsByPet.get(pet.id) || []
-    const expired = vaccinations.filter(v =>
-      v.expiration_date && isBefore(new Date(v.expiration_date), today)
-    )
+    // Expired vaccinations
+    const expiredItems: AlertGroup['items'] = []
+    for (const pet of pets) {
+      const vaccinations = vaccinationsByPet.get(pet.id) || []
+      const expired = vaccinations.filter(v =>
+        v.expiration_date && isBefore(new Date(v.expiration_date), today)
+      )
 
-    if (expired.length > 0) {
-      expiredItems.push({
-        pet,
-        records: expired.map(v => ({
-          id: v.id,
-          name: v.vaccine_name,
-          date: v.expiration_date!,
-          type: 'vaccination' as const
-        }))
+      if (expired.length > 0) {
+        expiredItems.push({
+          pet,
+          records: expired.map(v => ({
+            id: v.id,
+            name: v.vaccine_name,
+            date: v.expiration_date!,
+            type: 'vaccination' as const
+          }))
+        })
+      }
+    }
+
+    if (expiredItems.length > 0) {
+      const totalCount = expiredItems.reduce((sum, item) => sum + item.records.length, 0)
+      alertGroups.push({
+        type: 'expired',
+        icon: AlertTriangle,
+        title: `${totalCount} Expired Vaccination${totalCount > 1 ? 's' : ''}`,
+        description: `Across ${expiredItems.length} pet${expiredItems.length > 1 ? 's' : ''}`,
+        variant: 'destructive',
+        items: expiredItems
       })
     }
-  }
 
-  if (expiredItems.length > 0) {
-    const totalCount = expiredItems.reduce((sum, item) => sum + item.records.length, 0)
-    alerts.push({
-      type: 'expired',
-      icon: AlertTriangle,
-      title: `${totalCount} Expired Vaccination${totalCount > 1 ? 's' : ''}`,
-      description: `Across ${expiredItems.length} pet${expiredItems.length > 1 ? 's' : ''}`,
-      variant: 'destructive',
-      items: expiredItems
-    })
-  }
+    // Expiring vaccinations (within 30 days)
+    const expiringItems: AlertGroup['items'] = []
+    for (const pet of pets) {
+      const vaccinations = vaccinationsByPet.get(pet.id) || []
+      const expiring = vaccinations.filter(v =>
+        v.expiration_date &&
+        isAfter(new Date(v.expiration_date), today) &&
+        isBefore(new Date(v.expiration_date), thirtyDaysFromNow)
+      )
 
-  // Expiring vaccinations (within 30 days)
-  const expiringItems: AlertGroup['items'] = []
-  for (const pet of pets) {
-    const vaccinations = vaccinationsByPet.get(pet.id) || []
-    const expiring = vaccinations.filter(v =>
-      v.expiration_date &&
-      isAfter(new Date(v.expiration_date), today) &&
-      isBefore(new Date(v.expiration_date), thirtyDaysFromNow)
-    )
+      if (expiring.length > 0) {
+        expiringItems.push({
+          pet,
+          records: expiring.map(v => ({
+            id: v.id,
+            name: v.vaccine_name,
+            date: v.expiration_date!,
+            type: 'vaccination' as const
+          }))
+        })
+      }
+    }
 
-    if (expiring.length > 0) {
-      expiringItems.push({
-        pet,
-        records: expiring.map(v => ({
-          id: v.id,
-          name: v.vaccine_name,
-          date: v.expiration_date!,
-          type: 'vaccination' as const
-        }))
+    if (expiringItems.length > 0) {
+      const totalCount = expiringItems.reduce((sum, item) => sum + item.records.length, 0)
+      alertGroups.push({
+        type: 'expiring',
+        icon: AlertCircle,
+        title: `${totalCount} Vaccination${totalCount > 1 ? 's' : ''} Expiring Soon`,
+        description: `Across ${expiringItems.length} pet${expiringItems.length > 1 ? 's' : ''} - within 30 days`,
+        variant: 'warning',
+        items: expiringItems
       })
     }
-  }
 
-  if (expiringItems.length > 0) {
-    const totalCount = expiringItems.reduce((sum, item) => sum + item.records.length, 0)
-    alerts.push({
-      type: 'expiring',
-      icon: AlertCircle,
-      title: `${totalCount} Vaccination${totalCount > 1 ? 's' : ''} Expiring Soon`,
-      description: `Across ${expiringItems.length} pet${expiringItems.length > 1 ? 's' : ''} - within 30 days`,
-      variant: 'warning',
-      items: expiringItems
-    })
-  }
+    // Upcoming appointments (within 7 days)
+    const upcomingItems: AlertGroup['items'] = []
+    for (const pet of pets) {
+      const events = eventsByPet.get(pet.id) || []
+      const upcoming = events.filter(e =>
+        e.event_type === 'vet_appointment' &&
+        e.event_date &&
+        isAfter(new Date(e.event_date), today) &&
+        isBefore(new Date(e.event_date), sevenDaysFromNow)
+      )
 
-  // Upcoming appointments (within 7 days)
-  const upcomingItems: AlertGroup['items'] = []
-  for (const pet of pets) {
-    const events = eventsByPet.get(pet.id) || []
-    const upcoming = events.filter(e =>
-      e.event_type === 'vet_appointment' &&
-      e.event_date &&
-      isAfter(new Date(e.event_date), today) &&
-      isBefore(new Date(e.event_date), sevenDaysFromNow)
-    )
+      if (upcoming.length > 0) {
+        upcomingItems.push({
+          pet,
+          records: upcoming.map(e => ({
+            id: e.id,
+            name: e.title,
+            date: e.event_date!,
+            type: 'appointment' as const
+          }))
+        })
+      }
+    }
 
-    if (upcoming.length > 0) {
-      upcomingItems.push({
-        pet,
-        records: upcoming.map(e => ({
-          id: e.id,
-          name: e.title,
-          date: e.event_date!,
-          type: 'appointment' as const
-        }))
+    if (upcomingItems.length > 0) {
+      const totalCount = upcomingItems.reduce((sum, item) => sum + item.records.length, 0)
+      alertGroups.push({
+        type: 'upcoming',
+        icon: Calendar,
+        title: `${totalCount} Upcoming Appointment${totalCount > 1 ? 's' : ''}`,
+        description: `Across ${upcomingItems.length} pet${upcomingItems.length > 1 ? 's' : ''} - this week`,
+        variant: 'info',
+        items: upcomingItems
       })
     }
-  }
 
-  if (upcomingItems.length > 0) {
-    const totalCount = upcomingItems.reduce((sum, item) => sum + item.records.length, 0)
-    alerts.push({
-      type: 'upcoming',
-      icon: Calendar,
-      title: `${totalCount} Upcoming Appointment${totalCount > 1 ? 's' : ''}`,
-      description: `Across ${upcomingItems.length} pet${upcomingItems.length > 1 ? 's' : ''} - this week`,
-      variant: 'info',
-      items: upcomingItems
-    })
-  }
+    return alertGroups
+  }, [pets, vaccinationsByPet, eventsByPet])
 
   if (alerts.length === 0) {
     return null

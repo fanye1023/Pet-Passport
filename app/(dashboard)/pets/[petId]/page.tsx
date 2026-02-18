@@ -21,52 +21,39 @@ export default async function PetDetailPage({
   const { petId } = await params
   const supabase = await createClient()
 
-  // Fetch pet info for species decoration
-  const { data: pet } = await supabase
-    .from('pets')
-    .select('species')
-    .eq('id', petId)
-    .single()
-
-  // Fetch counts for each section
-  const [
-    { count: vaccinationRecordCount },
-    { count: vaccinationDocCount },
-    { count: healthRecordCount },
-    { count: healthDocCount },
-    { count: insuranceCount },
-    { count: vetCount },
-    { count: emergencyCount },
-    { count: routineCount },
-    { count: foodCount },
-    { count: careEventCount },
-    { count: careInstructionsCount },
-    { count: behavioralNotesCount },
-  ] = await Promise.all([
-    supabase.from('vaccination_records').select('*', { count: 'exact', head: true }).eq('pet_id', petId),
-    supabase.from('pet_documents').select('*', { count: 'exact', head: true }).eq('pet_id', petId).eq('category', 'vaccination'),
-    supabase.from('health_records').select('*', { count: 'exact', head: true }).eq('pet_id', petId),
-    supabase.from('pet_documents').select('*', { count: 'exact', head: true }).eq('pet_id', petId).eq('category', 'health'),
-    supabase.from('pet_insurance').select('*', { count: 'exact', head: true }).eq('pet_id', petId),
-    supabase.from('veterinarians').select('*', { count: 'exact', head: true }).eq('pet_id', petId),
-    supabase.from('emergency_contacts').select('*', { count: 'exact', head: true }).eq('pet_id', petId),
-    supabase.from('daily_routines').select('*', { count: 'exact', head: true }).eq('pet_id', petId),
-    supabase.from('food_preferences').select('*', { count: 'exact', head: true }).eq('pet_id', petId),
-    supabase.from('care_events').select('*', { count: 'exact', head: true }).eq('pet_id', petId),
-    supabase.from('care_instructions').select('*', { count: 'exact', head: true }).eq('pet_id', petId),
-    supabase.from('behavioral_notes').select('*', { count: 'exact', head: true }).eq('pet_id', petId),
+  // Fetch pet info and all section counts in parallel (2 queries instead of 13)
+  const [petResult, countsResult] = await Promise.all([
+    supabase.from('pets').select('species').eq('id', petId).single(),
+    supabase.rpc('get_pet_section_counts', { p_pet_id: petId }).single(),
   ])
 
-  const vaccinationCount = (vaccinationRecordCount ?? 0) + (vaccinationDocCount ?? 0)
-  const healthCount = (healthRecordCount ?? 0) + (healthDocCount ?? 0)
-  const sitterInfoCount = (careInstructionsCount ?? 0) + (behavioralNotesCount ?? 0)
+  const pet = petResult.data
+  const counts = countsResult.data as {
+    vaccination_records: number
+    vaccination_docs: number
+    health_records: number
+    health_docs: number
+    insurance: number
+    vets: number
+    emergency_contacts: number
+    routines: number
+    foods: number
+    care_events: number
+    care_instructions: number
+    behavioral_notes: number
+  } | null
+
+  // Calculate combined counts
+  const vaccinationCount = (counts?.vaccination_records ?? 0) + (counts?.vaccination_docs ?? 0)
+  const healthCount = (counts?.health_records ?? 0) + (counts?.health_docs ?? 0)
+  const sitterInfoCount = (counts?.care_instructions ?? 0) + (counts?.behavioral_notes ?? 0)
 
   const sections = [
     {
       href: `/pets/${petId}/vaccinations`,
       title: 'Vaccinations',
       icon: Syringe,
-      count: vaccinationCount ?? 0,
+      count: vaccinationCount,
       description: 'Track vaccination records',
       color: 'bg-blue-500/20 text-blue-600 dark:text-blue-400',
       span: 'span-4',
@@ -75,7 +62,7 @@ export default async function PetDetailPage({
       href: `/pets/${petId}/health`,
       title: 'Health Records',
       icon: Heart,
-      count: healthCount ?? 0,
+      count: healthCount,
       description: 'Medical history and checkups',
       color: 'bg-red-500/20 text-red-600 dark:text-red-400',
       span: 'span-4',
@@ -84,7 +71,7 @@ export default async function PetDetailPage({
       href: `/pets/${petId}/insurance`,
       title: 'Insurance',
       icon: Shield,
-      count: insuranceCount ?? 0,
+      count: counts?.insurance ?? 0,
       description: 'Insurance policy details',
       color: 'bg-purple-500/20 text-purple-600 dark:text-purple-400',
       span: 'span-4',
@@ -93,7 +80,7 @@ export default async function PetDetailPage({
       href: `/pets/${petId}/calendar`,
       title: 'Care Calendar',
       icon: CalendarDays,
-      count: careEventCount ?? 0,
+      count: counts?.care_events ?? 0,
       description: 'Appointments & medications',
       color: 'bg-teal-500/20 text-teal-600 dark:text-teal-400',
       span: 'span-6',
@@ -102,7 +89,7 @@ export default async function PetDetailPage({
       href: `/pets/${petId}/emergency`,
       title: 'Emergency Contacts',
       icon: Phone,
-      count: emergencyCount ?? 0,
+      count: counts?.emergency_contacts ?? 0,
       description: 'Emergency contact info',
       color: 'bg-orange-500/20 text-orange-600 dark:text-orange-400',
       span: 'span-6',
@@ -111,7 +98,7 @@ export default async function PetDetailPage({
       href: `/pets/${petId}/care`,
       title: 'Food & Routine',
       icon: Utensils,
-      count: (foodCount ?? 0) + (routineCount ?? 0),
+      count: (counts?.foods ?? 0) + (counts?.routines ?? 0),
       description: 'Food preferences & daily routines',
       color: 'bg-amber-500/20 text-amber-600 dark:text-amber-400',
       span: 'span-6',

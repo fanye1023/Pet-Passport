@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+// Cache place details for 24 hours (place info rarely changes)
+export const revalidate = 86400
+
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams
   const placeId = searchParams.get('place_id')
@@ -32,6 +35,10 @@ export async function GET(request: NextRequest) {
       address: place.formatted_address,
       phone: place.formatted_phone_number,
       website: place.website,
+    }, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=604800',
+      },
     })
   } catch (error) {
     console.error('Places details error:', error)

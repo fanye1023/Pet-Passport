@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+// Cache search results for 1 hour
+export const revalidate = 3600
+
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams
   const query = searchParams.get('query')
@@ -36,7 +39,11 @@ export async function GET(request: NextRequest) {
       address: place.formatted_address,
     })) || []
 
-    return NextResponse.json({ results })
+    return NextResponse.json({ results }, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400',
+      },
+    })
   } catch (error) {
     console.error('Places search error:', error)
     return NextResponse.json({ error: 'Failed to search places' }, { status: 500 })
