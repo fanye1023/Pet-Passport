@@ -32,9 +32,9 @@ export async function GET(request: Request) {
           .select('*', { count: 'exact', head: true })
           .eq('user_id', data.user.id)
 
-        // If no pets, redirect to create first pet with welcome flag
+        // If no pets, redirect to create first pet
         if (count === 0) {
-          return NextResponse.redirect(`${origin}/pets/new?welcome=true`)
+          return NextResponse.redirect(`${origin}/onboarding/new`)
         }
       }
 

@@ -46,7 +46,7 @@ export function DashboardContent() {
 
       if (!pets || pets.length === 0) {
         // Redirect new users to create their first pet
-        router.push('/pets/new?welcome=true')
+        router.push('/onboarding/new')
         return
       }
 

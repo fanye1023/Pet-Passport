@@ -374,7 +374,33 @@
 }
 
 .animate-float-slow {
-  animation: float-slow 4s ease-in-out infinite;
+  animation: float-slow 6s ease-in-out infinite;
+}
+
+@keyframes float-medium {
+  0%, 100% {
+    transform: translateY(0) rotate(-5deg);
+  }
+  50% {
+    transform: translateY(-12px) rotate(5deg);
+  }
+}
+
+.animate-float-medium {
+  animation: float-medium 5s ease-in-out infinite;
+}
+
+@keyframes float-fast {
+  0%, 100% {
+    transform: translateY(0) rotate(8deg);
+  }
+  50% {
+    transform: translateY(-15px) rotate(-8deg);
+  }
+}
+
+.animate-float-fast {
+  animation: float-fast 4s ease-in-out infinite;
 }
 
 .animate-bounce-gentle {

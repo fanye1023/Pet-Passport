@@ -2,7 +2,6 @@
 
 import { ReactNode, useState, useEffect } from 'react'
 import { LucideIcon, ChevronLeft } from 'lucide-react'
-import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import {
@@ -75,11 +74,11 @@ export function OnboardingStep({
 
   return (
     <div className="animate-fade-in">
-      <Card className="border-0 shadow-lg">
-        <CardContent className="pt-5 pb-4 px-5">
+      <div className="glass-card rounded-2xl shadow-xl overflow-hidden">
+        <div className="p-5">
           {/* Compact header with inline icon */}
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/20 to-teal-500/20 flex items-center justify-center flex-shrink-0">
               <Icon className="w-5 h-5 text-primary" />
             </div>
             <div>
@@ -94,7 +93,7 @@ export function OnboardingStep({
           </div>
 
           {/* Action buttons - compact layout */}
-          <div className="flex items-center gap-2 mt-5 pt-4 border-t">
+          <div className="flex items-center gap-2 mt-5 pt-4 border-t border-border/50">
             {!isFirstStep && onBack && (
               <Button
                 variant="ghost"
@@ -121,13 +120,13 @@ export function OnboardingStep({
               size="sm"
               onClick={onNext}
               disabled={isLoading || !canProceed}
-              className="btn-press px-6"
+              className="btn-press px-6 shadow-md"
             >
               {isLoading ? 'Saving...' : isLastStep ? 'Finish' : 'Continue'}
             </Button>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       <AlertDialog open={showSkipDialog} onOpenChange={setShowSkipDialog}>
         <AlertDialogContent>

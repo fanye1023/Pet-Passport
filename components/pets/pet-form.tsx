@@ -157,7 +157,7 @@ export function PetForm({ pet }: PetFormProps) {
         console.log('Insert result:', { data, error })
         if (error) throw new Error(`Database error: ${error.message}`)
         // Redirect to onboarding for new pets
-        router.push(`/pets/${data.id}/onboarding`)
+        router.push(`/onboarding/${data.id}`)
       }
       router.refresh()
     } catch (err) {

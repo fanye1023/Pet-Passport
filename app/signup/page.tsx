@@ -48,7 +48,7 @@ export default function SignupPage() {
       // Check if user was auto-confirmed (session exists)
       if (data.session) {
         // User is logged in - redirect to create first pet
-        router.push('/pets/new?welcome=true')
+        router.push('/onboarding/new')
       } else {
         // Email confirmation required - show check email message
         setSuccess(true)
