@@ -3,7 +3,7 @@
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
-import { LayoutDashboard, Plus, CalendarDays, Activity } from 'lucide-react'
+import { LayoutDashboard, Plus, CalendarDays, Activity, Bookmark } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Logo } from '@/components/ui/logo'
 
@@ -22,6 +22,11 @@ const navItems = [
     label: 'Activity',
     href: '/activity',
     icon: Activity,
+  },
+  {
+    label: 'Saved Pets',
+    href: '/saved',
+    icon: Bookmark,
   },
 ]
 

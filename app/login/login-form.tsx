@@ -8,9 +8,15 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Logo } from '@/components/ui/logo'
-import { Eye, EyeOff } from 'lucide-react'
+import { Eye, EyeOff, Bookmark } from 'lucide-react'
+import { toast } from 'sonner'
 
-export function LoginForm() {
+interface LoginFormProps {
+  returnTo?: string
+  saveToken?: string
+}
+
+export function LoginForm({ returnTo, saveToken }: LoginFormProps) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -33,7 +39,17 @@ export function LoginForm() {
       setError(error.message)
       setLoading(false)
     } else {
-      router.push('/dashboard')
+      // If saveToken is provided, save the share link to user's account
+      if (saveToken) {
+        const { data } = await supabase.rpc('save_share_link', {
+          p_share_token: saveToken,
+        })
+        if (data?.success) {
+          toast.success(`${data.pet_name} saved to your account!`)
+        }
+      }
+
+      router.push(returnTo || '/dashboard')
       router.refresh()
     }
   }
@@ -60,6 +76,13 @@ export function LoginForm() {
           </div>
 
           <form onSubmit={handleLogin} className="space-y-4">
+            {saveToken && (
+              <div className="rounded-xl bg-primary/10 p-3 text-sm text-primary flex items-center gap-2 glass-subtle">
+                <Bookmark className="h-4 w-4 shrink-0" />
+                <span>Sign in to save this pet to your account</span>
+              </div>
+            )}
+
             {error && (
               <div className="rounded-xl bg-destructive/10 p-3 text-sm text-destructive glass-subtle">
                 {error}

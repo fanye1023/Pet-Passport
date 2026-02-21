@@ -1,6 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
+import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -22,6 +25,9 @@ import {
   Share2,
   Download,
   Wallet,
+  User,
+  LogIn,
+  Loader2,
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { QRCodeCanvas } from 'qrcode.react'
@@ -116,13 +122,19 @@ function AddToHomeScreenInstructions({ deviceType }: { deviceType: DeviceType })
 }
 
 export function SaveForLater({ petName, shareToken }: SaveForLaterProps) {
+  const router = useRouter()
+  const supabase = createClient()
   const [copied, setCopied] = useState(false)
   const [deviceType, setDeviceType] = useState<DeviceType>('desktop')
   const [email, setEmail] = useState('')
   const [sendingEmail, setSendingEmail] = useState(false)
   const [homeScreenDialogOpen, setHomeScreenDialogOpen] = useState(false)
   const [walletDialogOpen, setWalletDialogOpen] = useState(false)
+  const [accountDialogOpen, setAccountDialogOpen] = useState(false)
   const [shareUrl, setShareUrl] = useState('')
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null)
+  const [isSaving, setIsSaving] = useState(false)
+  const [isSaved, setIsSaved] = useState(false)
 
   useEffect(() => {
     setDeviceType(getDeviceType())
@@ -130,7 +142,14 @@ export function SaveForLater({ petName, shareToken }: SaveForLaterProps) {
     if (typeof window !== 'undefined') {
       setShareUrl(`${window.location.origin}/share/${shareToken}`)
     }
+    // Check if user is logged in
+    checkAuthStatus()
   }, [shareToken])
+
+  const checkAuthStatus = async () => {
+    const { data: { user } } = await supabase.auth.getUser()
+    setIsLoggedIn(!!user)
+  }
 
   const handleCopyLink = async () => {
     try {
@@ -167,9 +186,42 @@ export function SaveForLater({ petName, shareToken }: SaveForLaterProps) {
     toast.success('QR code saved!')
   }
 
-  const handleAddToWallet = () => {
-    // For now, show instructions since wallet passes require certificates
-    setWalletDialogOpen(true)
+  const handleSaveToAccount = async () => {
+    if (!isLoggedIn) {
+      setAccountDialogOpen(true)
+      return
+    }
+
+    setIsSaving(true)
+    const { data, error } = await supabase.rpc('save_share_link', {
+      p_share_token: shareToken,
+    })
+
+    setIsSaving(false)
+
+    if (error || data?.error) {
+      toast.error(data?.error || 'Failed to save')
+      return
+    }
+
+    setIsSaved(true)
+    toast.success(`${petName} saved to your account!`, {
+      action: {
+        label: 'View Saved',
+        onClick: () => router.push('/saved'),
+      },
+    })
+  }
+
+  const handleLoginRedirect = () => {
+    // Save current URL to redirect back after login
+    const returnUrl = encodeURIComponent(shareUrl)
+    router.push(`/login?returnTo=${returnUrl}&saveToken=${shareToken}`)
+  }
+
+  const handleSignupRedirect = () => {
+    const returnUrl = encodeURIComponent(shareUrl)
+    router.push(`/signup?returnTo=${returnUrl}&saveToken=${shareToken}`)
   }
 
   const isMobile = deviceType !== 'desktop'
@@ -189,6 +241,48 @@ export function SaveForLater({ petName, shareToken }: SaveForLaterProps) {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
+        {/* Save to Account - Featured prominently */}
+        <Button
+          onClick={handleSaveToAccount}
+          className="w-full"
+          size="lg"
+          disabled={isSaving || isSaved}
+        >
+          {isSaving ? (
+            <>
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              Saving...
+            </>
+          ) : isSaved ? (
+            <>
+              <Check className="h-4 w-4 mr-2" />
+              Saved to Account
+            </>
+          ) : (
+            <>
+              <Bookmark className="h-4 w-4 mr-2" />
+              Save to My Account
+            </>
+          )}
+        </Button>
+
+        {isSaved && (
+          <p className="text-xs text-center text-muted-foreground">
+            <Link href="/saved" className="text-primary hover:underline">
+              View your saved pets
+            </Link>
+          </p>
+        )}
+
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t" />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-primary/5 px-2 text-muted-foreground">or save without account</span>
+          </div>
+        </div>
+
         {/* Copy Link */}
         <div className="flex gap-2">
           <Input
@@ -374,6 +468,50 @@ export function SaveForLater({ petName, shareToken }: SaveForLaterProps) {
           This link will stay active as long as the pet owner keeps it enabled
         </p>
       </CardContent>
+
+      {/* Login/Signup Dialog for Save to Account */}
+      <Dialog open={accountDialogOpen} onOpenChange={setAccountDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Bookmark className="h-5 w-5" />
+              Save to Your Account
+            </DialogTitle>
+            <DialogDescription>
+              Create a free account to save pet profiles shared with you
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="rounded-lg bg-muted/50 p-4 space-y-2">
+              <p className="text-sm font-medium">Why create an account?</p>
+              <ul className="text-sm text-muted-foreground space-y-1">
+                <li className="flex items-start gap-2">
+                  <Check className="h-4 w-4 text-green-500 mt-0.5 shrink-0" />
+                  Access all saved pets from any device
+                </li>
+                <li className="flex items-start gap-2">
+                  <Check className="h-4 w-4 text-green-500 mt-0.5 shrink-0" />
+                  Get notified if a link expires
+                </li>
+                <li className="flex items-start gap-2">
+                  <Check className="h-4 w-4 text-green-500 mt-0.5 shrink-0" />
+                  It's completely free!
+                </li>
+              </ul>
+            </div>
+            <div className="grid gap-2">
+              <Button onClick={handleSignupRedirect} className="w-full">
+                <User className="h-4 w-4 mr-2" />
+                Create Free Account
+              </Button>
+              <Button variant="outline" onClick={handleLoginRedirect} className="w-full">
+                <LogIn className="h-4 w-4 mr-2" />
+                I Already Have an Account
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </Card>
   )
 }
