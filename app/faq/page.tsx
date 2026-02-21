@@ -11,8 +11,8 @@ import {
 import { HelpCircle } from 'lucide-react'
 
 export const metadata = {
-  title: 'FAQ - Pet Passport',
-  description: 'Frequently asked questions about Pet Passport - your digital pet health record manager.',
+  title: 'FAQ - Pet ShareLink',
+  description: 'Frequently asked questions about Pet ShareLink - your digital pet health record manager.',
 }
 
 const faqs = [
@@ -20,12 +20,12 @@ const faqs = [
     category: 'Getting Started',
     questions: [
       {
-        q: 'What is Pet Passport?',
-        a: 'Pet Passport is a digital platform that helps pet owners organize and manage their pets\' health records, vaccinations, medications, appointments, and care information all in one secure place. Think of it as a digital health folder for your furry family members.',
+        q: 'What is Pet ShareLink?',
+        a: 'Pet ShareLink is a digital platform that helps pet owners organize and manage their pets\' health records, vaccinations, medications, appointments, and care information all in one secure place. Think of it as a digital health folder for your furry family members.',
       },
       {
-        q: 'Is Pet Passport free to use?',
-        a: 'Yes! Pet Passport offers a generous free tier that includes up to 2 pet profiles with full access to health records, vaccinations, shareable links, emergency contacts, food & routine tracking, and calendar sync. For families with more pets or those who want expense tracking and insurance claim management, we offer a Pro plan at $5/month.',
+        q: 'Is Pet ShareLink free to use?',
+        a: 'Yes! Pet ShareLink offers a generous free tier that includes up to 2 pet profiles with full access to health records, vaccinations, shareable links, emergency contacts, food & routine tracking, and calendar sync. For families with more pets or those who want expense tracking and insurance claim management, we offer a Pro plan at $5/month.',
       },
       {
         q: 'How do I add my pet?',
@@ -50,7 +50,7 @@ const faqs = [
       },
       {
         q: 'Will I get reminders when vaccinations are due?',
-        a: 'Yes! Pet Passport tracks expiration dates for all vaccinations and will alert you when vaccines are expiring soon or have expired. You can also sync these dates to your personal calendar.',
+        a: 'Yes! Pet ShareLink tracks expiration dates for all vaccinations and will alert you when vaccines are expiring soon or have expired. You can also sync these dates to your personal calendar.',
       },
       {
         q: 'Can I store medical documents?',
@@ -88,7 +88,7 @@ const faqs = [
       },
       {
         q: 'Can I sync events to my phone\'s calendar?',
-        a: 'Yes! Pet Passport generates an ICS feed URL that you can subscribe to in Google Calendar, Apple Calendar, Outlook, or any calendar app that supports subscriptions. Your pet care events will automatically appear in your calendar.',
+        a: 'Yes! Pet ShareLink generates an ICS feed URL that you can subscribe to in Google Calendar, Apple Calendar, Outlook, or any calendar app that supports subscriptions. Your pet care events will automatically appear in your calendar.',
       },
       {
         q: 'How do recurring events work?',
@@ -105,7 +105,7 @@ const faqs = [
       },
       {
         q: 'How do I manage insurance claims?',
-        a: 'You can file and track insurance claims directly in Pet Passport. Link expenses to claims, track claim status from submission to reimbursement, and see your total reimbursement amounts.',
+        a: 'You can file and track insurance claims directly in Pet ShareLink. Link expenses to claims, track claim status from submission to reimbursement, and see your total reimbursement amounts.',
       },
     ],
   },
@@ -144,7 +144,7 @@ export default function FAQPage() {
               Frequently Asked Questions
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Find answers to common questions about Pet Passport. Can&apos;t find what you&apos;re looking for? Feel free to contact us.
+              Find answers to common questions about Pet ShareLink. Can&apos;t find what you&apos;re looking for? Feel free to contact us.
             </p>
           </div>
         </section>
@@ -184,7 +184,7 @@ export default function FAQPage() {
               We&apos;re here to help. Reach out to our support team and we&apos;ll get back to you as soon as possible.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="mailto:support@petpassport.app">
+              <Link href="mailto:support@petsharelink.com">
                 <Button variant="outline">Contact Support</Button>
               </Link>
               <Link href="/signup">

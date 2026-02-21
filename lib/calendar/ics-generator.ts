@@ -279,11 +279,11 @@ export function generateICSFeed(data: CalendarFeedData, baseUrl: string): string
   const icsLines = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
-    'PRODID:-//Pet Passport//Pet Care Calendar//EN',
+    'PRODID:-//Pet ShareLink//Pet Care Calendar//EN',
     'CALSCALE:GREGORIAN',
     'METHOD:PUBLISH',
     `X-WR-CALNAME:${escapeICSText(calendarName)}`,
-    `X-WR-CALDESC:Pet care events from Pet Passport`,
+    `X-WR-CALDESC:Pet care events from Pet ShareLink`,
   ]
 
   // Add all events

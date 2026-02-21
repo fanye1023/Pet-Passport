@@ -17,7 +17,7 @@ const testimonials = [
     role: 'Cat Dad',
     avatar: null,
     rating: 5,
-    text: 'I travel frequently and leave my cats with a sitter. Pet Passport makes it so easy to share feeding schedules, vet contacts, and medical history. Peace of mind!',
+    text: 'I travel frequently and leave my cats with a sitter. Pet ShareLink makes it so easy to share feeding schedules, vet contacts, and medical history. Peace of mind!',
   },
   {
     name: 'Emily R.',
@@ -73,7 +73,7 @@ export function Testimonials() {
             Loved by Pet Parents Everywhere
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Join thousands of pet owners who trust Pet Passport to keep their furry friends&apos; information safe and organized.
+            Join thousands of pet owners who trust Pet ShareLink to keep their furry friends&apos; information safe and organized.
           </p>
         </div>
 

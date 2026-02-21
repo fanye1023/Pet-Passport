@@ -100,7 +100,7 @@ export default function InvitePage({
             <Link href="/">
               <Button variant="outline">
                 <PawPrint className="h-4 w-4 mr-2" />
-                Go to Pet Passport
+                Go to Pet ShareLink
               </Button>
             </Link>
           </CardFooter>
@@ -120,7 +120,7 @@ export default function InvitePage({
           <div className="flex items-center justify-center gap-2 mb-4">
             <PawPrint className="h-6 w-6 text-primary" />
             <span className="text-xl font-bold bg-gradient-to-r from-primary to-teal-600 bg-clip-text text-transparent">
-              Pet Passport
+              Pet ShareLink
             </span>
           </div>
 

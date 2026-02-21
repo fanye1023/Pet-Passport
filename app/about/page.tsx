@@ -5,8 +5,8 @@ import { Button } from '@/components/ui/button'
 import { PawPrint, Heart, Shield, Users, Sparkles } from 'lucide-react'
 
 export const metadata = {
-  title: 'About - Pet Passport',
-  description: 'Learn about Pet Passport and our mission to simplify pet care management for pet parents everywhere.',
+  title: 'About - Pet ShareLink',
+  description: 'Learn about Pet ShareLink and our mission to simplify pet care management for pet parents everywhere.',
 }
 
 export default function AboutPage() {
@@ -28,7 +28,7 @@ export default function AboutPage() {
               </span>
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Pet Passport was born from a simple idea: pet parents deserve a better way to keep track of their furry family members&apos; health and care information.
+              Pet ShareLink was born from a simple idea: pet parents deserve a better way to keep track of their furry family members&apos; health and care information.
             </p>
           </div>
         </section>
@@ -43,7 +43,7 @@ export default function AboutPage() {
                   We believe every pet deserves the best care possible, and every pet parent deserves peace of mind. Our mission is to empower pet owners with the tools they need to manage their pets&apos; health records, vaccinations, and care schedules effortlessly.
                 </p>
                 <p className="text-muted-foreground">
-                  Whether you&apos;re heading to the vet, traveling with your pet, or simply want to keep everything organized, Pet Passport is your trusted companion for all things pet care.
+                  Whether you&apos;re heading to the vet, traveling with your pet, or simply want to keep everything organized, Pet ShareLink is your trusted companion for all things pet care.
                 </p>
               </div>
               <div className="grid grid-cols-2 gap-4">
@@ -110,7 +110,7 @@ export default function AboutPage() {
           <div className="container mx-auto max-w-2xl text-center">
             <h2 className="text-3xl font-bold mb-4">Ready to Get Started?</h2>
             <p className="text-muted-foreground mb-8">
-              Join thousands of pet parents who trust Pet Passport to keep their furry friends&apos; information organized and accessible.
+              Join thousands of pet parents who trust Pet ShareLink to keep their furry friends&apos; information organized and accessible.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/signup">

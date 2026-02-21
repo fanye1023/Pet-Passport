@@ -39,7 +39,7 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
             <div className="flex h-16 items-center border-b border-white/20 px-6">
               <Link href="/" className="flex items-center gap-2">
                 <PawPrint className="h-6 w-6 text-primary" />
-                <span className="text-xl font-bold bg-gradient-to-r from-primary to-teal-600 bg-clip-text text-transparent">Pet Passport</span>
+                <span className="text-xl font-bold bg-gradient-to-r from-primary to-teal-600 bg-clip-text text-transparent">Pet ShareLink</span>
               </Link>
             </div>
             <nav className="p-4 space-y-2">
@@ -57,7 +57,7 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
           </SheetContent>
         </Sheet>
 
-        <h1 className="text-lg font-semibold md:hidden bg-gradient-to-r from-primary to-teal-600 bg-clip-text text-transparent">Pet Passport</h1>
+        <h1 className="text-lg font-semibold md:hidden bg-gradient-to-r from-primary to-teal-600 bg-clip-text text-transparent">Pet ShareLink</h1>
       </div>
 
       <div className="flex items-center gap-2">

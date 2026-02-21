@@ -51,7 +51,7 @@ export function LoginForm() {
           <Link href="/" className="inline-flex items-center gap-2 group">
             <PawPrint className="h-10 w-10 text-primary transition-transform group-hover:scale-110" />
             <span className="text-3xl font-bold bg-gradient-to-r from-primary to-teal-600 bg-clip-text text-transparent">
-              Pet Passport
+              Pet ShareLink
             </span>
           </Link>
         </div>

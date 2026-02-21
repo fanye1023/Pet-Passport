@@ -815,7 +815,7 @@ export function ShareContent({ data }: ShareContentProps) {
         {/* Footer */}
         <div className="span-full flex flex-col items-center gap-3 py-4 print:hidden">
           <PrintButton />
-          <p className="text-sm text-muted-foreground">Shared via Pet Passport</p>
+          <p className="text-sm text-muted-foreground">Shared via Pet ShareLink</p>
         </div>
       </div>
 

@@ -1,7 +1,7 @@
 {
-  "name": "Pet Passport",
-  "short_name": "Pet Passport",
-  "description": "Digital health records for your pet",
+  "name": "Pet ShareLink",
+  "short_name": "Pet ShareLink",
+  "description": "Share your pet's info safely with caregivers",
   "start_url": "/dashboard",
   "display": "standalone",
   "background_color": "#ffffff",

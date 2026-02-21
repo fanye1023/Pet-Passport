@@ -45,7 +45,7 @@ export default function OnboardingLayout({ children }: { children: ReactNode }) 
               <div className="absolute inset-0 bg-primary/20 blur-lg rounded-full scale-150 opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
             <span className="text-xl font-bold bg-gradient-to-r from-primary to-teal-600 bg-clip-text text-transparent">
-              Pet Passport
+              Pet ShareLink
             </span>
           </Link>
         </header>

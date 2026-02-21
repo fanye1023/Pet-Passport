@@ -26,7 +26,7 @@ export default function NewPetPage() {
             {/* Greeting */}
             <div className="text-center mb-4">
               <div className="text-4xl mb-2 animate-bounce">🐾</div>
-              <h2 className="text-xl font-bold">Welcome to Pet Passport!</h2>
+              <h2 className="text-xl font-bold">Welcome to Pet ShareLink!</h2>
               <p className="text-sm text-muted-foreground mt-1">
                 Let&apos;s create a profile for your furry friend
               </p>

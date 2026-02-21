@@ -16,13 +16,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Pet Passport - Digital Health Records for Your Pet",
-  description: "Keep all your pet's health records, vaccinations, and travel documents in one secure place. Travel internationally with confidence.",
+  title: "Pet ShareLink - Share Your Pet's Info Safely",
+  description: "Create secure, shareable links with your pet's care instructions, emergency contacts, and health records. Control exactly what each person can see.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Pet Passport",
+    title: "Pet ShareLink",
   },
   formatDetection: {
     telephone: true,

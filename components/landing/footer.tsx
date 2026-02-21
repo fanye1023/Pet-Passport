@@ -11,7 +11,7 @@ const footerLinks = {
   company: [
     { label: 'About', href: '/about' },
     { label: 'FAQ', href: '/faq' },
-    { label: 'Contact', href: 'mailto:support@petpassport.app' },
+    { label: 'Contact', href: 'mailto:support@petsharelink.com' },
   ],
   legal: [
     { label: 'Privacy Policy', href: '/privacy' },
@@ -101,7 +101,7 @@ export function Footer() {
         {/* Bottom bar */}
         <div className="mt-12 pt-8 border-t flex flex-col sm:flex-row justify-between items-center gap-4">
           <p className="text-sm text-muted-foreground">
-            &copy; {new Date().getFullYear()} Pet Passport. All rights reserved.
+            &copy; {new Date().getFullYear()} Pet ShareLink. All rights reserved.
           </p>
           <p className="text-sm text-muted-foreground">
             Made with care for pet parents everywhere

@@ -3,8 +3,8 @@ import { Footer } from '@/components/landing/footer'
 import { FileText } from 'lucide-react'
 
 export const metadata = {
-  title: 'Terms of Service - Pet Passport',
-  description: 'Pet Passport Terms of Service - The terms and conditions governing your use of our service.',
+  title: 'Terms of Service - Pet ShareLink',
+  description: 'Pet ShareLink Terms of Service - The terms and conditions governing your use of our service.',
 }
 
 export default function TermsPage() {
@@ -30,12 +30,12 @@ export default function TermsPage() {
         <section className="pb-20 px-4">
           <div className="container mx-auto max-w-4xl prose prose-neutral dark:prose-invert">
             <p className="lead">
-              Welcome to Pet Passport. By using our service, you agree to these Terms of Service. Please read them carefully.
+              Welcome to Pet ShareLink. By using our service, you agree to these Terms of Service. Please read them carefully.
             </p>
 
             <h2>1. Acceptance of Terms</h2>
             <p>
-              By accessing or using Pet Passport (&quot;the Service&quot;), you agree to be bound by these Terms of Service (&quot;Terms&quot;). If you do not agree to these Terms, please do not use the Service.
+              By accessing or using Pet ShareLink (&quot;the Service&quot;), you agree to be bound by these Terms of Service (&quot;Terms&quot;). If you do not agree to these Terms, please do not use the Service.
             </p>
             <p>
               We may modify these Terms at any time. Continued use of the Service after changes constitutes acceptance of the modified Terms. We will notify users of material changes through the Service or via email.
@@ -43,7 +43,7 @@ export default function TermsPage() {
 
             <h2>2. Description of Service</h2>
             <p>
-              Pet Passport is a digital platform that allows users to:
+              Pet ShareLink is a digital platform that allows users to:
             </p>
             <ul>
               <li>Create and manage profiles for their pets</li>
@@ -58,7 +58,7 @@ export default function TermsPage() {
 
             <h3>Registration</h3>
             <p>
-              To use Pet Passport, you must create an account by providing a valid email address and password. You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account.
+              To use Pet ShareLink, you must create an account by providing a valid email address and password. You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account.
             </p>
 
             <h3>Account Requirements</h3>
@@ -73,7 +73,7 @@ export default function TermsPage() {
 
             <h3>Your Content</h3>
             <p>
-              You retain ownership of all content you upload to Pet Passport, including pet photos, documents, and information (&quot;User Content&quot;). By uploading User Content, you grant us a limited license to store, display, and process your content solely for the purpose of providing the Service.
+              You retain ownership of all content you upload to Pet ShareLink, including pet photos, documents, and information (&quot;User Content&quot;). By uploading User Content, you grant us a limited license to store, display, and process your content solely for the purpose of providing the Service.
             </p>
 
             <h3>Content Responsibilities</h3>
@@ -105,7 +105,7 @@ export default function TermsPage() {
 
             <h2>6. Sharing and Collaboration</h2>
             <p>
-              Pet Passport allows you to share pet information with others through share links and collaborator invitations. When you share information:
+              Pet ShareLink allows you to share pet information with others through share links and collaborator invitations. When you share information:
             </p>
             <ul>
               <li>You are responsible for choosing what information to share</li>
@@ -116,7 +116,7 @@ export default function TermsPage() {
 
             <h2>7. Intellectual Property</h2>
             <p>
-              The Service, including its design, features, and content (excluding User Content), is owned by Pet Passport and is protected by copyright, trademark, and other intellectual property laws. You may not copy, modify, distribute, or create derivative works based on the Service without our express written permission.
+              The Service, including its design, features, and content (excluding User Content), is owned by Pet ShareLink and is protected by copyright, trademark, and other intellectual property laws. You may not copy, modify, distribute, or create derivative works based on the Service without our express written permission.
             </p>
 
             <h2>8. Disclaimer of Warranties</h2>
@@ -138,12 +138,12 @@ export default function TermsPage() {
               TO THE MAXIMUM EXTENT PERMITTED BY LAW, PET PASSPORT AND ITS OFFICERS, DIRECTORS, EMPLOYEES, AND AGENTS SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING BUT NOT LIMITED TO LOSS OF DATA, LOSS OF PROFITS, OR LOSS OF GOODWILL, ARISING FROM YOUR USE OF THE SERVICE.
             </p>
             <p>
-              Pet Passport is a record-keeping tool and is not a substitute for professional veterinary advice. We are not responsible for any decisions made based on information stored in the Service.
+              Pet ShareLink is a record-keeping tool and is not a substitute for professional veterinary advice. We are not responsible for any decisions made based on information stored in the Service.
             </p>
 
             <h2>10. Indemnification</h2>
             <p>
-              You agree to indemnify and hold harmless Pet Passport and its officers, directors, employees, and agents from any claims, damages, losses, or expenses (including reasonable attorney&apos;s fees) arising from your use of the Service or violation of these Terms.
+              You agree to indemnify and hold harmless Pet ShareLink and its officers, directors, employees, and agents from any claims, damages, losses, or expenses (including reasonable attorney&apos;s fees) arising from your use of the Service or violation of these Terms.
             </p>
 
             <h2>11. Termination</h2>
@@ -171,7 +171,7 @@ export default function TermsPage() {
 
             <h2>14. Entire Agreement</h2>
             <p>
-              These Terms, together with our Privacy Policy, constitute the entire agreement between you and Pet Passport regarding the Service and supersede any prior agreements.
+              These Terms, together with our Privacy Policy, constitute the entire agreement between you and Pet ShareLink regarding the Service and supersede any prior agreements.
             </p>
 
             <h2>15. Contact Us</h2>
@@ -179,7 +179,7 @@ export default function TermsPage() {
               If you have any questions about these Terms of Service, please contact us at:
             </p>
             <p>
-              <strong>Email:</strong> legal@petpassport.app
+              <strong>Email:</strong> legal@petsharelink.com
             </p>
           </div>
         </section>

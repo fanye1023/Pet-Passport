@@ -38,7 +38,7 @@ export async function Header() {
           <Link href="/about" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
             About
           </Link>
-          <Link href="mailto:support@petpassport.app" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+          <Link href="mailto:support@petsharelink.com" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
             Contact
           </Link>
         </nav>

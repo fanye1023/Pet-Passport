@@ -3,8 +3,8 @@ import { Footer } from '@/components/landing/footer'
 import { Shield } from 'lucide-react'
 
 export const metadata = {
-  title: 'Privacy Policy - Pet Passport',
-  description: 'Pet Passport Privacy Policy - Learn how we collect, use, and protect your personal information.',
+  title: 'Privacy Policy - Pet ShareLink',
+  description: 'Pet ShareLink Privacy Policy - Learn how we collect, use, and protect your personal information.',
 }
 
 export default function PrivacyPage() {
@@ -30,13 +30,13 @@ export default function PrivacyPage() {
         <section className="pb-20 px-4">
           <div className="container mx-auto max-w-4xl prose prose-neutral dark:prose-invert">
             <p className="lead">
-              At Pet Passport, we take your privacy seriously. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our service.
+              At Pet ShareLink, we take your privacy seriously. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our service.
             </p>
 
             <h2>1. Information We Collect</h2>
 
             <h3>Information You Provide</h3>
-            <p>We collect information you voluntarily provide when using Pet Passport, including:</p>
+            <p>We collect information you voluntarily provide when using Pet ShareLink, including:</p>
             <ul>
               <li><strong>Account Information:</strong> Email address and password when you create an account</li>
               <li><strong>Pet Information:</strong> Pet names, species, breeds, birthdays, photos, and other details you add to pet profiles</li>
@@ -46,7 +46,7 @@ export default function PrivacyPage() {
             </ul>
 
             <h3>Information Collected Automatically</h3>
-            <p>When you use Pet Passport, we automatically collect:</p>
+            <p>When you use Pet ShareLink, we automatically collect:</p>
             <ul>
               <li><strong>Usage Data:</strong> Pages visited, features used, and actions taken within the application</li>
               <li><strong>Device Information:</strong> Browser type, operating system, and device identifiers</li>
@@ -56,7 +56,7 @@ export default function PrivacyPage() {
             <h2>2. How We Use Your Information</h2>
             <p>We use the information we collect to:</p>
             <ul>
-              <li>Provide, maintain, and improve Pet Passport services</li>
+              <li>Provide, maintain, and improve Pet ShareLink services</li>
               <li>Create and manage your account</li>
               <li>Store and organize your pet&apos;s health records and care information</li>
               <li>Send reminders for vaccinations, appointments, and other pet care events</li>
@@ -77,7 +77,7 @@ export default function PrivacyPage() {
 
             <h3>Service Providers</h3>
             <p>
-              We work with third-party service providers who assist us in operating Pet Passport, including:
+              We work with third-party service providers who assist us in operating Pet ShareLink, including:
             </p>
             <ul>
               <li>Cloud hosting and storage providers</li>
@@ -123,12 +123,12 @@ export default function PrivacyPage() {
 
             <h2>7. Children&apos;s Privacy</h2>
             <p>
-              Pet Passport is not intended for children under 13 years of age. We do not knowingly collect personal information from children under 13. If you are a parent or guardian and believe your child has provided us with personal information, please contact us.
+              Pet ShareLink is not intended for children under 13 years of age. We do not knowingly collect personal information from children under 13. If you are a parent or guardian and believe your child has provided us with personal information, please contact us.
             </p>
 
             <h2>8. Third-Party Links</h2>
             <p>
-              Pet Passport may contain links to third-party websites or services. We are not responsible for the privacy practices of these external sites. We encourage you to review their privacy policies.
+              Pet ShareLink may contain links to third-party websites or services. We are not responsible for the privacy practices of these external sites. We encourage you to review their privacy policies.
             </p>
 
             <h2>9. Changes to This Policy</h2>
@@ -141,7 +141,7 @@ export default function PrivacyPage() {
               If you have any questions about this Privacy Policy or our privacy practices, please contact us at:
             </p>
             <p>
-              <strong>Email:</strong> privacy@petpassport.app
+              <strong>Email:</strong> privacy@petsharelink.com
             </p>
           </div>
         </section>

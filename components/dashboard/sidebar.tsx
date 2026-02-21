@@ -32,7 +32,7 @@ export function Sidebar() {
       <div className="flex h-16 items-center border-b border-white/20 px-6">
         <Link href="/" className="flex items-center gap-2 group">
           <PawPrint className="h-6 w-6 text-primary transition-transform group-hover:scale-110" />
-          <span className="text-xl font-bold bg-gradient-to-r from-primary to-teal-600 bg-clip-text text-transparent">Pet Passport</span>
+          <span className="text-xl font-bold bg-gradient-to-r from-primary to-teal-600 bg-clip-text text-transparent">Pet ShareLink</span>
         </Link>
       </div>
 

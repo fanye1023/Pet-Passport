@@ -19,7 +19,7 @@ export function Logo({ className, size = 'default', showText = true, href = '/' 
 
   const logoContent = (
     <div className={cn('flex items-center gap-2 group', className)}>
-      {/* Custom Pet Passport Logo */}
+      {/* Custom Pet ShareLink Logo */}
       <div className={cn('relative transition-transform group-hover:scale-105', sizes[size].icon)}>
         <svg
           viewBox="0 0 48 48"
@@ -27,45 +27,51 @@ export function Logo({ className, size = 'default', showText = true, href = '/' 
           xmlns="http://www.w3.org/2000/svg"
           className="w-full h-full"
         >
-          {/* Passport book shape */}
+          {/* Rounded square background */}
           <rect
-            x="6"
+            x="4"
             y="4"
-            width="36"
+            width="40"
             height="40"
-            rx="4"
+            rx="10"
             className="fill-primary"
           />
-          {/* Passport spine detail */}
-          <rect
-            x="6"
-            y="4"
-            width="4"
-            height="40"
-            rx="2"
-            className="fill-primary/80"
-          />
-          {/* Inner page effect */}
-          <rect
-            x="12"
-            y="8"
-            width="26"
-            height="32"
-            rx="2"
+          {/* Share/link icon circle left */}
+          <circle
+            cx="16"
+            cy="24"
+            r="6"
             className="fill-white dark:fill-gray-100"
           />
-          {/* Paw print */}
+          {/* Share/link icon circle right */}
+          <circle
+            cx="32"
+            cy="24"
+            r="6"
+            className="fill-white dark:fill-gray-100"
+          />
+          {/* Connecting line */}
+          <rect
+            x="16"
+            y="22"
+            width="16"
+            height="4"
+            className="fill-white dark:fill-gray-100"
+          />
+          {/* Paw print on left circle */}
           <g className="fill-primary">
             {/* Main pad */}
-            <ellipse cx="25" cy="28" rx="6" ry="5" />
+            <ellipse cx="16" cy="26" rx="2.5" ry="2" />
             {/* Toe pads */}
-            <circle cx="18" cy="20" r="3" />
-            <circle cx="25" cy="17" r="3" />
-            <circle cx="32" cy="20" r="3" />
+            <circle cx="13" cy="22" r="1.2" />
+            <circle cx="16" cy="21" r="1.2" />
+            <circle cx="19" cy="22" r="1.2" />
           </g>
-          {/* Decorative lines (like passport text) */}
-          <rect x="15" y="36" width="12" height="1.5" rx="0.75" className="fill-primary/30" />
-          <rect x="15" y="39" width="8" height="1.5" rx="0.75" className="fill-primary/30" />
+          {/* Heart on right circle */}
+          <path
+            d="M32 22.5c-.8-1.5-2.5-2-3.5-1s-.5 2.5.5 3.5l3 3 3-3c1-1 1.5-2.5.5-3.5s-2.7-.5-3.5 1z"
+            className="fill-primary"
+          />
         </svg>
       </div>
 
@@ -76,7 +82,7 @@ export function Logo({ className, size = 'default', showText = true, href = '/' 
             sizes[size].text,
             'bg-gradient-to-r from-primary via-teal-500 to-primary bg-clip-text text-transparent'
           )}>
-            Pet Passport
+            Pet ShareLink
           </span>
         </div>
       )}
@@ -103,45 +109,51 @@ export function LogoIcon({ className }: { className?: string }) {
       xmlns="http://www.w3.org/2000/svg"
       className={cn('w-8 h-8', className)}
     >
-      {/* Passport book shape */}
+      {/* Rounded square background */}
       <rect
-        x="6"
+        x="4"
         y="4"
-        width="36"
+        width="40"
         height="40"
-        rx="4"
+        rx="10"
         className="fill-primary"
       />
-      {/* Passport spine detail */}
-      <rect
-        x="6"
-        y="4"
-        width="4"
-        height="40"
-        rx="2"
-        className="fill-primary/80"
-      />
-      {/* Inner page effect */}
-      <rect
-        x="12"
-        y="8"
-        width="26"
-        height="32"
-        rx="2"
+      {/* Share/link icon circle left */}
+      <circle
+        cx="16"
+        cy="24"
+        r="6"
         className="fill-white"
       />
-      {/* Paw print */}
+      {/* Share/link icon circle right */}
+      <circle
+        cx="32"
+        cy="24"
+        r="6"
+        className="fill-white"
+      />
+      {/* Connecting line */}
+      <rect
+        x="16"
+        y="22"
+        width="16"
+        height="4"
+        className="fill-white"
+      />
+      {/* Paw print on left circle */}
       <g className="fill-primary">
         {/* Main pad */}
-        <ellipse cx="25" cy="28" rx="6" ry="5" />
+        <ellipse cx="16" cy="26" rx="2.5" ry="2" />
         {/* Toe pads */}
-        <circle cx="18" cy="20" r="3" />
-        <circle cx="25" cy="17" r="3" />
-        <circle cx="32" cy="20" r="3" />
+        <circle cx="13" cy="22" r="1.2" />
+        <circle cx="16" cy="21" r="1.2" />
+        <circle cx="19" cy="22" r="1.2" />
       </g>
-      {/* Decorative lines */}
-      <rect x="15" y="36" width="12" height="1.5" rx="0.75" className="fill-primary/30" />
-      <rect x="15" y="39" width="8" height="1.5" rx="0.75" className="fill-primary/30" />
+      {/* Heart on right circle */}
+      <path
+        d="M32 22.5c-.8-1.5-2.5-2-3.5-1s-.5 2.5.5 3.5l3 3 3-3c1-1 1.5-2.5.5-3.5s-2.7-.5-3.5 1z"
+        className="fill-primary"
+      />
     </svg>
   )
 }
