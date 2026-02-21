@@ -9,7 +9,8 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Key, Package, MapPin, Wifi, FileText, Brain } from 'lucide-react'
+import { Key, Package, MapPin, Wifi, FileText, Brain, Home, Dog } from 'lucide-react'
+import { SubTabs } from '@/components/ui/sub-tabs'
 import { CareInstructions, BehavioralNotes } from '@/lib/types/pet'
 import { toast } from 'sonner'
 import { RecordCardSkeleton } from '@/components/ui/skeletons'
@@ -178,10 +179,12 @@ export default function SitterInfoPage() {
       </div>
 
       <Tabs defaultValue="care">
-        <TabsList>
-          <TabsTrigger value="care">Care Instructions</TabsTrigger>
-          <TabsTrigger value="behavior">Behavioral Notes</TabsTrigger>
-        </TabsList>
+        <SubTabs
+          tabs={[
+            { value: 'care', label: 'Care Instructions', icon: <Home className="h-4 w-4" /> },
+            { value: 'behavior', label: 'Behavioral Notes', icon: <Dog className="h-4 w-4" /> },
+          ]}
+        />
 
         <TabsContent value="care" className="space-y-4 mt-4">
           <Card>

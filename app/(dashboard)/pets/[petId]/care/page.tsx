@@ -34,7 +34,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
-import { Plus, Utensils, Clock, Trash2, Pencil, ShoppingCart, ArrowRight } from 'lucide-react'
+import { Plus, Utensils, Clock, Trash2, Pencil, ShoppingCart, ArrowRight, Apple } from 'lucide-react'
+import { SubTabs } from '@/components/ui/sub-tabs'
 import { FoodPreferences, DailyRoutine } from '@/lib/types/pet'
 import { toast } from 'sonner'
 import { RecordCardSkeleton } from '@/components/ui/skeletons'
@@ -318,23 +319,18 @@ export default function CarePage() {
   return (
     <div className="space-y-6">
 
+      <div>
+        <h2 className="text-xl font-semibold">Food & Routine</h2>
+        <p className="text-sm text-muted-foreground">Food preferences and daily routines</p>
+      </div>
+
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-xl font-semibold">Food & Routine</h2>
-            <p className="text-sm text-muted-foreground">Food preferences and daily routines</p>
-          </div>
-          <TabsList>
-            <TabsTrigger value="food" className="gap-2">
-              <Utensils className="h-4 w-4" />
-              <span className="hidden sm:inline">Food</span>
-            </TabsTrigger>
-            <TabsTrigger value="routine" className="gap-2">
-              <Clock className="h-4 w-4" />
-              <span className="hidden sm:inline">Routine</span>
-            </TabsTrigger>
-          </TabsList>
-        </div>
+        <SubTabs
+          tabs={[
+            { value: 'food', label: 'Food', icon: <Utensils className="h-4 w-4" /> },
+            { value: 'routine', label: 'Routine', icon: <Clock className="h-4 w-4" /> },
+          ]}
+        />
 
         {/* Food Tab */}
         <TabsContent value="food" className="space-y-4">
