@@ -25,6 +25,7 @@ import {
 } from '@/components/ui/dialog'
 import { Plus, Share2, Trash2, Copy, Check, Eye, ExternalLink, Lock } from 'lucide-react'
 import { ShareLink, Pet } from '@/lib/types/pet'
+import { isDateExpired } from '@/lib/utils'
 import { ShareQRCode } from '@/components/share/qr-code'
 import { toast } from 'sonner'
 import { RecordCardSkeleton } from '@/components/ui/skeletons'
@@ -167,10 +168,8 @@ export default function SharePage() {
     setTimeout(() => setCopiedId(null), 2000)
   }
 
-  const isExpired = (date: string | null) => {
-    if (!date) return false
-    return new Date(date) < new Date()
-  }
+  // Use utility function that handles timezone issues correctly
+  const isExpired = (date: string | null) => isDateExpired(date)
 
   const toggleVisibility = (key: string) => {
     setVisibility((prev) => ({ ...prev, [key]: !prev[key] }))

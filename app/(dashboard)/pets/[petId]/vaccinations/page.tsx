@@ -24,7 +24,7 @@ import { ExtractedDataReview } from '@/components/vaccines/extracted-data-review
 import { ExtractionProgress } from '@/components/vaccines/extraction-progress'
 import { toast } from 'sonner'
 import { EmptyState } from '@/components/ui/empty-state'
-import { sanitizeFileName, openPdfWithSignedUrl } from '@/lib/utils'
+import { sanitizeFileName, openPdfWithSignedUrl, isDateExpired, isDateExpiringSoon } from '@/lib/utils'
 
 interface ExtractedVaccine {
   vaccine_name: string
@@ -416,18 +416,9 @@ export default function VaccinationsPage() {
     }
   }
 
-  const isExpired = (date: string | null) => {
-    if (!date) return false
-    return new Date(date) < new Date()
-  }
-
-  const isExpiringSoon = (date: string | null) => {
-    if (!date) return false
-    const expDate = new Date(date)
-    const thirtyDays = new Date()
-    thirtyDays.setDate(thirtyDays.getDate() + 30)
-    return expDate > new Date() && expDate < thirtyDays
-  }
+  // Use utility functions that handle timezone issues correctly
+  const isExpired = (date: string | null) => isDateExpired(date)
+  const isExpiringSoon = (date: string | null) => isDateExpiringSoon(date, 30)
 
   return (
     <div className="space-y-6">

@@ -37,6 +37,7 @@ import {
   routineIcons,
 } from '@/lib/constants'
 import { SharedPetData } from '@/lib/types/pet'
+import { isDateExpired } from '@/lib/utils'
 import { EmergencyBanner } from '@/components/share/emergency-banner'
 import { PrintButton } from '@/components/share/print-button'
 import { ShareStickyHeader } from '@/components/share/share-sticky-header'
@@ -657,12 +658,12 @@ export function ShareContent({ data }: ShareContentProps) {
                       {vax.expiration_date && (
                         <Badge
                           variant={
-                            new Date(vax.expiration_date) < new Date()
+                            isDateExpired(vax.expiration_date)
                               ? 'destructive'
                               : 'outline'
                           }
                         >
-                          {new Date(vax.expiration_date) < new Date()
+                          {isDateExpired(vax.expiration_date)
                             ? 'Expired'
                             : `Exp: ${formatDate(vax.expiration_date)}`}
                         </Badge>

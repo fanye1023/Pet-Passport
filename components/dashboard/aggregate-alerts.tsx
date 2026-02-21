@@ -17,7 +17,8 @@ import {
   Syringe,
   Stethoscope,
 } from 'lucide-react'
-import { formatDistanceToNow, isAfter, isBefore, addDays } from 'date-fns'
+import { formatDistanceToNow } from 'date-fns'
+import { isDateExpired, isDateExpiringSoon } from '@/lib/utils'
 
 interface AggregateAlertsProps {
   pets: Pet[]
@@ -57,18 +58,14 @@ export function AggregateAlerts({ pets, vaccinationsByPet, eventsByPet }: Aggreg
 
   // Memoize expensive alert calculations - only recalculate when data changes
   const alerts = useMemo(() => {
-    const today = new Date()
-    const thirtyDaysFromNow = addDays(today, 30)
-    const sevenDaysFromNow = addDays(today, 7)
-
     const alertGroups: AlertGroup[] = []
 
-    // Expired vaccinations
+    // Expired vaccinations - using timezone-safe utility
     const expiredItems: AlertGroup['items'] = []
     for (const pet of pets) {
       const vaccinations = vaccinationsByPet.get(pet.id) || []
       const expired = vaccinations.filter(v =>
-        v.expiration_date && isBefore(new Date(v.expiration_date), today)
+        v.expiration_date && isDateExpired(v.expiration_date)
       )
 
       if (expired.length > 0) {
@@ -96,14 +93,12 @@ export function AggregateAlerts({ pets, vaccinationsByPet, eventsByPet }: Aggreg
       })
     }
 
-    // Expiring vaccinations (within 30 days)
+    // Expiring vaccinations (within 30 days) - using timezone-safe utility
     const expiringItems: AlertGroup['items'] = []
     for (const pet of pets) {
       const vaccinations = vaccinationsByPet.get(pet.id) || []
       const expiring = vaccinations.filter(v =>
-        v.expiration_date &&
-        isAfter(new Date(v.expiration_date), today) &&
-        isBefore(new Date(v.expiration_date), thirtyDaysFromNow)
+        v.expiration_date && isDateExpiringSoon(v.expiration_date, 30)
       )
 
       if (expiring.length > 0) {
@@ -131,15 +126,14 @@ export function AggregateAlerts({ pets, vaccinationsByPet, eventsByPet }: Aggreg
       })
     }
 
-    // Upcoming appointments (within 7 days)
+    // Upcoming appointments (within 7 days) - using timezone-safe utility
     const upcomingItems: AlertGroup['items'] = []
     for (const pet of pets) {
       const events = eventsByPet.get(pet.id) || []
       const upcoming = events.filter(e =>
         e.event_type === 'vet_appointment' &&
         e.event_date &&
-        isAfter(new Date(e.event_date), today) &&
-        isBefore(new Date(e.event_date), sevenDaysFromNow)
+        isDateExpiringSoon(e.event_date, 7)
       )
 
       if (upcoming.length > 0) {
