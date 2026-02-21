@@ -31,6 +31,7 @@ import {
   User,
   LogIn,
   Loader2,
+  Wallet,
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { QRCodeCanvas } from 'qrcode.react'
@@ -71,6 +72,7 @@ export function SaveButton({ petName, shareToken }: SaveButtonProps) {
   const [accountDialogOpen, setAccountDialogOpen] = useState(false)
   const [qrDialogOpen, setQrDialogOpen] = useState(false)
   const [homeScreenDialogOpen, setHomeScreenDialogOpen] = useState(false)
+  const [walletDialogOpen, setWalletDialogOpen] = useState(false)
 
   useEffect(() => {
     setDeviceType(getDeviceType())
@@ -173,80 +175,107 @@ export function SaveButton({ petName, shareToken }: SaveButtonProps) {
             )}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-72 p-3" align="center">
-          <div className="space-y-2">
-            <p className="text-xs text-muted-foreground text-center mb-3">
-              Save this link for quick access
-            </p>
+        <PopoverContent className="w-80 p-4" align="center">
+          <div className="space-y-3">
+            <div className="text-center pb-2 border-b">
+              <p className="font-medium text-sm">Save {petName}'s Profile</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                Quick access whenever you need it
+              </p>
+            </div>
 
-            {/* Save to Account */}
-            <Button
-              onClick={handleSaveToAccount}
-              className="w-full justify-start"
-              size="sm"
-              disabled={isSaving || isSaved}
-            >
-              {isSaving ? (
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-              ) : isSaved ? (
-                <Check className="h-4 w-4 mr-2 text-green-500" />
-              ) : (
-                <Bookmark className="h-4 w-4 mr-2" />
-              )}
-              {isSaved ? 'Saved to Account' : 'Save to My Account'}
-            </Button>
+            {/* Save to Account - Featured */}
+            <div className="rounded-lg bg-primary/5 p-3 space-y-2">
+              <Button
+                onClick={handleSaveToAccount}
+                className="w-full"
+                disabled={isSaving || isSaved}
+              >
+                {isSaving ? (
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                ) : isSaved ? (
+                  <Check className="h-4 w-4 mr-2" />
+                ) : (
+                  <Bookmark className="h-4 w-4 mr-2" />
+                )}
+                {isSaved ? 'Saved to Account' : 'Save to My Account'}
+              </Button>
+              <p className="text-xs text-muted-foreground text-center">
+                Access from any device, anytime
+              </p>
+            </div>
 
             <div className="relative py-1">
               <div className="absolute inset-0 flex items-center">
                 <span className="w-full border-t" />
               </div>
               <div className="relative flex justify-center text-xs">
-                <span className="bg-popover px-2 text-muted-foreground">or</span>
+                <span className="bg-popover px-2 text-muted-foreground">other options</span>
               </div>
             </div>
 
-            {/* Copy Link */}
-            <Button
-              variant="outline"
-              size="sm"
-              className="w-full justify-start"
-              onClick={handleCopyLink}
-            >
-              {copied ? (
-                <Check className="h-4 w-4 mr-2 text-green-500" />
-              ) : (
-                <Copy className="h-4 w-4 mr-2" />
-              )}
-              Copy Link
-            </Button>
+            <div className="grid grid-cols-2 gap-2">
+              {/* Copy Link */}
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full flex-col h-auto py-3 gap-1"
+                onClick={handleCopyLink}
+              >
+                {copied ? (
+                  <Check className="h-5 w-5 text-green-500" />
+                ) : (
+                  <Copy className="h-5 w-5" />
+                )}
+                <span className="text-xs">Copy Link</span>
+              </Button>
 
-            {/* Save QR Code */}
-            <Button
-              variant="outline"
-              size="sm"
-              className="w-full justify-start"
-              onClick={() => {
-                setOpen(false)
-                setQrDialogOpen(true)
-              }}
-            >
-              <QrCode className="h-4 w-4 mr-2" />
-              Save QR Code
-            </Button>
+              {/* Save QR Code */}
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full flex-col h-auto py-3 gap-1"
+                onClick={() => {
+                  setOpen(false)
+                  setQrDialogOpen(true)
+                }}
+              >
+                <QrCode className="h-5 w-5" />
+                <span className="text-xs">QR Code</span>
+              </Button>
 
-            {/* Add to Home Screen */}
-            <Button
-              variant="outline"
-              size="sm"
-              className="w-full justify-start"
-              onClick={() => {
-                setOpen(false)
-                setHomeScreenDialogOpen(true)
-              }}
-            >
-              <Smartphone className="h-4 w-4 mr-2" />
-              {isMobile ? 'Add to Home Screen' : 'Bookmark Page'}
-            </Button>
+              {/* Add to Home Screen */}
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full flex-col h-auto py-3 gap-1"
+                onClick={() => {
+                  setOpen(false)
+                  setHomeScreenDialogOpen(true)
+                }}
+              >
+                <Smartphone className="h-5 w-5" />
+                <span className="text-xs">{isMobile ? 'Home Screen' : 'Bookmark'}</span>
+              </Button>
+
+              {/* Add to Wallet */}
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full flex-col h-auto py-3 gap-1"
+                onClick={() => {
+                  setOpen(false)
+                  setWalletDialogOpen(true)
+                }}
+              >
+                <Wallet className="h-5 w-5" />
+                <span className="text-xs">Wallet</span>
+              </Button>
+            </div>
+
+            <p className="text-xs text-center text-muted-foreground pt-1">
+              Link stays active while the owner keeps it enabled
+            </p>
           </div>
         </PopoverContent>
       </Popover>
@@ -366,6 +395,67 @@ export function SaveButton({ petName, shareToken }: SaveButtonProps) {
             <Button variant="outline" className="w-full" onClick={handleCopyLink}>
               <Copy className="h-4 w-4 mr-2" />
               Copy Link
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Wallet Dialog */}
+      <Dialog open={walletDialogOpen} onOpenChange={setWalletDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Wallet className="h-5 w-5" />
+              Add to Wallet
+            </DialogTitle>
+            <DialogDescription>
+              Access {petName}'s info from your lock screen
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="flex flex-col items-center gap-4">
+              <div className="p-4 bg-white rounded-lg shadow-sm">
+                <QRCodeCanvas
+                  id="wallet-qr-code"
+                  value={shareUrl}
+                  size={160}
+                  level="M"
+                  includeMargin={true}
+                />
+              </div>
+              <p className="text-sm font-medium">{petName}'s Pet Care Info</p>
+            </div>
+
+            <div className="rounded-lg bg-muted/50 p-4 space-y-3">
+              {deviceType.startsWith('ios') ? (
+                <>
+                  <p className="text-sm font-medium">For Apple Wallet:</p>
+                  <ol className="text-sm text-muted-foreground space-y-2 list-decimal list-inside">
+                    <li>Save the QR code to your Photos</li>
+                    <li>Open the <strong>Shortcuts</strong> app</li>
+                    <li>Create a shortcut that opens this link</li>
+                    <li>Add the shortcut to your Lock Screen</li>
+                  </ol>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Or add a Photo Widget with the QR code for quick scanning
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p className="text-sm font-medium">For Google Wallet:</p>
+                  <ol className="text-sm text-muted-foreground space-y-2 list-decimal list-inside">
+                    <li>Save the QR code to your Photos</li>
+                    <li>Add a <strong>Photo Widget</strong> to your home screen</li>
+                    <li>Select the QR code image</li>
+                    <li>Scan anytime for quick access</li>
+                  </ol>
+                </>
+              )}
+            </div>
+
+            <Button onClick={handleSaveQRCode} className="w-full">
+              <Download className="h-4 w-4 mr-2" />
+              Save QR Code to Photos
             </Button>
           </div>
         </DialogContent>
