@@ -12,50 +12,50 @@ function ProductMockup() {
   return (
     <div className="relative">
       {/* Phone frame */}
-      <div className="relative mx-auto w-[280px] sm:w-[320px] lg:w-[360px]">
+      <div className="relative mx-auto w-[220px] sm:w-[240px] lg:w-[260px]">
         {/* Phone bezel */}
-        <div className="relative rounded-[2.5rem] bg-gray-900 p-3 shadow-2xl">
+        <div className="relative rounded-[2rem] bg-gray-900 p-2 shadow-2xl">
           {/* Screen */}
-          <div className="relative rounded-[2rem] bg-white overflow-hidden aspect-[9/19]">
+          <div className="relative rounded-[1.5rem] bg-white overflow-hidden aspect-[9/19]">
             {/* Status bar */}
-            <div className="absolute top-0 left-0 right-0 h-6 bg-gray-100 flex items-center justify-center">
-              <div className="w-20 h-4 bg-gray-900 rounded-full" />
+            <div className="absolute top-0 left-0 right-0 h-5 bg-gray-100 flex items-center justify-center">
+              <div className="w-16 h-3 bg-gray-900 rounded-full" />
             </div>
 
             {/* App content mockup */}
-            <div className="pt-8 px-4 pb-4 h-full flex flex-col">
+            <div className="pt-6 px-3 pb-3 h-full flex flex-col">
               {/* Pet header */}
-              <div className="flex flex-col items-center mb-4">
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-amber-200 to-amber-400 flex items-center justify-center text-2xl mb-2">
+              <div className="flex flex-col items-center mb-3">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-200 to-amber-400 flex items-center justify-center text-lg mb-1">
                   🐕
                 </div>
-                <p className="font-semibold text-gray-900">Buddy</p>
-                <p className="text-xs text-gray-500">Golden Retriever · 3 years</p>
+                <p className="font-semibold text-gray-900 text-sm">Buddy</p>
+                <p className="text-[10px] text-gray-500">Golden Retriever · 3 years</p>
               </div>
 
               {/* Info cards */}
-              <div className="space-y-2 flex-1">
-                <div className="rounded-lg bg-gray-50 p-3 border border-gray-100">
-                  <p className="text-[10px] font-medium text-gray-500 uppercase tracking-wider mb-1">Feeding</p>
-                  <p className="text-xs text-gray-900">8am & 6pm · Blue Buffalo 1 cup</p>
+              <div className="space-y-1.5 flex-1">
+                <div className="rounded-md bg-gray-50 p-2 border border-gray-100">
+                  <p className="text-[8px] font-medium text-gray-500 uppercase tracking-wider mb-0.5">Feeding</p>
+                  <p className="text-[10px] text-gray-900">8am & 6pm · 1 cup</p>
                 </div>
-                <div className="rounded-lg bg-gray-50 p-3 border border-gray-100">
-                  <p className="text-[10px] font-medium text-gray-500 uppercase tracking-wider mb-1">Daily Walk</p>
-                  <p className="text-xs text-gray-900">Morning 30min · Evening 45min</p>
+                <div className="rounded-md bg-gray-50 p-2 border border-gray-100">
+                  <p className="text-[8px] font-medium text-gray-500 uppercase tracking-wider mb-0.5">Daily Walk</p>
+                  <p className="text-[10px] text-gray-900">AM 30min · PM 45min</p>
                 </div>
-                <div className="rounded-lg bg-gray-50 p-3 border border-gray-100">
-                  <p className="text-[10px] font-medium text-gray-500 uppercase tracking-wider mb-1">Emergency Contact</p>
-                  <p className="text-xs text-gray-900">Sarah Johnson · (555) 123-4567</p>
+                <div className="rounded-md bg-gray-50 p-2 border border-gray-100">
+                  <p className="text-[8px] font-medium text-gray-500 uppercase tracking-wider mb-0.5">Emergency</p>
+                  <p className="text-[10px] text-gray-900">Sarah · (555) 123-4567</p>
                 </div>
-                <div className="rounded-lg bg-red-50 p-3 border border-red-100">
-                  <p className="text-[10px] font-medium text-red-600 uppercase tracking-wider mb-1">Allergies</p>
-                  <p className="text-xs text-gray-900">Chicken, Grain</p>
+                <div className="rounded-md bg-red-50 p-2 border border-red-100">
+                  <p className="text-[8px] font-medium text-red-600 uppercase tracking-wider mb-0.5">Allergies</p>
+                  <p className="text-[10px] text-gray-900">Chicken, Grain</p>
                 </div>
               </div>
 
               {/* Emergency button */}
-              <div className="mt-3">
-                <div className="rounded-lg bg-red-500 text-white text-xs font-medium py-2 text-center">
+              <div className="mt-2">
+                <div className="rounded-md bg-red-500 text-white text-[10px] font-medium py-1.5 text-center">
                   Emergency
                 </div>
               </div>
@@ -64,30 +64,30 @@ function ProductMockup() {
         </div>
 
         {/* Floating badges */}
-        <div className="absolute -left-4 top-1/4 bg-white rounded-lg shadow-lg px-3 py-2 border animate-fade-in">
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center">
-              <Check className="w-3 h-3 text-green-600" />
+        <div className="absolute -left-2 sm:-left-4 top-1/4 bg-white rounded-md shadow-lg px-2 py-1.5 border animate-fade-in">
+          <div className="flex items-center gap-1.5">
+            <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center">
+              <Check className="w-2.5 h-2.5 text-green-600" />
             </div>
-            <span className="text-xs font-medium">Shared with Walker</span>
+            <span className="text-[10px] font-medium">Shared with Walker</span>
           </div>
         </div>
 
-        <div className="absolute -right-4 top-1/2 bg-white rounded-lg shadow-lg px-3 py-2 border animate-fade-in" style={{ animationDelay: '0.2s' }}>
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center">
-              <Shield className="w-3 h-3 text-blue-600" />
+        <div className="absolute -right-2 sm:-right-4 top-1/2 bg-white rounded-md shadow-lg px-2 py-1.5 border animate-fade-in" style={{ animationDelay: '0.2s' }}>
+          <div className="flex items-center gap-1.5">
+            <div className="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center">
+              <Shield className="w-2.5 h-2.5 text-blue-600" />
             </div>
-            <span className="text-xs font-medium">PIN Protected</span>
+            <span className="text-[10px] font-medium">PIN Protected</span>
           </div>
         </div>
 
-        <div className="absolute -left-8 bottom-1/4 bg-white rounded-lg shadow-lg px-3 py-2 border animate-fade-in" style={{ animationDelay: '0.4s' }}>
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-full bg-amber-100 flex items-center justify-center">
-              <Clock className="w-3 h-3 text-amber-600" />
+        <div className="absolute -left-4 sm:-left-8 bottom-1/4 bg-white rounded-md shadow-lg px-2 py-1.5 border animate-fade-in" style={{ animationDelay: '0.4s' }}>
+          <div className="flex items-center gap-1.5">
+            <div className="w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center">
+              <Clock className="w-2.5 h-2.5 text-amber-600" />
             </div>
-            <span className="text-xs font-medium">Expires in 7 days</span>
+            <span className="text-[10px] font-medium">Expires in 7 days</span>
           </div>
         </div>
       </div>
@@ -123,9 +123,9 @@ export function Hero() {
               </Button>
             </Link>
             <Link href={DEMO_URL}>
-              <Button size="lg" variant="outline" className="w-full sm:w-auto text-base px-8">
-                <Eye className="mr-2 h-4 w-4" />
-                View Demo
+              <Button size="lg" variant="secondary" className="w-full sm:w-auto btn-press border-2 border-primary/20 bg-primary/10 hover:bg-primary/20 text-primary font-semibold">
+                <Eye className="h-4 w-4 mr-2" />
+                See What Your Pet Sitter Sees
               </Button>
             </Link>
           </div>
