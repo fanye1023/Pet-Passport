@@ -148,14 +148,44 @@ export function ShareContent({ data }: ShareContentProps) {
             </CardHeader>
             <CardContent>
               <div className="grid gap-4">
-                {emergency_contacts.map((contact) => (
-                  <div key={contact.id} className="space-y-1">
-                    <p className="font-medium">{contact.name}</p>
-                    {contact.relationship && (
-                      <Badge variant="secondary" className="text-xs">
-                        {contact.relationship}
-                      </Badge>
-                    )}
+                {/* Sort: owners first, then primary, then by name */}
+                {[...emergency_contacts]
+                  .sort((a, b) => {
+                    if (a.contact_type === 'owner' && b.contact_type !== 'owner') return -1
+                    if (b.contact_type === 'owner' && a.contact_type !== 'owner') return 1
+                    if (a.is_primary && !b.is_primary) return -1
+                    if (b.is_primary && !a.is_primary) return 1
+                    return a.name.localeCompare(b.name)
+                  })
+                  .map((contact) => (
+                  <div key={contact.id} className={`space-y-1 ${contact.contact_type === 'owner' ? 'p-3 rounded-lg bg-primary/5 border border-primary/20' : ''}`}>
+                    <div className="flex items-center gap-2">
+                      <p className="font-medium">{contact.name}</p>
+                      {contact.is_primary && (
+                        <Badge variant="default" className="text-xs">Primary</Badge>
+                      )}
+                    </div>
+                    <div className="flex flex-wrap gap-1">
+                      {contact.contact_type && contact.contact_type !== 'other' && (
+                        <Badge variant="secondary" className={`text-xs ${contact.contact_type === 'owner' ? 'bg-primary/10 text-primary' : ''}`}>
+                          {contact.contact_type === 'owner' ? 'Owner' :
+                           contact.contact_type === 'family' ? 'Family' :
+                           contact.contact_type === 'friend' ? 'Friend' :
+                           contact.contact_type === 'neighbor' ? 'Neighbor' :
+                           contact.contact_type === 'pet_sitter' ? 'Pet Sitter' :
+                           contact.contact_type === 'veterinarian' ? 'Veterinarian' :
+                           contact.relationship || 'Contact'}
+                        </Badge>
+                      )}
+                      {contact.relationship && contact.contact_type !== 'other' && contact.relationship !== contact.contact_type && (
+                        <span className="text-xs text-muted-foreground">{contact.relationship}</span>
+                      )}
+                      {contact.contact_type === 'other' && contact.relationship && (
+                        <Badge variant="secondary" className="text-xs">
+                          {contact.relationship}
+                        </Badge>
+                      )}
+                    </div>
                     <p className="text-sm flex items-center gap-2">
                       <Phone className="h-3 w-3" />
                       <a href={`tel:${contact.phone}`} className="text-primary hover:underline">

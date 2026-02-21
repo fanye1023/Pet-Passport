@@ -16,19 +16,20 @@ interface StepEmergencyProps {
   isFirstStep: boolean
 }
 
-const RELATIONSHIPS = [
+const CONTACT_TYPES = [
   { value: 'owner', label: 'Owner' },
   { value: 'family', label: 'Family Member' },
   { value: 'friend', label: 'Friend' },
   { value: 'neighbor', label: 'Neighbor' },
   { value: 'pet_sitter', label: 'Pet Sitter' },
+  { value: 'veterinarian', label: 'Veterinarian' },
   { value: 'other', label: 'Other' },
 ]
 
 export function StepEmergency({ petId, onComplete, onSkip, onBack, isFirstStep }: StepEmergencyProps) {
   const [name, setName] = useState('')
   const [phoneNumber, setPhone] = useState('')
-  const [relationship, setRelationship] = useState('')
+  const [contactType, setContactType] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
   const handleSave = async () => {
@@ -37,13 +38,15 @@ export function StepEmergency({ petId, onComplete, onSkip, onBack, isFirstStep }
     setIsLoading(true)
     const supabase = createClient()
 
-    const relationshipLabel = RELATIONSHIPS.find(r => r.value === relationship)?.label || relationship
+    const typeLabel = CONTACT_TYPES.find(r => r.value === contactType)?.label || null
 
     const { error } = await supabase.from('emergency_contacts').insert({
       pet_id: petId,
       name: name.trim(),
       phone: phoneNumber.trim(),
-      relationship: relationshipLabel || null,
+      contact_type: contactType || 'other',
+      relationship: typeLabel,
+      is_primary: contactType === 'owner',
     })
 
     setIsLoading(false)
@@ -90,15 +93,15 @@ export function StepEmergency({ petId, onComplete, onSkip, onBack, isFirstStep }
         </div>
 
         <div className="space-y-1.5">
-          <Label className="text-sm">Relationship</Label>
-          <Select value={relationship} onValueChange={setRelationship}>
+          <Label className="text-sm">Contact Type</Label>
+          <Select value={contactType} onValueChange={setContactType}>
             <SelectTrigger className="h-9">
-              <SelectValue placeholder="Select relationship" />
+              <SelectValue placeholder="Select type" />
             </SelectTrigger>
             <SelectContent>
-              {RELATIONSHIPS.map((rel) => (
-                <SelectItem key={rel.value} value={rel.value}>
-                  {rel.label}
+              {CONTACT_TYPES.map((type) => (
+                <SelectItem key={type.value} value={type.value}>
+                  {type.label}
                 </SelectItem>
               ))}
             </SelectContent>

@@ -70,6 +70,8 @@ export interface Veterinarian {
   created_at: string
 }
 
+export type EmergencyContactType = 'owner' | 'family' | 'friend' | 'neighbor' | 'pet_sitter' | 'veterinarian' | 'other'
+
 export interface EmergencyContact {
   id: string
   pet_id: string
@@ -79,6 +81,8 @@ export interface EmergencyContact {
   email: string | null
   address: string | null
   notes: string | null
+  contact_type: EmergencyContactType
+  is_primary: boolean
   created_at: string
 }
 
