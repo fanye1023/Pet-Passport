@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { OnboardingStep } from '../onboarding-step'
 import { createClient } from '@/lib/supabase/client'
-import { sanitizeFileName } from '@/lib/utils'
+import { sanitizeFileName, openPdfWithSignedUrl } from '@/lib/utils'
 
 interface StepVaccinationProps {
   petId: string
@@ -117,7 +117,7 @@ export function StepVaccination({ petId, petSpecies, onComplete, onSkip, onBack,
       const { error } = await supabase.from('pet_documents').insert({
         pet_id: petId,
         category: 'vaccination',
-        document_name: documentName || 'Vaccination Records',
+        name: documentName || 'Vaccination Records',
         document_url: documentUrl,
       })
 
@@ -259,7 +259,7 @@ export function StepVaccination({ petId, petSpecies, onComplete, onSkip, onBack,
                   variant="ghost"
                   size="sm"
                   className="h-7 w-7 p-0"
-                  onClick={() => window.open(documentUrl, '_blank')}
+                  onClick={() => openPdfWithSignedUrl(documentUrl)}
                 >
                   <ExternalLink className="h-3.5 w-3.5" />
                 </Button>

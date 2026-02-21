@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { InsuranceClaim, PetExpense } from '@/lib/types/pet'
 import { ClaimStatusBadge } from './claim-status-badge'
 import { Pencil, Trash2, FileText, ExternalLink, Receipt } from 'lucide-react'
+import { openPdfWithSignedUrl } from '@/lib/utils'
 
 interface ClaimCardProps {
   claim: InsuranceClaim
@@ -145,7 +146,7 @@ export function ClaimCard({ claim, linkedExpenses = [], onEdit, onDelete }: Clai
           <Button
             variant="outline"
             size="sm"
-            onClick={() => window.open(claim.claim_document_url!, '_blank')}
+            onClick={() => openPdfWithSignedUrl(claim.claim_document_url!)}
           >
             <FileText className="h-4 w-4 mr-2" />
             View Document

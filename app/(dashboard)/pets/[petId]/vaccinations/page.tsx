@@ -24,7 +24,7 @@ import { ExtractedDataReview } from '@/components/vaccines/extracted-data-review
 import { ExtractionProgress } from '@/components/vaccines/extraction-progress'
 import { toast } from 'sonner'
 import { EmptyState } from '@/components/ui/empty-state'
-import { sanitizeFileName } from '@/lib/utils'
+import { sanitizeFileName, openPdfWithSignedUrl } from '@/lib/utils'
 
 interface ExtractedVaccine {
   vaccine_name: string
@@ -638,7 +638,7 @@ export default function VaccinationsPage() {
                           <Button
                             variant="ghost"
                             size="icon"
-                            onClick={() => window.open(doc.document_url, '_blank')}
+                            onClick={() => openPdfWithSignedUrl(doc.document_url)}
                           >
                             <ExternalLink className="h-4 w-4" />
                           </Button>
@@ -730,7 +730,7 @@ export default function VaccinationsPage() {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => window.open(vax.document_url!, '_blank')}
+                          onClick={() => openPdfWithSignedUrl(vax.document_url!)}
                         >
                           <FileText className="h-4 w-4 mr-2" />
                           View Certificate

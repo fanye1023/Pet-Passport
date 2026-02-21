@@ -18,6 +18,7 @@ import { ExtractedInsuranceReview } from '@/components/insurance/extracted-insur
 import { InsuranceComparison } from '@/components/insurance/insurance-comparison'
 import { toast } from 'sonner'
 import { EmptyState } from '@/components/ui/empty-state'
+import { openPdfWithSignedUrl } from '@/lib/utils'
 
 interface ExtractedInsurance {
   provider_name: string | null
@@ -613,7 +614,7 @@ export default function InsurancePage() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => window.open(insurance!.document_url!, '_blank')}
+                  onClick={() => openPdfWithSignedUrl(insurance!.document_url!)}
                 >
                   <FileText className="h-4 w-4 mr-2" />
                   View Policy Document

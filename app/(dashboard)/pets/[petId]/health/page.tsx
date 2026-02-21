@@ -31,7 +31,7 @@ import { toast } from 'sonner'
 import { RecordCardSkeleton } from '@/components/ui/skeletons'
 import { EmptyState } from '@/components/ui/empty-state'
 import { MedicationAffiliates } from '@/components/health/medication-affiliates'
-import { sanitizeFileName } from '@/lib/utils'
+import { sanitizeFileName, openPdfWithSignedUrl } from '@/lib/utils'
 
 const recordTypes = [
   { value: 'checkup', label: 'Checkup' },
@@ -822,7 +822,7 @@ export default function HealthRecordsPage() {
                           <Button
                             variant="ghost"
                             size="icon"
-                            onClick={() => window.open(doc.document_url, '_blank')}
+                            onClick={() => openPdfWithSignedUrl(doc.document_url)}
                           >
                             <ExternalLink className="h-4 w-4" />
                           </Button>
@@ -896,7 +896,7 @@ export default function HealthRecordsPage() {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => window.open(record.document_url!, '_blank')}
+                          onClick={() => openPdfWithSignedUrl(record.document_url!)}
                         >
                           <FileText className="h-4 w-4 mr-2" />
                           View Document
