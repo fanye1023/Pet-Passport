@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
 
   // Verify the share token is valid
   const { data: shareLink, error: shareError } = await supabaseAdmin
-    .from('pet_share_links')
+    .from('share_links')
     .select('pet_id, is_active, expires_at')
     .eq('token', token)
     .single()
