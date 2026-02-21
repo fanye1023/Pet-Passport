@@ -10,35 +10,38 @@ const tiers = [
   {
     name: 'Free',
     price: '$0',
-    description: 'Everything you need to get started',
+    description: 'Perfect for getting started',
     features: [
-      'Up to 2 pet profiles',
+      '1 pet profile',
+      '3 share links',
+      '2 collaborators',
       'Health records & vaccinations',
-      'Shareable pet links',
       'Emergency contacts',
       'Food & routine tracking',
-      'Calendar sync',
+      'AI document extraction',
     ],
     cta: 'Get Started Free',
     href: '/signup',
     highlighted: false,
   },
   {
-    name: 'Pro',
-    price: '$5',
+    name: 'Premium',
+    price: '$4.99',
     period: '/month',
+    yearlyPrice: '$49/year (save 18%)',
     description: 'For families with multiple pets',
     features: [
       'Unlimited pet profiles',
-      'Everything in Free, plus:',
-      'Expense tracking & reports',
-      'Insurance claim management',
+      'Unlimited share links',
+      'Unlimited collaborators',
+      'Calendar sync (Google, Apple, Outlook)',
+      'SMS reminders for appointments',
       'Priority support',
-      'Early access to new features',
     ],
-    cta: 'Start Free Trial',
+    cta: 'Coming Soon',
     href: '/signup',
     highlighted: true,
+    comingSoon: true,
   },
 ]
 
@@ -88,6 +91,9 @@ export function Pricing() {
                   <span className="text-muted-foreground">{tier.period}</span>
                 )}
               </div>
+              {tier.yearlyPrice && (
+                <p className="text-xs text-muted-foreground mt-1">{tier.yearlyPrice}</p>
+              )}
               <CardDescription className="mt-2">{tier.description}</CardDescription>
             </CardHeader>
             <CardContent className="flex-1">
@@ -101,14 +107,24 @@ export function Pricing() {
               </ul>
             </CardContent>
             <CardFooter>
-              <Link href={tier.href} className="w-full">
+              {tier.comingSoon ? (
                 <Button
-                  className="w-full btn-press"
-                  variant={tier.highlighted ? 'default' : 'outline'}
+                  className="w-full"
+                  variant="default"
+                  disabled
                 >
                   {tier.cta}
                 </Button>
-              </Link>
+              ) : (
+                <Link href={tier.href} className="w-full">
+                  <Button
+                    className="w-full btn-press"
+                    variant={tier.highlighted ? 'default' : 'outline'}
+                  >
+                    {tier.cta}
+                  </Button>
+                </Link>
+              )}
             </CardFooter>
           </Card>
         ))}
