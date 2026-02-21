@@ -45,9 +45,22 @@ import { BrandLogo } from '@/components/food/brand-logo'
 
 interface ShareContentProps {
   data: SharedPetData
+  shareToken?: string
 }
 
-export function ShareContent({ data }: ShareContentProps) {
+// Helper to generate signed URL for private documents
+function getDocumentUrl(documentUrl: string | null | undefined, shareToken?: string): string | null {
+  if (!documentUrl) return null
+
+  // If it's a private bucket URL and we have a share token, use the API
+  if (documentUrl.includes('/pet-documents/') && shareToken) {
+    return `/api/share/document?token=${encodeURIComponent(shareToken)}&url=${encodeURIComponent(documentUrl)}`
+  }
+
+  return documentUrl
+}
+
+export function ShareContent({ data, shareToken }: ShareContentProps) {
   const { pet, vaccinations, health_records, insurance, veterinarians, emergency_contacts, food_preferences, daily_routines, care_instructions, behavioral_notes, visibility } = data
   const documents = data.documents || []
 
@@ -617,7 +630,7 @@ export function ShareContent({ data }: ShareContentProps) {
                   {vaccinationDocs.map((doc) => (
                     <a
                       key={doc.id}
-                      href={doc.document_url}
+                      href={getDocumentUrl(doc.document_url, shareToken) || '#'}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-2 p-2 rounded-md border hover:bg-muted/50 transition-colors"
@@ -645,7 +658,7 @@ export function ShareContent({ data }: ShareContentProps) {
                         </p>
                         {vax.document_url && (
                           <a
-                            href={vax.document_url}
+                            href={getDocumentUrl(vax.document_url, shareToken) || '#'}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center gap-1 text-xs text-primary hover:underline mt-1"
@@ -694,7 +707,7 @@ export function ShareContent({ data }: ShareContentProps) {
                   {healthDocs.map((doc) => (
                     <a
                       key={doc.id}
-                      href={doc.document_url}
+                      href={getDocumentUrl(doc.document_url, shareToken) || '#'}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-2 p-2 rounded-md border hover:bg-muted/50 transition-colors"
@@ -727,7 +740,7 @@ export function ShareContent({ data }: ShareContentProps) {
                       )}
                       {record.document_url && (
                         <a
-                          href={record.document_url}
+                          href={getDocumentUrl(record.document_url, shareToken) || '#'}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="inline-flex items-center gap-1 text-xs text-primary hover:underline mt-1"
@@ -774,7 +787,7 @@ export function ShareContent({ data }: ShareContentProps) {
                   )}
                   {insurance.document_url && (
                     <a
-                      href={insurance.document_url}
+                      href={getDocumentUrl(insurance.document_url, shareToken) || '#'}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1 text-sm text-primary hover:underline mt-2"
@@ -792,7 +805,7 @@ export function ShareContent({ data }: ShareContentProps) {
                   {insuranceDocs.map((doc) => (
                     <a
                       key={doc.id}
-                      href={doc.document_url}
+                      href={getDocumentUrl(doc.document_url, shareToken) || '#'}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-2 p-2 rounded-md border hover:bg-muted/50 transition-colors"

@@ -26,5 +26,5 @@ export default async function PublicSharePage({
     return <PinEntryGate token={token} petName={pinData.pet_name} />
   }
 
-  return <ShareContent data={data as SharedPetData} />
+  return <ShareContent data={data as SharedPetData} shareToken={token} />
 }
