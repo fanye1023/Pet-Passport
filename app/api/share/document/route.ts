@@ -2,14 +2,21 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
 export async function GET(request: NextRequest) {
-  // Use service role to bypass RLS for generating signed URLs
-  const supabaseAdmin = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  )
-  const searchParams = request.nextUrl.searchParams
-  const token = searchParams.get('token')
-  const documentUrl = searchParams.get('url')
+  try {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+    if (!supabaseUrl || !serviceRoleKey) {
+      console.error('Missing Supabase environment variables')
+      return NextResponse.json({ error: 'Server configuration error' }, { status: 500 })
+    }
+
+    // Use service role to bypass RLS for generating signed URLs
+    const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey)
+
+    const searchParams = request.nextUrl.searchParams
+    const token = searchParams.get('token')
+    const documentUrl = searchParams.get('url')
 
   if (!token || !documentUrl) {
     return NextResponse.json({ error: 'Missing token or url' }, { status: 400 })
@@ -87,4 +94,8 @@ export async function GET(request: NextRequest) {
 
   // Redirect to the signed URL
   return NextResponse.redirect(signedUrlData.signedUrl)
+  } catch (error) {
+    console.error('Share document error:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  }
 }
