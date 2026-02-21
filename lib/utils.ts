@@ -59,26 +59,17 @@ export function isDateExpiringSoon(dateString: string | null, daysThreshold: num
 
 /**
  * Open a PDF document using a signed URL.
- * Handles private bucket URLs by generating a temporary signed URL.
+ * Uses the API route to generate signed URLs for private bucket documents.
  */
 export async function openPdfWithSignedUrl(documentUrl: string): Promise<void> {
-  const supabase = createClient()
-
-  // Extract the path from the URL
-  const urlPath = documentUrl.split('/pet-documents/')[1]
-
-  if (urlPath) {
-    // Generate a signed URL that's valid for 5 minutes
-    const { data: signedUrlData, error } = await supabase.storage
-      .from('pet-documents')
-      .createSignedUrl(urlPath, 300)
-
-    if (signedUrlData?.signedUrl && !error) {
-      window.open(signedUrlData.signedUrl, '_blank')
-      return
-    }
+  // Check if this is a private bucket URL
+  if (documentUrl.includes('/pet-documents/')) {
+    // Use the API route to get a signed URL
+    const apiUrl = `/api/document?url=${encodeURIComponent(documentUrl)}`
+    window.open(apiUrl, '_blank')
+    return
   }
 
-  // Fallback to the original URL if signed URL fails
+  // For public URLs, open directly
   window.open(documentUrl, '_blank')
 }

@@ -95,7 +95,7 @@ Return a JSON object with this exact structure:
     {
       "vaccine_name": "Name of vaccine (e.g., Rabies, DHPP, Bordetella)",
       "administered_date": "YYYY-MM-DD format or null if not found",
-      "expiration_date": "YYYY-MM-DD format - IMPORTANT: look for 'expires', 'valid until', 'next due', 'due date', 'revaccinate by', or calculate based on vaccine duration",
+      "expiration_date": "YYYY-MM-DD format - this is when the PET needs the vaccine AGAIN (booster due date), NOT the vial/medication expiration",
       "veterinarian": "Name of vet who administered or null",
       "notes": "Any relevant notes or null"
     }
@@ -112,26 +112,30 @@ Return a JSON object with this exact structure:
   "clinic_address": "Address of the clinic or null"
 }
 
-CRITICAL INSTRUCTIONS FOR EXPIRATION DATES:
-1. Look carefully for expiration/due dates - they may be labeled as: "expires", "exp", "valid until", "next due", "due date", "revaccinate by", "booster due"
-2. If no explicit expiration date is found, ESTIMATE based on standard vaccine durations:
-   - Rabies: 1 year (first dose) or 3 years (subsequent) from administered date
-   - DHPP/DAPP/DA2PP: 1 year from administered date
-   - Bordetella: 6 months to 1 year from administered date
-   - Leptospirosis: 1 year from administered date
-   - Lyme: 1 year from administered date
-   - Canine Influenza: 1 year from administered date
-   - FVRCP (cats): 1-3 years from administered date
-3. Create a reminder in the "reminders" array for EACH vaccine that has an expiration date
+CRITICAL: DISTINGUISH BETWEEN TWO TYPES OF EXPIRATION DATES:
+1. VIAL/MEDICATION EXPIRATION: This is when the vaccine medication itself expires (printed on the vial/bottle). IGNORE THIS DATE.
+2. VACCINATION DUE DATE: This is when the PET needs the vaccine again (booster/revaccination). USE THIS DATE for expiration_date.
 
-CRITICAL INSTRUCTIONS FOR REMINDERS:
-- For EVERY vaccine with an expiration date, create a corresponding reminder
-- The reminder title should be "[Vaccine Name] booster due"
+Look for phrases like: "next due", "due date", "revaccinate by", "booster due", "valid until", "protection expires"
+Do NOT use dates that refer to the medication lot/vial expiration.
+
+IF NO EXPLICIT BOOSTER DUE DATE IS FOUND, calculate based on standard vaccine durations from the administered date:
+   - Rabies: 1 year (first dose) or 3 years (subsequent)
+   - DHPP/DAPP/DA2PP: 1 year
+   - Bordetella: 1 year
+   - Leptospirosis: 1 year
+   - Lyme: 1 year
+   - Canine Influenza: 1 year
+   - FVRCP (cats): 1-3 years
+
+FOR REMINDERS:
+- Create a reminder for EACH vaccine with a due date
+- Title should be "[Vaccine Name] booster due"
 - The due_date should match the vaccine's expiration_date
 - Set event_type to "vet_appointment"
 
 Dates should be in YYYY-MM-DD format.
-If a year is not specified, assume the current year (2025) or next year for future dates.
+If a year is not specified, assume the current year (2026) or next year for future dates.
 Return ONLY the JSON object, no other text.`
 
     // Use retry logic for rate limits
