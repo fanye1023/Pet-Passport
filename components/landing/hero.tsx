@@ -8,6 +8,13 @@ import { Shield, Globe, Sparkles, Eye } from 'lucide-react'
 const DEMO_URL = '/share/demo-buddy-golden'
 
 function AnimatedDogPassport() {
+  const infoBubbles = [
+    { text: 'Feeding: 8am & 6pm', icon: '🍽️', position: 'top-4 right-4 lg:top-6 lg:right-8', delay: '0s' },
+    { text: 'Walk: 30 min morning', icon: '🚶', position: 'top-16 left-2 lg:top-12 lg:left-4', delay: '0.5s' },
+    { text: 'Emergency: Dr. Smith', icon: '📞', position: 'bottom-24 right-2 lg:bottom-28 lg:right-6', delay: '1s' },
+    { text: 'Allergies: Chicken', icon: '⚠️', position: 'top-8 left-1/4 lg:top-4 lg:left-1/3', delay: '1.5s' },
+  ]
+
   return (
     <div className="relative w-full h-full flex items-center justify-center">
       {/* Floating hearts */}
@@ -29,24 +36,19 @@ function AnimatedDogPassport() {
         ))}
       </div>
 
-      {/* Passport */}
-      <div className="absolute right-4 top-4 lg:right-8 lg:top-6 animate-float-slow z-10">
-        <div className="relative">
-          <div className="w-20 h-28 lg:w-28 lg:h-38 bg-gradient-to-br from-teal-500 to-teal-700 rounded-lg shadow-xl transform rotate-12 hover:rotate-6 transition-transform duration-500">
-            <div className="absolute inset-2 border border-teal-300/30 rounded flex flex-col items-center justify-center">
-              <div className="w-6 h-6 lg:w-10 lg:h-10 rounded-full border-2 border-teal-200/50 flex items-center justify-center mb-1">
-                <svg viewBox="0 0 24 24" className="w-4 h-4 lg:w-6 lg:h-6 text-teal-100" fill="currentColor">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
-                </svg>
-              </div>
-              <div className="text-[6px] lg:text-[8px] text-teal-100 font-semibold tracking-wider">PET PASSPORT</div>
-            </div>
-          </div>
-          <div className="absolute -bottom-1 -right-1 w-8 h-8 lg:w-12 lg:h-12 rounded-full border-2 border-dashed border-green-500/70 flex items-center justify-center animate-pulse-slow bg-white/80">
-            <span className="text-[5px] lg:text-[7px] text-green-600 font-bold">APPROVED</span>
+      {/* Floating info bubbles */}
+      {infoBubbles.map((bubble, i) => (
+        <div
+          key={i}
+          className={`absolute ${bubble.position} z-10 animate-float-slow`}
+          style={{ animationDelay: bubble.delay }}
+        >
+          <div className="bg-white/95 dark:bg-card/95 backdrop-blur-sm rounded-lg shadow-lg px-3 py-2 border border-primary/20 flex items-center gap-2 hover:scale-105 transition-transform">
+            <span className="text-sm lg:text-base">{bubble.icon}</span>
+            <span className="text-[10px] lg:text-xs font-medium text-foreground whitespace-nowrap">{bubble.text}</span>
           </div>
         </div>
-      </div>
+      ))}
 
       {/* Dogs container */}
       <div className="flex items-end gap-4 lg:gap-6">
