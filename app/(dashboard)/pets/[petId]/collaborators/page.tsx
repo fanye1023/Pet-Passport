@@ -4,6 +4,7 @@ import { useState, useEffect, use } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { getCollaborators, getPendingInvitations } from '@/lib/collaborators'
 import { useCollaboratorRole } from '@/hooks/use-collaborator-role'
+import { useSubscription } from '@/hooks/use-subscription'
 import { CollaboratorList } from '@/components/collaborators/collaborator-list'
 import { PendingInvitations } from '@/components/collaborators/pending-invitations'
 import { InviteForm } from '@/components/collaborators/invite-form'
@@ -11,8 +12,10 @@ import { RoleBadge } from '@/components/collaborators/role-badge'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import { UpgradePrompt } from '@/components/ui/upgrade-prompt'
+import { Button } from '@/components/ui/button'
 import type { PetCollaborator, PetInvitation, Pet } from '@/lib/types/pet'
-import { Users, Info } from 'lucide-react'
+import { Users, Info, Crown } from 'lucide-react'
 
 export default function CollaboratorsPage({
   params
@@ -25,8 +28,10 @@ export default function CollaboratorsPage({
   const [invitations, setInvitations] = useState<PetInvitation[]>([])
   const [currentUserId, setCurrentUserId] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [showUpgradePrompt, setShowUpgradePrompt] = useState(false)
 
   const { role, isOwner, canManageCollaborators } = useCollaboratorRole(petId)
+  const { checkLimit } = useSubscription()
 
   const fetchData = async () => {
     setIsLoading(true)
@@ -91,11 +96,33 @@ export default function CollaboratorsPage({
         </div>
 
         {canManageCollaborators && (
-          <InviteForm
-            petId={petId}
-            petName={pet.name}
-            onInviteSent={fetchData}
-          />
+          (() => {
+            const collabLimit = checkLimit('maxCollaborators', collaborators.length)
+            if (!collabLimit.allowed) {
+              return (
+                <>
+                  <Button onClick={() => setShowUpgradePrompt(true)}>
+                    <Crown className="h-4 w-4 mr-2" />
+                    Invite
+                  </Button>
+                  <UpgradePrompt
+                    open={showUpgradePrompt}
+                    onOpenChange={setShowUpgradePrompt}
+                    feature="collaborators"
+                    currentUsage={collaborators.length}
+                    limit={typeof collabLimit.limit === 'number' ? collabLimit.limit : undefined}
+                  />
+                </>
+              )
+            }
+            return (
+              <InviteForm
+                petId={petId}
+                petName={pet.name}
+                onInviteSent={fetchData}
+              />
+            )
+          })()
         )}
       </div>
 

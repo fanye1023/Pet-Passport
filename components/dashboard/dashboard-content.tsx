@@ -8,11 +8,13 @@ import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Plus, PawPrint, ChevronRight, AlertTriangle, Sparkles, CalendarDays, Activity } from 'lucide-react'
+import { Plus, PawPrint, ChevronRight, AlertTriangle, Sparkles, CalendarDays, Activity, Crown } from 'lucide-react'
 import { AnimatedMascot } from '@/components/ui/animated-mascot'
 import { ProfileCompletion } from '@/components/pets/profile-completion'
 import { DeletePetButton } from '@/components/pets/delete-pet-button'
 import { AggregateAlerts } from '@/components/dashboard/aggregate-alerts'
+import { UpgradePrompt } from '@/components/ui/upgrade-prompt'
+import { useSubscription } from '@/hooks/use-subscription'
 import type { Pet, Vaccination, CareEvent } from '@/lib/types/pet'
 
 interface PetWithStats extends Pet {
@@ -34,6 +36,8 @@ export function DashboardContent() {
   const [vaccinationsByPet, setVaccinationsByPet] = useState<Map<string, Vaccination[]>>(new Map())
   const [eventsByPet, setEventsByPet] = useState<Map<string, CareEvent[]>>(new Map())
   const [isLoading, setIsLoading] = useState(true)
+  const [showUpgradePrompt, setShowUpgradePrompt] = useState(false)
+  const { isPremium, checkLimit } = useSubscription()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -175,15 +179,43 @@ export function DashboardContent() {
                   Activity
                 </Button>
               </Link>
-              <Link href="/pets/new">
-                <Button className="shadow-lg">
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Pet
-                </Button>
-              </Link>
+              {(() => {
+                const petLimit = checkLimit('maxPets', petsWithStats.length)
+                if (petLimit.allowed) {
+                  return (
+                    <Link href="/pets/new">
+                      <Button className="shadow-lg">
+                        <Plus className="h-4 w-4 mr-2" />
+                        Add Pet
+                      </Button>
+                    </Link>
+                  )
+                }
+                return (
+                  <Button
+                    className="shadow-lg"
+                    onClick={() => setShowUpgradePrompt(true)}
+                  >
+                    <Crown className="h-4 w-4 mr-2" />
+                    Add Pet
+                  </Button>
+                )
+              })()}
             </div>
           </div>
         </div>
+
+        {/* Upgrade Prompt Modal */}
+        <UpgradePrompt
+          open={showUpgradePrompt}
+          onOpenChange={setShowUpgradePrompt}
+          feature="pets"
+          currentUsage={petsWithStats.length}
+          limit={(() => {
+            const l = checkLimit('maxPets', 0).limit
+            return typeof l === 'number' ? l : undefined
+          })()}
+        />
 
         {/* Aggregate Alerts */}
         {petsWithStats.length > 0 && (

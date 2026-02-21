@@ -373,3 +373,35 @@ export interface CalendarFeedToken {
   created_at: string
   last_accessed_at: string | null
 }
+
+// Subscription Types
+export type SubscriptionTier = 'free' | 'premium'
+
+export interface UserSubscription {
+  id: string
+  user_id: string
+  tier: SubscriptionTier
+  started_at: string
+  expires_at: string | null
+  stripe_customer_id: string | null
+  stripe_subscription_id: string | null
+  created_at: string
+  updated_at: string
+}
+
+// Free tier limits
+export const FREE_TIER_LIMITS = {
+  maxPets: 1,
+  maxShareLinks: 3,
+  maxCollaborators: 2,
+  calendarSync: false,
+  smsReminders: false,
+} as const
+
+export const PREMIUM_FEATURES = {
+  maxPets: Infinity,
+  maxShareLinks: Infinity,
+  maxCollaborators: Infinity,
+  calendarSync: true,
+  smsReminders: true,
+} as const

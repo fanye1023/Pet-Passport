@@ -23,13 +23,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import { Plus, Share2, Trash2, Copy, Check, Eye, ExternalLink, Lock } from 'lucide-react'
+import { Plus, Share2, Trash2, Copy, Check, Eye, ExternalLink, Lock, Crown } from 'lucide-react'
 import { ShareLink, Pet } from '@/lib/types/pet'
 import { isDateExpired } from '@/lib/utils'
 import { ShareQRCode } from '@/components/share/qr-code'
 import { toast } from 'sonner'
 import { RecordCardSkeleton } from '@/components/ui/skeletons'
 import { EmptyState } from '@/components/ui/empty-state'
+import { UpgradePrompt } from '@/components/ui/upgrade-prompt'
+import { PremiumBadge } from '@/components/ui/premium-badge'
+import { useSubscription } from '@/hooks/use-subscription'
 
 const visibilityOptions = [
   { key: 'show_vaccinations', label: 'Vaccinations' },
@@ -54,6 +57,8 @@ export default function SharePage() {
   const [dialogOpen, setDialogOpen] = useState(false)
   const [saving, setSaving] = useState(false)
   const [copiedId, setCopiedId] = useState<string | null>(null)
+  const [showUpgradePrompt, setShowUpgradePrompt] = useState(false)
+  const { isPremium, checkLimit } = useSubscription()
 
   const [linkName, setLinkName] = useState('')
   const [expiresIn, setExpiresIn] = useState('never')
@@ -192,13 +197,37 @@ export default function SharePage() {
           </p>
         </div>
 
+        {(() => {
+          const linkLimit = checkLimit('maxShareLinks', links.length)
+          if (!linkLimit.allowed) {
+            return (
+              <>
+                <Button onClick={() => setShowUpgradePrompt(true)}>
+                  <Crown className="h-4 w-4 mr-2" />
+                  Create Link
+                </Button>
+                <UpgradePrompt
+                  open={showUpgradePrompt}
+                  onOpenChange={setShowUpgradePrompt}
+                  feature="share links"
+                  currentUsage={links.length}
+                  limit={typeof linkLimit.limit === 'number' ? linkLimit.limit : undefined}
+                />
+              </>
+            )
+          }
+          return null
+        })()}
+
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus className="h-4 w-4 mr-2" />
-              Create Link
-            </Button>
-          </DialogTrigger>
+          {checkLimit('maxShareLinks', links.length).allowed && (
+            <DialogTrigger asChild>
+              <Button>
+                <Plus className="h-4 w-4 mr-2" />
+                Create Link
+              </Button>
+            </DialogTrigger>
+          )}
           <DialogContent className="max-w-md">
             <DialogHeader>
               <DialogTitle>Create Share Link</DialogTitle>

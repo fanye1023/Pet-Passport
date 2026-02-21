@@ -31,9 +31,13 @@ import {
   ExternalLink,
   Link2,
   Loader2,
+  Crown,
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { generateCalendarFeedToken, getCalendarFeedUrl } from '@/lib/calendar/ics-generator'
+import { PremiumBadge } from '@/components/ui/premium-badge'
+import { UpgradePrompt } from '@/components/ui/upgrade-prompt'
+import { useSubscription } from '@/hooks/use-subscription'
 
 interface CalendarFeedToken {
   id: string
@@ -59,6 +63,10 @@ export function CalendarFeedManager({ petId, petName }: CalendarFeedManagerProps
   const [saving, setSaving] = useState(false)
   const [feedName, setFeedName] = useState('')
   const [copiedId, setCopiedId] = useState<string | null>(null)
+  const [showUpgradePrompt, setShowUpgradePrompt] = useState(false)
+  const { checkLimit } = useSubscription()
+
+  const calendarSyncAllowed = checkLimit('calendarSync', 0).allowed
 
   const loadFeeds = useCallback(async () => {
     let query = supabase
@@ -186,63 +194,78 @@ export function CalendarFeedManager({ petId, petName }: CalendarFeedManagerProps
             <CardTitle className="flex items-center gap-2">
               <Calendar className="h-5 w-5" />
               Calendar Sync
+              {!calendarSyncAllowed && <PremiumBadge />}
             </CardTitle>
             <CardDescription>
               Subscribe to your pet&apos;s care events in Google Calendar, Apple Calendar, or Outlook
             </CardDescription>
           </div>
-          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-            <DialogTrigger asChild>
-              <Button size="sm">
-                <Plus className="h-4 w-4 mr-2" />
+          {!calendarSyncAllowed ? (
+            <>
+              <Button size="sm" onClick={() => setShowUpgradePrompt(true)}>
+                <Crown className="h-4 w-4 mr-2" />
                 Create Feed
               </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Create Calendar Feed</DialogTitle>
-                <DialogDescription>
-                  Create a subscribable calendar URL that syncs your pet care events to any calendar app.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="space-y-4 pt-4">
-                <div className="space-y-2">
-                  <Label>Feed Name (optional)</Label>
-                  <Input
-                    value={feedName}
-                    onChange={(e) => setFeedName(e.target.value)}
-                    placeholder={petId ? `${petName || 'Pet'} Calendar` : 'All Pets Calendar'}
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    This name will appear in your calendar app
-                  </p>
-                </div>
-                {petId && (
-                  <div className="rounded-lg bg-muted/50 p-3 text-sm">
-                    <p className="font-medium">Pet-specific feed</p>
-                    <p className="text-muted-foreground">
-                      This feed will only include events for {petName || 'this pet'}.
-                    </p>
-                  </div>
-                )}
-                {!petId && (
-                  <div className="rounded-lg bg-muted/50 p-3 text-sm">
-                    <p className="font-medium">All pets feed</p>
-                    <p className="text-muted-foreground">
-                      This feed will include events for all pets you have access to.
-                    </p>
-                  </div>
-                )}
-                <Button
-                  onClick={handleCreateFeed}
-                  disabled={saving}
-                  className="w-full"
-                >
-                  {saving ? 'Creating...' : 'Create Feed'}
+              <UpgradePrompt
+                open={showUpgradePrompt}
+                onOpenChange={setShowUpgradePrompt}
+                feature="Calendar sync"
+              />
+            </>
+          ) : (
+            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+              <DialogTrigger asChild>
+                <Button size="sm">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Create Feed
                 </Button>
-              </div>
-            </DialogContent>
-          </Dialog>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Create Calendar Feed</DialogTitle>
+                  <DialogDescription>
+                    Create a subscribable calendar URL that syncs your pet care events to any calendar app.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4 pt-4">
+                  <div className="space-y-2">
+                    <Label>Feed Name (optional)</Label>
+                    <Input
+                      value={feedName}
+                      onChange={(e) => setFeedName(e.target.value)}
+                      placeholder={petId ? `${petName || 'Pet'} Calendar` : 'All Pets Calendar'}
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      This name will appear in your calendar app
+                    </p>
+                  </div>
+                  {petId && (
+                    <div className="rounded-lg bg-muted/50 p-3 text-sm">
+                      <p className="font-medium">Pet-specific feed</p>
+                      <p className="text-muted-foreground">
+                        This feed will only include events for {petName || 'this pet'}.
+                      </p>
+                    </div>
+                  )}
+                  {!petId && (
+                    <div className="rounded-lg bg-muted/50 p-3 text-sm">
+                      <p className="font-medium">All pets feed</p>
+                      <p className="text-muted-foreground">
+                        This feed will include events for all pets you have access to.
+                      </p>
+                    </div>
+                  )}
+                  <Button
+                    onClick={handleCreateFeed}
+                    disabled={saving}
+                    className="w-full"
+                  >
+                    {saving ? 'Creating...' : 'Create Feed'}
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
+          )}
         </div>
       </CardHeader>
       <CardContent>
@@ -252,10 +275,17 @@ export function CalendarFeedManager({ petId, petName }: CalendarFeedManagerProps
             <p className="text-muted-foreground mb-4">
               No calendar feeds yet. Create one to sync your pet care events.
             </p>
-            <Button variant="outline" onClick={() => setDialogOpen(true)}>
-              <Plus className="h-4 w-4 mr-2" />
-              Create Your First Feed
-            </Button>
+            {calendarSyncAllowed ? (
+              <Button variant="outline" onClick={() => setDialogOpen(true)}>
+                <Plus className="h-4 w-4 mr-2" />
+                Create Your First Feed
+              </Button>
+            ) : (
+              <Button variant="outline" onClick={() => setShowUpgradePrompt(true)}>
+                <Crown className="h-4 w-4 mr-2" />
+                Upgrade to Unlock
+              </Button>
+            )}
           </div>
         ) : (
           <div className="space-y-3">
