@@ -41,6 +41,7 @@ import { isDateExpired } from '@/lib/utils'
 import { EmergencyBanner } from '@/components/share/emergency-banner'
 import { PrintButton } from '@/components/share/print-button'
 import { ShareStickyHeader } from '@/components/share/share-sticky-header'
+import { SaveForLater } from '@/components/share/save-for-later'
 import { BrandLogo } from '@/components/food/brand-logo'
 
 interface ShareContentProps {
@@ -149,6 +150,16 @@ export function ShareContent({ data, shareToken }: ShareContentProps) {
       </div>
 
       <div className="container mx-auto max-w-5xl py-6 px-4 bento-grid-share">
+
+        {/* Save for Easy Access - Help recipients save the link */}
+        {shareToken && (
+          <div className="span-full print:hidden">
+            <SaveForLater
+              petName={pet.name}
+              shareToken={shareToken}
+            />
+          </div>
+        )}
 
         {/* Emergency Contacts - Show first for sitters */}
         {visibility.emergency_contacts && emergency_contacts && emergency_contacts.length > 0 && (
