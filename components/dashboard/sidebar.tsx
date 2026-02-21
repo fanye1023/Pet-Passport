@@ -23,11 +23,6 @@ const navItems = [
     href: '/activity',
     icon: Activity,
   },
-  {
-    label: 'Saved Pets',
-    href: '/saved',
-    icon: Bookmark,
-  },
 ]
 
 export function Sidebar() {

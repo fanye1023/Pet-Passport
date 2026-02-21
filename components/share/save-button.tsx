@@ -175,7 +175,7 @@ export function SaveButton({ petName, shareToken }: SaveButtonProps) {
             )}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-80 p-4" align="center">
+        <PopoverContent className="w-96 p-4" align="center">
           <div className="space-y-3">
             <div className="text-center pb-2 border-b">
               <p className="font-medium text-sm">Save {petName}'s Profile</p>

@@ -9,7 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { LogOut, User as UserIcon, Menu, LayoutDashboard, CalendarDays, Activity, Plus, Bookmark } from 'lucide-react'
+import { LogOut, User as UserIcon, Menu, LayoutDashboard, CalendarDays, Activity, Plus } from 'lucide-react'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { Logo } from '@/components/ui/logo'
@@ -18,7 +18,6 @@ const mobileNavItems = [
   { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { label: 'Calendar', href: '/calendar', icon: CalendarDays },
   { label: 'Activity', href: '/activity', icon: Activity },
-  { label: 'Saved Pets', href: '/saved', icon: Bookmark },
   { label: 'Add Pet', href: '/pets/new', icon: Plus },
 ]
 
