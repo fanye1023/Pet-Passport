@@ -43,10 +43,22 @@ export async function GET(request: NextRequest) {
   }
 
   // Extract path from the document URL
-  const urlPath = documentUrl.split('/pet-documents/')[1]
+  // The URL might be URL-encoded, so we need to handle both cases
+  let urlPath = documentUrl.split('/pet-documents/')[1]
 
   if (!urlPath) {
     return NextResponse.json({ error: 'Invalid document URL' }, { status: 400 })
+  }
+
+  // Decode the path in case it was double-encoded
+  // But preserve the original encoding that Supabase expects
+  try {
+    // If the path contains %25 (encoded %), it was double-encoded
+    if (urlPath.includes('%25')) {
+      urlPath = decodeURIComponent(urlPath)
+    }
+  } catch {
+    // If decoding fails, use the original path
   }
 
   // Verify the document belongs to the shared pet
@@ -89,7 +101,11 @@ export async function GET(request: NextRequest) {
     .createSignedUrl(urlPath, 300)
 
   if (signError || !signedUrlData?.signedUrl) {
-    return NextResponse.json({ error: 'Failed to generate signed URL' }, { status: 500 })
+    console.error('Signed URL error:', { error: signError, urlPath, documentUrl })
+    return NextResponse.json({
+      error: 'Failed to generate signed URL',
+      details: signError?.message
+    }, { status: 500 })
   }
 
   // Redirect to the signed URL
