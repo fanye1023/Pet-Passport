@@ -165,9 +165,12 @@ export default function SharePage() {
     loadLinks()
   }
 
-  const copyLink = async (token: string, id: string) => {
+  const copyLink = async (token: string, id: string, linkName?: string | null) => {
     const url = getShareUrl(token)
-    await navigator.clipboard.writeText(url)
+    const petName = pet?.name || 'Pet'
+    const displayName = linkName || `${petName}'s ShareLink`
+    const textToCopy = `${displayName}: ${url}`
+    await navigator.clipboard.writeText(textToCopy)
     setCopiedId(id)
     toast.success('Link copied to clipboard')
     setTimeout(() => setCopiedId(null), 2000)
@@ -403,7 +406,7 @@ export default function SharePage() {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => copyLink(link.token, link.id)}
+                    onClick={() => copyLink(link.token, link.id, link.name)}
                   >
                     {copiedId === link.id ? (
                       <>
