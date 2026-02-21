@@ -49,7 +49,7 @@ export function PinEntryGate({ token, petName }: PinEntryGateProps) {
   }
 
   if (data) {
-    return <ShareContent data={data} />
+    return <ShareContent data={data} shareToken={token} />
   }
 
   return (
