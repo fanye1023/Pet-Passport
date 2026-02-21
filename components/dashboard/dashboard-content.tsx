@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Plus, PawPrint, ChevronRight, AlertTriangle, Sparkles, CalendarDays, Activity, Crown } from 'lucide-react'
+import { Plus, PawPrint, ChevronRight, AlertTriangle, Sparkles, CalendarDays, Activity, Crown, Bookmark, ExternalLink, Users } from 'lucide-react'
 import { AnimatedMascot } from '@/components/ui/animated-mascot'
 import { ProfileCompletion } from '@/components/pets/profile-completion'
 import { DeletePetButton } from '@/components/pets/delete-pet-button'
@@ -16,6 +16,20 @@ import { AggregateAlerts } from '@/components/dashboard/aggregate-alerts'
 import { UpgradePrompt } from '@/components/ui/upgrade-prompt'
 import { useSubscription } from '@/hooks/use-subscription'
 import type { Pet, Vaccination, CareEvent } from '@/lib/types/pet'
+
+interface SavedPet {
+  id: string
+  custom_name: string
+  saved_at: string
+  share_token: string
+  is_active: boolean
+  pet: {
+    name: string
+    species: string
+    breed: string | null
+    photo_url: string | null
+  }
+}
 
 interface PetWithStats extends Pet {
   vaccinations: number
@@ -35,6 +49,7 @@ export function DashboardContent() {
   const [petsWithStats, setPetsWithStats] = useState<PetWithStats[]>([])
   const [vaccinationsByPet, setVaccinationsByPet] = useState<Map<string, Vaccination[]>>(new Map())
   const [eventsByPet, setEventsByPet] = useState<Map<string, CareEvent[]>>(new Map())
+  const [savedPets, setSavedPets] = useState<SavedPet[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [showUpgradePrompt, setShowUpgradePrompt] = useState(false)
   const { isPremium, checkLimit } = useSubscription()
@@ -112,6 +127,13 @@ export function DashboardContent() {
       })
 
       setPetsWithStats(petsStats)
+
+      // Fetch saved share links (pets shared with me)
+      const { data: savedData } = await supabase.rpc('get_saved_share_links')
+      if (savedData && Array.isArray(savedData)) {
+        setSavedPets(savedData)
+      }
+
       setIsLoading(false)
     }
 
@@ -254,8 +276,67 @@ export function DashboardContent() {
             </div>
           </div>
         )}
+
+        {/* Pets Shared with Me */}
+        {savedPets.length > 0 && (
+          <>
+            <div className="bento-item span-full">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Users className="h-5 w-5 text-primary" />
+                  <h2 className="text-lg font-semibold">Pets Shared with Me</h2>
+                  <Badge variant="secondary" className="ml-1">{savedPets.length}</Badge>
+                </div>
+                <Link href="/saved">
+                  <Button variant="ghost" size="sm">
+                    View All
+                    <ChevronRight className="h-4 w-4 ml-1" />
+                  </Button>
+                </Link>
+              </div>
+            </div>
+
+            {savedPets.slice(0, 4).map((saved) => (
+              <div key={saved.id} className="bento-item span-3">
+                <SharedPetCard saved={saved} />
+              </div>
+            ))}
+          </>
+        )}
       </div>
     </div>
+  )
+}
+
+function SharedPetCard({ saved }: { saved: SavedPet }) {
+  return (
+    <Link href={`/share/${saved.share_token}`}>
+      <div className={`glass-card rounded-2xl p-4 h-full transition-all hover:scale-[1.02] ${!saved.is_active ? 'opacity-60' : ''}`}>
+        <div className="flex items-center gap-3">
+          <Avatar className="h-12 w-12 ring-2 ring-primary/20">
+            <AvatarImage src={saved.pet.photo_url || undefined} alt={saved.pet.name} />
+            <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/5">
+              <PawPrint className="h-5 w-5 text-primary/60" />
+            </AvatarFallback>
+          </Avatar>
+
+          <div className="flex-1 min-w-0">
+            <h3 className="font-medium text-sm truncate">{saved.custom_name || saved.pet.name}</h3>
+            <p className="text-xs text-muted-foreground truncate">
+              {saved.pet.breed ? `${saved.pet.breed} ` : ''}{saved.pet.species}
+            </p>
+          </div>
+
+          <ExternalLink className="h-4 w-4 text-muted-foreground shrink-0" />
+        </div>
+
+        {!saved.is_active && (
+          <Badge variant="destructive" className="mt-2 text-xs">
+            Link Expired
+          </Badge>
+        )}
+      </div>
+    </Link>
   )
 }
 
