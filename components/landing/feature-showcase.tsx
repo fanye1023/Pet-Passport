@@ -494,8 +494,8 @@ function ShowcaseSection({ section }: { section: FeatureSection }) {
   const { ref: mockRef, isVisible: mockVisible } = useScrollAnimation(0.05)
 
   return (
-    <section className={section.muted ? 'bg-muted/30' : ''}>
-      <div className="container mx-auto px-4 py-20">
+    <section className={section.muted ? 'bg-muted/30 border-y' : ''}>
+      <div className="container mx-auto px-4 py-20 lg:py-28">
         <div
           className={`grid gap-12 lg:grid-cols-2 items-center ${
             section.reversed ? 'lg:direction-rtl' : ''
@@ -556,19 +556,20 @@ export function FeatureShowcase() {
   const { ref: headerRef, isVisible: headerVisible } = useScrollAnimation()
 
   return (
-    <div id="features">
-      <div className="container mx-auto px-4 pt-24 pb-8">
+    <div id="features" className="border-t">
+      <div className="container mx-auto px-4 pt-20 lg:pt-28 pb-8">
         <div
           ref={headerRef}
           className={`text-center transition-all duration-700 ${
             headerVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`}
         >
+          <p className="text-sm font-medium text-primary mb-3">Features</p>
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-4">
-            Everything you need for your pet
+            Everything your pet needs
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Our comprehensive platform makes managing your pet&apos;s health records simple and stress-free.
+            A complete platform for managing your pet&apos;s health records, care instructions, and more.
           </p>
         </div>
       </div>

@@ -50,18 +50,20 @@ export function Pricing() {
   const { ref: gridRef, isVisible: gridVisible } = useScrollAnimation(0.05)
 
   return (
-    <section id="pricing" className="container mx-auto px-4 py-24 bg-muted/30">
+    <section id="pricing" className="border-t">
+      <div className="container mx-auto px-4 py-20 lg:py-28">
       <div
         ref={headerRef}
         className={`text-center mb-16 transition-all duration-700 ${
           headerVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}
       >
+        <p className="text-sm font-medium text-primary mb-3">Pricing</p>
         <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-4">
           Simple, transparent pricing
         </h2>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-          Choose the plan that fits your needs. All plans include our core features.
+          Start free, upgrade when you need more.
         </p>
       </div>
 
@@ -128,6 +130,7 @@ export function Pricing() {
             </CardFooter>
           </Card>
         ))}
+      </div>
       </div>
     </section>
   )
