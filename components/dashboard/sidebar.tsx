@@ -1,10 +1,11 @@
 'use client'
 
-import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import Link from 'next/link'
 import { cn } from '@/lib/utils'
-import { LayoutDashboard, Plus, PawPrint, CalendarDays, Activity } from 'lucide-react'
+import { LayoutDashboard, Plus, CalendarDays, Activity } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { Logo } from '@/components/ui/logo'
 
 const navItems = [
   {
@@ -30,10 +31,7 @@ export function Sidebar() {
   return (
     <aside className="hidden md:flex w-64 flex-col glass-nav border-r border-white/20">
       <div className="flex h-16 items-center border-b border-white/20 px-6">
-        <Link href="/" className="flex items-center gap-2 group">
-          <PawPrint className="h-6 w-6 text-primary transition-transform group-hover:scale-110" />
-          <span className="text-xl font-bold bg-gradient-to-r from-primary to-teal-600 bg-clip-text text-transparent">Pet ShareLink</span>
-        </Link>
+        <Logo href="/" />
       </div>
 
       <nav className="flex-1 p-4 space-y-2">

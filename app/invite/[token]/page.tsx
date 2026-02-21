@@ -10,8 +10,9 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Skeleton } from '@/components/ui/skeleton'
 import { RoleBadge } from '@/components/collaborators/role-badge'
+import { Logo } from '@/components/ui/logo'
 import type { InvitationPreview } from '@/lib/types/pet'
-import { PawPrint, Check, X, LogIn, UserPlus } from 'lucide-react'
+import { Check, X, LogIn, UserPlus } from 'lucide-react'
 import { toast } from 'sonner'
 
 export default function InvitePage({
@@ -99,7 +100,6 @@ export default function InvitePage({
           <CardFooter className="justify-center">
             <Link href="/">
               <Button variant="outline">
-                <PawPrint className="h-4 w-4 mr-2" />
                 Go to Pet ShareLink
               </Button>
             </Link>
@@ -117,11 +117,8 @@ export default function InvitePage({
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-teal-500/5 p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <PawPrint className="h-6 w-6 text-primary" />
-            <span className="text-xl font-bold bg-gradient-to-r from-primary to-teal-600 bg-clip-text text-transparent">
-              Pet ShareLink
-            </span>
+          <div className="flex justify-center mb-4">
+            <Logo href="/" />
           </div>
 
           <Avatar className="h-20 w-20 mx-auto mb-4 border-4 border-primary/20">

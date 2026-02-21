@@ -7,7 +7,8 @@ import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { PawPrint, Eye, EyeOff } from 'lucide-react'
+import { Logo } from '@/components/ui/logo'
+import { Eye, EyeOff } from 'lucide-react'
 
 export function LoginForm() {
   const [email, setEmail] = useState('')
@@ -47,13 +48,8 @@ export function LoginForm() {
 
       <div className="w-full max-w-md">
         {/* Logo */}
-        <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center gap-2 group">
-            <PawPrint className="h-10 w-10 text-primary transition-transform group-hover:scale-110" />
-            <span className="text-3xl font-bold bg-gradient-to-r from-primary to-teal-600 bg-clip-text text-transparent">
-              Pet ShareLink
-            </span>
-          </Link>
+        <div className="flex justify-center mb-8">
+          <Logo href="/" size="lg" />
         </div>
 
         {/* Card */}

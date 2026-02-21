@@ -9,9 +9,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { LogOut, User as UserIcon, Menu, PawPrint, LayoutDashboard, CalendarDays, Activity, Plus } from 'lucide-react'
+import { LogOut, User as UserIcon, Menu, LayoutDashboard, CalendarDays, Activity, Plus } from 'lucide-react'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { ThemeToggle } from '@/components/theme-toggle'
+import { Logo } from '@/components/ui/logo'
 
 const mobileNavItems = [
   { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
@@ -37,10 +38,7 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
           </SheetTrigger>
           <SheetContent side="left" className="w-64 p-0 glass">
             <div className="flex h-16 items-center border-b border-white/20 px-6">
-              <Link href="/" className="flex items-center gap-2">
-                <PawPrint className="h-6 w-6 text-primary" />
-                <span className="text-xl font-bold bg-gradient-to-r from-primary to-teal-600 bg-clip-text text-transparent">Pet ShareLink</span>
-              </Link>
+              <Logo href="/" />
             </div>
             <nav className="p-4 space-y-2">
               {mobileNavItems.map((item) => (
@@ -57,7 +55,9 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
           </SheetContent>
         </Sheet>
 
-        <h1 className="text-lg font-semibold md:hidden bg-gradient-to-r from-primary to-teal-600 bg-clip-text text-transparent">Pet ShareLink</h1>
+        <div className="md:hidden">
+          <Logo href="/" size="sm" />
+        </div>
       </div>
 
       <div className="flex items-center gap-2">

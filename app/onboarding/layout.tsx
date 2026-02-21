@@ -1,8 +1,8 @@
 'use client'
 
 import { ReactNode } from 'react'
-import Link from 'next/link'
 import { PawPrint } from 'lucide-react'
+import { Logo } from '@/components/ui/logo'
 
 export default function OnboardingLayout({ children }: { children: ReactNode }) {
   return (
@@ -38,16 +38,8 @@ export default function OnboardingLayout({ children }: { children: ReactNode }) 
       {/* Content */}
       <div className="relative z-10 flex flex-col min-h-[100dvh]">
         {/* Header with logo */}
-        <header className="pt-6 pb-4 px-4 text-center">
-          <Link href="/" className="inline-flex items-center gap-2 group">
-            <div className="relative">
-              <PawPrint className="h-8 w-8 text-primary transition-transform group-hover:scale-110" />
-              <div className="absolute inset-0 bg-primary/20 blur-lg rounded-full scale-150 opacity-0 group-hover:opacity-100 transition-opacity" />
-            </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-primary to-teal-600 bg-clip-text text-transparent">
-              Pet ShareLink
-            </span>
-          </Link>
+        <header className="pt-6 pb-4 px-4 flex justify-center">
+          <Logo href="/" />
         </header>
 
         {/* Main content */}
