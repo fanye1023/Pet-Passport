@@ -215,12 +215,12 @@ export function Hero() {
       <div className="grid gap-12 lg:grid-cols-2 lg:gap-8 items-center">
         <div className="flex flex-col gap-6 animate-fade-in">
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-            Your pet&apos;s digital passport for a{' '}
-            <span className="text-primary">seamless journey</span>
+            Your Pet&apos;s Info,{' '}
+            <span className="text-primary">Shared Safely</span>
           </h1>
           <p className="text-lg text-muted-foreground max-w-[600px]">
-            Keep all your pet&apos;s health records and vaccinations in one secure place.
-            Share instantly with vets, dog walkers, sitters, and more.
+            One link for your dog walker. Another for your pet sitter.
+            You control exactly what they see — and revoke access anytime.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <Link href="/signup">
@@ -237,19 +237,23 @@ export function Hero() {
               <Link href={DEMO_URL} target="_blank">
                 <Button size="lg" variant="secondary" className="w-full sm:w-auto btn-press border-2 border-primary/20 bg-primary/10 hover:bg-primary/20 text-primary font-semibold">
                   <Eye className="h-4 w-4 mr-2" />
-                  See Live Demo
+                  See What Your Pet Sitter Sees
                 </Button>
               </Link>
             )}
           </div>
-          <div className="flex items-center gap-6 pt-4 text-sm text-muted-foreground">
+          <div className="flex flex-wrap items-center gap-4 sm:gap-6 pt-4 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
               <Shield className="h-4 w-4 text-primary" />
-              <span>Secure & Private</span>
+              <span>PIN Protected</span>
             </div>
             <div className="flex items-center gap-2">
               <Globe className="h-4 w-4 text-primary" />
               <span>Share Anywhere</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Eye className="h-4 w-4 text-primary" />
+              <span>You Control Access</span>
             </div>
           </div>
         </div>

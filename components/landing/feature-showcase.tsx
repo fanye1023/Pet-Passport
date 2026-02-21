@@ -441,6 +441,24 @@ interface FeatureSection {
 
 const sections: FeatureSection[] = [
   {
+    title: 'Shareable Links You Control',
+    description:
+      'Create custom share links for different people — one for your pet sitter, another for your dog walker — each with exactly the info they need. Links are PIN-protected, can expire, and update automatically when you add or change information.',
+    bullets: ['Choose what to share with each person', 'PIN-protected & expiring links', 'One-tap emergency contacts'],
+    mock: <MockSharePage />,
+    reversed: false,
+    muted: false,
+  },
+  {
+    title: 'Food, Routine & Sitter Instructions',
+    description:
+      'Track feeding schedules, daily routines, and care instructions in one place. Keep everything organized so pet care is consistent whether you\'re home or away.',
+    bullets: ['Meal schedules & portion sizes', 'Daily routines & activities', 'House access & sitter notes'],
+    mock: <MockFoodRoutine />,
+    reversed: true,
+    muted: true,
+  },
+  {
     title: 'AI-Powered Document Extraction',
     description:
       'Upload vaccine records or insurance PDFs and AI automatically extracts all relevant data — vaccine names, dates, policy numbers, coverage details. Due dates are automatically added to your calendar.',
@@ -459,29 +477,11 @@ const sections: FeatureSection[] = [
     muted: true,
   },
   {
-    title: 'Food, Routine, and Sitter Instructions',
-    description:
-      'Track feeding schedules, daily routines, and care instructions in one place. Keep everything organized so pet care is consistent whether you\'re home or away.',
-    bullets: ['Meal schedules & portion sizes', 'Daily routines & activities', 'House access & sitter notes'],
-    mock: <MockFoodRoutine />,
-    reversed: false,
-    muted: false,
-  },
-  {
     title: 'Share With Your Whole Family',
     description:
       'Invite family members, vets, or caretakers with role-based access. Owners control everything, editors can update records, viewers can see but not change.',
     bullets: ['Role-based permissions', 'Easy email invites', 'Full audit control'],
     mock: <MockCollaborators />,
-    reversed: true,
-    muted: true,
-  },
-  {
-    title: 'Shareable Links You Control',
-    description:
-      'Create custom share links for different people — one for your pet sitter, another for your dog walker — each with exactly the info they need. Links are PIN-protected, can expire, and update automatically when you add or change information.',
-    bullets: ['Choose what to share with each person', 'PIN-protected & expiring links', 'One-tap emergency contacts'],
-    mock: <MockSharePage />,
     reversed: false,
     muted: false,
   },

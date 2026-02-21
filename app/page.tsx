@@ -1,4 +1,4 @@
-import { Header, Hero, Features, Pricing, Footer } from '@/components/landing'
+import { Header, Hero, UseCases, Features, Comparison, Pricing, Footer } from '@/components/landing'
 
 export default function Home() {
   return (
@@ -6,7 +6,9 @@ export default function Home() {
       <Header />
       <main className="flex-1">
         <Hero />
+        <UseCases />
         <Features />
+        <Comparison />
         <Pricing />
       </main>
       <Footer />

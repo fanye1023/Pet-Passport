@@ -1,6 +1,8 @@
 export { Header } from './header'
 export { Hero } from './hero'
+export { UseCases } from './use-cases'
 export { Features } from './features'
+export { Comparison } from './comparison'
 export { Testimonials } from './testimonials'
 export { Pricing } from './pricing'
 export { Footer } from './footer'
