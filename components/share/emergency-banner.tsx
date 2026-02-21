@@ -48,15 +48,33 @@ export function EmergencyBanner({ emergencyContacts, veterinarians, petName }: E
                     Emergency Contacts
                   </h3>
                   <div className="space-y-3">
-                    {emergencyContacts.map((contact) => (
+                    {/* Sort: owners first, then primary, then by name */}
+                    {[...emergencyContacts]
+                      .sort((a, b) => {
+                        if (a.contact_type === 'owner' && b.contact_type !== 'owner') return -1
+                        if (b.contact_type === 'owner' && a.contact_type !== 'owner') return 1
+                        if (a.is_primary && !b.is_primary) return -1
+                        if (b.is_primary && !a.is_primary) return 1
+                        return a.name.localeCompare(b.name)
+                      })
+                      .map((contact) => (
                       <a
                         key={contact.id}
                         href={`tel:${contact.phone}`}
-                        className="flex items-center justify-between p-3 bg-red-50 dark:bg-red-950/50 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors"
+                        className={`flex items-center justify-between p-3 rounded-lg transition-colors ${
+                          contact.contact_type === 'owner'
+                            ? 'bg-primary/10 hover:bg-primary/20 ring-1 ring-primary/30'
+                            : 'bg-red-50 dark:bg-red-950/50 hover:bg-red-100 dark:hover:bg-red-900/50'
+                        }`}
                       >
                         <div>
-                          <p className="font-medium text-foreground">{contact.name}</p>
-                          {contact.relationship && (
+                          <p className="font-medium text-foreground flex items-center gap-2">
+                            {contact.name}
+                            {contact.contact_type === 'owner' && (
+                              <span className="text-xs bg-primary/20 text-primary px-1.5 py-0.5 rounded">Owner</span>
+                            )}
+                          </p>
+                          {contact.relationship && contact.contact_type !== 'owner' && (
                             <p className="text-sm text-muted-foreground">{contact.relationship}</p>
                           )}
                         </div>
