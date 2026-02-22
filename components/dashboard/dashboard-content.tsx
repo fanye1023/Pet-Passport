@@ -467,9 +467,9 @@ function PetCardWithStats({ pet, onDeleted }: { pet: PetWithStats; onDeleted: ()
               )}
             </div>
           </div>
-
-          <ChevronRight className="h-5 w-5 text-muted-foreground flex-shrink-0 transition-transform group-hover:translate-x-1" />
         </div>
+
+        <ChevronRight className="absolute bottom-4 right-4 h-5 w-5 text-muted-foreground transition-transform group-hover:translate-x-1" />
       </Link>
 
       {hasAlerts && (
