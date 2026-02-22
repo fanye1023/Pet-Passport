@@ -91,6 +91,24 @@ export function ShareContent({ data, shareToken }: ShareContentProps) {
 
   return (
     <div className="min-h-screen bg-muted/30">
+      {/* Top navigation bar */}
+      <div className="absolute top-0 left-0 right-0 z-30 print:hidden">
+        <div className="container mx-auto max-w-5xl px-4 py-3">
+          <a
+            href="/"
+            className={`inline-flex items-center gap-2 text-sm font-medium transition-colors ${pet.photo_url ? 'text-white/90 hover:text-white' : 'text-muted-foreground hover:text-foreground'}`}
+          >
+            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6">
+              <rect x="4" y="4" width="40" height="40" rx="10" fill="currentColor" fillOpacity="0.2"/>
+              <circle cx="16" cy="24" r="6" fill="currentColor"/>
+              <circle cx="32" cy="24" r="6" fill="currentColor"/>
+              <rect x="16" y="22" width="16" height="4" fill="currentColor"/>
+            </svg>
+            <span className="hidden sm:inline">Pet ShareLink</span>
+          </a>
+        </div>
+      </div>
+
       {/* Sticky header for scrolling */}
       <ShareStickyHeader
         petName={pet.name}
