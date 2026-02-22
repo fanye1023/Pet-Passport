@@ -33,7 +33,7 @@ export default function SettingsPage() {
   const handlePasswordReset = async () => {
     setIsUpdating(true)
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/reset-password`,
+      redirectTo: `${window.location.origin}/auth/callback?next=/reset-password`,
     })
     setIsUpdating(false)
 
@@ -42,7 +42,7 @@ export default function SettingsPage() {
       return
     }
 
-    toast.success('Password reset email sent!')
+    toast.success('Password reset email sent! Check your inbox.')
   }
 
   const handleSignOut = async () => {
