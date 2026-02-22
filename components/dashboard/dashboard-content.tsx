@@ -8,13 +8,14 @@ import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Plus, PawPrint, ChevronRight, AlertTriangle, Sparkles, CalendarDays, Activity, Crown, ExternalLink, Users } from 'lucide-react'
+import { Plus, PawPrint, ChevronRight, AlertTriangle, Sparkles, CalendarDays, Activity, Crown, ExternalLink, Users, X } from 'lucide-react'
 import { AnimatedMascot } from '@/components/ui/animated-mascot'
 import { ProfileCompletion } from '@/components/pets/profile-completion'
 import { DeletePetButton } from '@/components/pets/delete-pet-button'
 import { AggregateAlerts } from '@/components/dashboard/aggregate-alerts'
 import { UpgradePrompt } from '@/components/ui/upgrade-prompt'
 import { useSubscription } from '@/hooks/use-subscription'
+import { toast } from 'sonner'
 import type { Pet, Vaccination, CareEvent } from '@/lib/types/pet'
 
 interface SavedPet {
@@ -142,6 +143,19 @@ export function DashboardContent() {
 
   const handlePetDeleted = (petId: string) => {
     setPetsWithStats((prev) => prev.filter((p) => p.id !== petId))
+  }
+
+  const handleRemoveSavedPet = async (savedId: string) => {
+    const supabase = createClient()
+    const { error } = await supabase.rpc('remove_saved_share_link', {
+      p_saved_link_id: savedId,
+    })
+    if (error) {
+      toast.error('Failed to remove')
+      return
+    }
+    setSavedPets((prev) => prev.filter((p) => p.id !== savedId))
+    toast.success('Removed from saved pets')
   }
 
   if (isLoading) {
@@ -309,7 +323,7 @@ export function DashboardContent() {
 
             {savedPets.slice(0, 4).map((saved) => (
               <div key={saved.id} className="bento-item span-3">
-                <SharedPetCard saved={saved} />
+                <SharedPetCard saved={saved} onRemove={() => handleRemoveSavedPet(saved.id)} />
               </div>
             ))}
           </>
@@ -319,10 +333,23 @@ export function DashboardContent() {
   )
 }
 
-function SharedPetCard({ saved }: { saved: SavedPet }) {
+function SharedPetCard({ saved, onRemove }: { saved: SavedPet; onRemove?: () => void }) {
   return (
-    <Link href={`/share/${saved.share_token}`}>
-      <div className={`glass-card rounded-2xl p-4 h-full transition-all hover:scale-[1.02] ${!saved.is_active ? 'opacity-60' : ''}`}>
+    <div className={`glass-card rounded-2xl p-4 h-full transition-all hover:scale-[1.02] group relative ${!saved.is_active ? 'opacity-60' : ''}`}>
+      {onRemove && (
+        <button
+          onClick={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            onRemove()
+          }}
+          className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-10 p-1.5 rounded-full hover:bg-destructive/10 text-muted-foreground hover:text-destructive"
+          title="Remove from saved"
+        >
+          <X className="h-4 w-4" />
+        </button>
+      )}
+      <Link href={`/share/${saved.share_token}`}>
         <div className="flex items-center gap-3">
           <Avatar className="h-12 w-12 ring-2 ring-primary/20">
             <AvatarImage src={saved.pet.photo_url || undefined} alt={saved.pet.name} />
@@ -346,8 +373,8 @@ function SharedPetCard({ saved }: { saved: SavedPet }) {
             Link Expired
           </Badge>
         )}
-      </div>
-    </Link>
+      </Link>
+    </div>
   )
 }
 
