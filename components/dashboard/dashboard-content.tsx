@@ -8,15 +8,13 @@ import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Plus, PawPrint, ChevronRight, AlertTriangle, Sparkles, CalendarDays, Activity, Crown, ExternalLink, Users, Heart, Trash2 } from 'lucide-react'
+import { Plus, PawPrint, ChevronRight, AlertTriangle, Sparkles, CalendarDays, Activity, Crown, ExternalLink, Users } from 'lucide-react'
 import { AnimatedMascot } from '@/components/ui/animated-mascot'
 import { ProfileCompletion } from '@/components/pets/profile-completion'
 import { DeletePetButton } from '@/components/pets/delete-pet-button'
 import { AggregateAlerts } from '@/components/dashboard/aggregate-alerts'
 import { UpgradePrompt } from '@/components/ui/upgrade-prompt'
 import { useSubscription } from '@/hooks/use-subscription'
-import { toast } from 'sonner'
 import type { Pet, Vaccination, CareEvent } from '@/lib/types/pet'
 
 interface SavedPet {
@@ -177,206 +175,166 @@ export function DashboardContent() {
     updated_at: p.updated_at,
   }))
 
-  const handleRemoveSavedPet = async (savedId: string) => {
-    const supabase = createClient()
-    const { error } = await supabase.rpc('remove_saved_share_link', {
-      p_saved_link_id: savedId,
-    })
-    if (error) {
-      toast.error('Failed to remove')
-      return
-    }
-    setSavedPets((prev) => prev.filter((p) => p.id !== savedId))
-    toast.success('Removed from saved pets')
-  }
-
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="glass-nav rounded-2xl p-5 flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">Dashboard</h1>
-          <p className="text-muted-foreground">
-            Manage your pets and view shared profiles
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Link href="/calendar">
-            <Button variant="outline" className="hidden sm:flex">
-              <CalendarDays className="h-4 w-4 mr-2" />
-              Calendar
-            </Button>
-          </Link>
-          <Link href="/activity">
-            <Button variant="outline" className="hidden sm:flex">
-              <Activity className="h-4 w-4 mr-2" />
-              Activity
-            </Button>
-          </Link>
-          {(() => {
-            const petLimit = checkLimit('maxPets', petsWithStats.length)
-            if (petLimit.allowed) {
-              return (
-                <Link href="/pets/new">
-                  <Button className="shadow-lg">
-                    <Plus className="h-4 w-4 mr-2" />
+      {/* Bento Grid Layout */}
+      <div className="bento-grid">
+        {/* Header */}
+        <div className="bento-item span-full">
+          <div className="glass-nav rounded-2xl p-5 flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold">Dashboard</h1>
+              <p className="text-muted-foreground">
+                Manage your pets and view shared profiles
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Link href="/calendar">
+                <Button variant="outline" className="hidden sm:flex">
+                  <CalendarDays className="h-4 w-4 mr-2" />
+                  All Pets Calendar
+                </Button>
+              </Link>
+              <Link href="/activity">
+                <Button variant="outline" className="hidden sm:flex">
+                  <Activity className="h-4 w-4 mr-2" />
+                  Activity
+                </Button>
+              </Link>
+              {(() => {
+                const petLimit = checkLimit('maxPets', petsWithStats.length)
+                if (petLimit.allowed) {
+                  return (
+                    <Link href="/pets/new">
+                      <Button className="shadow-lg">
+                        <Plus className="h-4 w-4 mr-2" />
+                        Add Pet
+                      </Button>
+                    </Link>
+                  )
+                }
+                return (
+                  <Button
+                    className="shadow-lg"
+                    onClick={() => setShowUpgradePrompt(true)}
+                  >
+                    <Crown className="h-4 w-4 mr-2" />
                     Add Pet
                   </Button>
-                </Link>
-              )
-            }
-            return (
-              <Button
-                className="shadow-lg"
-                onClick={() => setShowUpgradePrompt(true)}
-              >
-                <Crown className="h-4 w-4 mr-2" />
-                Add Pet
-              </Button>
-            )
-          })()}
+                )
+              })()}
+            </div>
+          </div>
         </div>
+
+        {/* Upgrade Prompt Modal */}
+        <UpgradePrompt
+          open={showUpgradePrompt}
+          onOpenChange={setShowUpgradePrompt}
+          feature="pets"
+          currentUsage={petsWithStats.length}
+          limit={(() => {
+            const l = checkLimit('maxPets', 0).limit
+            return typeof l === 'number' ? l : undefined
+          })()}
+        />
+
+        {/* Aggregate Alerts */}
+        {petsWithStats.length > 0 && (
+          <div className="bento-item span-full">
+            <AggregateAlerts
+              pets={pets}
+              vaccinationsByPet={vaccinationsByPet}
+              eventsByPet={eventsByPet}
+            />
+          </div>
+        )}
+
+        {/* My Pets Section Header */}
+        {petsWithStats.length > 0 && (
+          <div className="bento-item span-full">
+            <div className="flex items-center gap-2">
+              <PawPrint className="h-5 w-5 text-primary" />
+              <h2 className="text-lg font-semibold">My Pets</h2>
+              <Badge variant="secondary" className="ml-1">{petsWithStats.length}</Badge>
+            </div>
+          </div>
+        )}
+
+        {/* Pet Cards */}
+        {petsWithStats && petsWithStats.length > 0 ? (
+          petsWithStats.map((pet) => (
+            <div key={pet.id} className="bento-item span-6">
+              <PetCardWithStats pet={pet} onDeleted={() => handlePetDeleted(pet.id)} />
+            </div>
+          ))
+        ) : (
+          <div className="bento-item span-full">
+            <div className="glass-card rounded-2xl p-12 flex flex-col items-center justify-center text-center">
+              <div className="mb-4">
+                <AnimatedMascot species="dog" mood="happy" size="lg" />
+              </div>
+              <h3 className="font-semibold text-lg mb-2">No pets yet</h3>
+              <p className="text-muted-foreground mb-4">
+                Add your first pet to get started
+              </p>
+              <Link href="/pets/new">
+                <Button className="shadow-lg">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Your First Pet
+                </Button>
+              </Link>
+            </div>
+          </div>
+        )}
+
+        {/* Pets Shared with Me */}
+        {savedPets.length > 0 && (
+          <>
+            <div className="bento-item span-full">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Users className="h-5 w-5 text-primary" />
+                  <h2 className="text-lg font-semibold">Pets Shared with Me</h2>
+                  <Badge variant="secondary" className="ml-1">{savedPets.length}</Badge>
+                </div>
+                <Link href="/saved">
+                  <Button variant="ghost" size="sm">
+                    View All
+                    <ChevronRight className="h-4 w-4 ml-1" />
+                  </Button>
+                </Link>
+              </div>
+            </div>
+
+            {savedPets.slice(0, 4).map((saved) => (
+              <div key={saved.id} className="bento-item span-3">
+                <SharedPetCard saved={saved} />
+              </div>
+            ))}
+          </>
+        )}
       </div>
-
-      {/* Upgrade Prompt Modal */}
-      <UpgradePrompt
-        open={showUpgradePrompt}
-        onOpenChange={setShowUpgradePrompt}
-        feature="pets"
-        currentUsage={petsWithStats.length}
-        limit={(() => {
-          const l = checkLimit('maxPets', 0).limit
-          return typeof l === 'number' ? l : undefined
-        })()}
-      />
-
-      {/* Tabs */}
-      <Tabs defaultValue="my-pets" className="w-full">
-        <TabsList className="glass-nav mb-6">
-          <TabsTrigger value="my-pets" className="gap-2">
-            <Heart className="h-4 w-4" />
-            My Pets
-            {petsWithStats.length > 0 && (
-              <Badge variant="secondary" className="ml-1 h-5 px-1.5">{petsWithStats.length}</Badge>
-            )}
-          </TabsTrigger>
-          <TabsTrigger value="shared-with-me" className="gap-2">
-            <Users className="h-4 w-4" />
-            Shared with Me
-            {savedPets.length > 0 && (
-              <Badge variant="secondary" className="ml-1 h-5 px-1.5">{savedPets.length}</Badge>
-            )}
-          </TabsTrigger>
-        </TabsList>
-
-        {/* My Pets Tab */}
-        <TabsContent value="my-pets" className="mt-0">
-          <div className="bento-grid">
-            {/* Aggregate Alerts */}
-            {petsWithStats.length > 0 && (
-              <div className="bento-item span-full">
-                <AggregateAlerts
-                  pets={pets}
-                  vaccinationsByPet={vaccinationsByPet}
-                  eventsByPet={eventsByPet}
-                />
-              </div>
-            )}
-
-            {/* Pet Cards */}
-            {petsWithStats && petsWithStats.length > 0 ? (
-              petsWithStats.map((pet) => (
-                <div key={pet.id} className="bento-item span-6">
-                  <PetCardWithStats pet={pet} onDeleted={() => handlePetDeleted(pet.id)} />
-                </div>
-              ))
-            ) : (
-              <div className="bento-item span-full">
-                <div className="glass-card rounded-2xl p-12 flex flex-col items-center justify-center text-center">
-                  <div className="mb-4">
-                    <AnimatedMascot species="dog" mood="happy" size="lg" />
-                  </div>
-                  <h3 className="font-semibold text-lg mb-2">No pets yet</h3>
-                  <p className="text-muted-foreground mb-4">
-                    Add your first pet to get started
-                  </p>
-                  <Link href="/pets/new">
-                    <Button className="shadow-lg">
-                      <Plus className="h-4 w-4 mr-2" />
-                      Add Your First Pet
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-            )}
-          </div>
-        </TabsContent>
-
-        {/* Shared with Me Tab */}
-        <TabsContent value="shared-with-me" className="mt-0">
-          <div className="bento-grid">
-            {savedPets.length > 0 ? (
-              savedPets.map((saved) => (
-                <div key={saved.id} className="bento-item span-4">
-                  <SharedPetCard saved={saved} onRemove={() => handleRemoveSavedPet(saved.id)} />
-                </div>
-              ))
-            ) : (
-              <div className="bento-item span-full">
-                <div className="glass-card rounded-2xl p-12 flex flex-col items-center justify-center text-center">
-                  <div className="mb-4">
-                    <Users className="h-16 w-16 text-muted-foreground/30" />
-                  </div>
-                  <h3 className="font-semibold text-lg mb-2">No shared pets yet</h3>
-                  <p className="text-muted-foreground mb-4 max-w-md">
-                    When someone shares their pet's profile with you, save it to see it here.
-                    You can quickly access all the pet information you need.
-                  </p>
-                </div>
-              </div>
-            )}
-          </div>
-        </TabsContent>
-      </Tabs>
     </div>
   )
 }
 
-function SharedPetCard({ saved, onRemove }: { saved: SavedPet; onRemove?: () => void }) {
+function SharedPetCard({ saved }: { saved: SavedPet }) {
   return (
-    <div className={`glass-card rounded-2xl p-4 h-full transition-all hover:scale-[1.01] group relative ${!saved.is_active ? 'opacity-60' : ''}`}>
-      {onRemove && (
-        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-7 w-7 text-muted-foreground hover:text-destructive"
-            onClick={(e) => {
-              e.preventDefault()
-              onRemove()
-            }}
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
-        </div>
-      )}
-
-      <Link href={`/share/${saved.share_token}`}>
+    <Link href={`/share/${saved.share_token}`}>
+      <div className={`glass-card rounded-2xl p-4 h-full transition-all hover:scale-[1.02] ${!saved.is_active ? 'opacity-60' : ''}`}>
         <div className="flex items-center gap-3">
-          <Avatar className="h-14 w-14 ring-2 ring-primary/20">
+          <Avatar className="h-12 w-12 ring-2 ring-primary/20">
             <AvatarImage src={saved.pet.photo_url || undefined} alt={saved.pet.name} />
             <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/5">
-              <PawPrint className="h-6 w-6 text-primary/60" />
+              <PawPrint className="h-5 w-5 text-primary/60" />
             </AvatarFallback>
           </Avatar>
 
           <div className="flex-1 min-w-0">
-            <h3 className="font-medium truncate">{saved.custom_name || saved.pet.name}</h3>
-            <p className="text-sm text-muted-foreground truncate">
+            <h3 className="font-medium text-sm truncate">{saved.custom_name || saved.pet.name}</h3>
+            <p className="text-xs text-muted-foreground truncate">
               {saved.pet.breed ? `${saved.pet.breed} ` : ''}{saved.pet.species}
-            </p>
-            <p className="text-xs text-muted-foreground mt-1">
-              Saved {new Date(saved.saved_at).toLocaleDateString()}
             </p>
           </div>
 
@@ -384,12 +342,12 @@ function SharedPetCard({ saved, onRemove }: { saved: SavedPet; onRemove?: () => 
         </div>
 
         {!saved.is_active && (
-          <Badge variant="destructive" className="mt-3 text-xs">
+          <Badge variant="destructive" className="mt-2 text-xs">
             Link Expired
           </Badge>
         )}
-      </Link>
-    </div>
+      </div>
+    </Link>
   )
 }
 
