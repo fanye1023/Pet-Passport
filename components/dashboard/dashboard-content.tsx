@@ -355,7 +355,7 @@ function SharedPetCard({ saved, onRemove }: { saved: SavedPet; onRemove?: () => 
                 e.preventDefault()
                 e.stopPropagation()
               }}
-              className="absolute top-2 right-2 hidden md:block opacity-0 group-hover:opacity-100 transition-opacity z-10 p-1.5 rounded-full hover:bg-destructive/10 text-muted-foreground hover:text-destructive"
+              className="absolute top-2 right-2 z-10 p-1.5 rounded-full hover:bg-destructive/10 text-muted-foreground hover:text-destructive md:opacity-0 md:group-hover:opacity-100 transition-opacity"
               title="Remove from saved"
             >
               <Trash2 className="h-4 w-4" />
