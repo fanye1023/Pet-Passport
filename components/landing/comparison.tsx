@@ -7,32 +7,32 @@ const features = [
   {
     feature: 'Store pet health records',
     others: true,
-    petPassport: true,
+    petShareLink: true,
   },
   {
     feature: 'Share with specific people',
     others: false,
-    petPassport: true,
+    petShareLink: true,
   },
   {
     feature: 'Control what each person sees',
     others: false,
-    petPassport: true,
+    petShareLink: true,
   },
   {
     feature: 'PIN-protected links',
     others: false,
-    petPassport: true,
+    petShareLink: true,
   },
   {
     feature: 'Auto-expiring access',
     others: false,
-    petPassport: true,
+    petShareLink: true,
   },
   {
     feature: 'Revoke access anytime',
     others: false,
-    petPassport: true,
+    petShareLink: true,
   },
 ]
 
@@ -73,12 +73,12 @@ export function Comparison() {
             tableVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`}
         >
-          <p className="text-sm font-medium text-primary mb-3">Why Pet Passport</p>
+          <p className="text-sm font-medium text-primary mb-3">Why Pet ShareLink</p>
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-4">
             Not just storage. Smart sharing.
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Other apps store your pet's data. Pet Passport lets you share it securely.
+            Other apps store your pet's data. Pet ShareLink lets you share it securely.
           </p>
         </div>
 
@@ -93,7 +93,7 @@ export function Comparison() {
             <div className="grid grid-cols-3 bg-muted/50 border-b">
               <div className="p-4 font-medium text-sm">Feature</div>
               <div className="p-4 font-medium text-sm text-center border-l">Other Apps</div>
-              <div className="p-4 font-medium text-sm text-center border-l bg-primary/5 text-primary">Pet Passport</div>
+              <div className="p-4 font-medium text-sm text-center border-l bg-primary/5 text-primary">Pet ShareLink</div>
             </div>
 
             {/* Table Body */}
