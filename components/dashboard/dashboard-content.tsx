@@ -397,7 +397,7 @@ function SharedPetCard({ saved, onRemove }: { saved: SavedPet; onRemove?: () => 
             </p>
           </div>
 
-          <ExternalLink className="h-4 w-4 text-muted-foreground shrink-0" />
+          <ExternalLink className="h-4 w-4 text-muted-foreground shrink-0 mr-6" />
         </div>
 
         {!saved.is_active && (
