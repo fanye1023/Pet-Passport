@@ -19,6 +19,14 @@ export const metadata: Metadata = {
   title: "Pet ShareLink - Share Your Pet's Info Safely",
   description: "Create secure, shareable links with your pet's care instructions, emergency contacts, and health records. Control exactly what each person can see.",
   manifest: "/manifest.json",
+  icons: {
+    icon: [
+      { url: "/icons/icon.svg", type: "image/svg+xml" },
+    ],
+    apple: [
+      { url: "/icons/icon.svg", type: "image/svg+xml" },
+    ],
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
