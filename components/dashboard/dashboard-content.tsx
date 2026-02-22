@@ -396,8 +396,6 @@ function SharedPetCard({ saved, onRemove }: { saved: SavedPet; onRemove?: () => 
               {saved.pet.breed ? `${saved.pet.breed} ` : ''}{saved.pet.species}
             </p>
           </div>
-
-          <ExternalLink className="h-4 w-4 text-muted-foreground shrink-0 mr-6" />
         </div>
 
         {!saved.is_active && (
@@ -405,6 +403,8 @@ function SharedPetCard({ saved, onRemove }: { saved: SavedPet; onRemove?: () => 
             Link Expired
           </Badge>
         )}
+
+        <ExternalLink className="absolute bottom-3 right-3 h-4 w-4 text-muted-foreground" />
       </Link>
     </div>
   )
