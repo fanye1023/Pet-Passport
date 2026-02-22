@@ -116,7 +116,7 @@ export function ShareContent({ data, shareToken }: ShareContentProps) {
           <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-primary/10 to-background" />
         )}
 
-        <div className="relative container mx-auto max-w-5xl pt-8 pb-12 px-4">
+        <div className="relative container mx-auto max-w-5xl pt-8 pb-16 px-4">
           <div className="flex flex-col items-center text-center">
             <Avatar className="h-32 w-32 ring-4 ring-white/50 shadow-2xl">
               <AvatarImage src={pet.photo_url || undefined} alt={pet.name} />
