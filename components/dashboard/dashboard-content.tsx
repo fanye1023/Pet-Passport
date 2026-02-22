@@ -355,7 +355,7 @@ function SharedPetCard({ saved, onRemove }: { saved: SavedPet; onRemove?: () => 
                 e.preventDefault()
                 e.stopPropagation()
               }}
-              className="absolute top-2 right-2 z-10 p-1.5 rounded-full hover:bg-destructive/10 text-muted-foreground hover:text-destructive md:opacity-0 md:group-hover:opacity-100 transition-opacity"
+              className="absolute top-2 right-2 z-10 p-1.5 rounded-full hover:bg-destructive/10 text-muted-foreground hover:text-destructive"
               title="Remove from saved"
             >
               <Trash2 className="h-4 w-4" />
@@ -436,7 +436,7 @@ function PetCardWithStats({ pet, onDeleted }: { pet: PetWithStats; onDeleted: ()
 
   return (
     <div className="glass-card rounded-2xl p-5 h-full group relative transition-all hover:scale-[1.01]">
-      <div className="absolute top-3 right-3 md:opacity-0 md:group-hover:opacity-100 transition-opacity z-10">
+      <div className="absolute top-3 right-3 z-10">
         <DeletePetButton petId={pet.id} petName={pet.name} onDeleted={onDeleted} />
       </div>
 
