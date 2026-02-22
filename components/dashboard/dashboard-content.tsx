@@ -436,7 +436,7 @@ function PetCardWithStats({ pet, onDeleted }: { pet: PetWithStats; onDeleted: ()
 
   return (
     <div className="glass-card rounded-2xl p-5 h-full group relative transition-all hover:scale-[1.01]">
-      <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+      <div className="absolute top-3 right-3 md:opacity-0 md:group-hover:opacity-100 transition-opacity z-10">
         <DeletePetButton petId={pet.id} petName={pet.name} onDeleted={onDeleted} />
       </div>
 
