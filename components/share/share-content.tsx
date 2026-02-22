@@ -1,5 +1,7 @@
 'use client'
 
+import { useState, useEffect } from 'react'
+import { createClient } from '@/lib/supabase/client'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -64,6 +66,18 @@ function getDocumentUrl(documentUrl: string | null | undefined, shareToken?: str
 export function ShareContent({ data, shareToken }: ShareContentProps) {
   const { pet, vaccinations, health_records, insurance, veterinarians, emergency_contacts, food_preferences, daily_routines, care_instructions, behavioral_notes, visibility } = data
   const documents = data.documents || []
+  const [homeLink, setHomeLink] = useState('/')
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        setHomeLink('/dashboard')
+      }
+    }
+    checkAuth()
+  }, [])
 
   const vaccinationDocs = documents.filter(d => d.category === 'vaccination')
   const healthDocs = documents.filter(d => d.category === 'health')
@@ -95,7 +109,7 @@ export function ShareContent({ data, shareToken }: ShareContentProps) {
       <div className="absolute top-0 left-0 right-0 z-30 print:hidden">
         <div className="container mx-auto max-w-5xl px-4 py-3">
           <a
-            href="/"
+            href={homeLink}
             className={`inline-flex items-center gap-2 text-sm font-medium transition-colors ${pet.photo_url ? 'text-white/90 hover:text-white' : 'text-muted-foreground hover:text-foreground'}`}
           >
             <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6">
