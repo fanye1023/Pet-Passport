@@ -8,6 +8,17 @@ import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
 import { Plus, PawPrint, ChevronRight, AlertTriangle, Sparkles, CalendarDays, Activity, Crown, ExternalLink, Users, Trash2 } from 'lucide-react'
 import { AnimatedMascot } from '@/components/ui/animated-mascot'
 import { ProfileCompletion } from '@/components/pets/profile-completion'
@@ -337,17 +348,38 @@ function SharedPetCard({ saved, onRemove }: { saved: SavedPet; onRemove?: () => 
   return (
     <div className={`glass-card rounded-2xl p-4 h-full transition-all hover:scale-[1.02] group relative ${!saved.is_active ? 'opacity-60' : ''}`}>
       {onRemove && (
-        <button
-          onClick={(e) => {
-            e.preventDefault()
-            e.stopPropagation()
-            onRemove()
-          }}
-          className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-10 p-1.5 rounded-full hover:bg-destructive/10 text-muted-foreground hover:text-destructive"
-          title="Remove from saved"
-        >
-          <Trash2 className="h-4 w-4" />
-        </button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <button
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+              }}
+              className="absolute top-2 right-2 hidden md:block opacity-0 group-hover:opacity-100 transition-opacity z-10 p-1.5 rounded-full hover:bg-destructive/10 text-muted-foreground hover:text-destructive"
+              title="Remove from saved"
+            >
+              <Trash2 className="h-4 w-4" />
+            </button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Remove saved pet?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This will remove {saved.custom_name || saved.pet.name} from your saved pets.
+                You can always save it again from the share link.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={onRemove}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              >
+                Remove
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       )}
       <Link href={`/share/${saved.share_token}`}>
         <div className="flex items-center gap-3">

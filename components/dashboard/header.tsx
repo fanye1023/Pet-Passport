@@ -72,20 +72,20 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
             </Avatar>
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-56 glass border-white/20" sideOffset={8}>
+        <DropdownMenuContent align="end" className="w-56 bg-popover border shadow-lg" sideOffset={8}>
           <div className="flex items-center gap-2 px-3 py-3">
             <div className="flex flex-col space-y-1">
               <p className="text-sm font-medium truncate">{user.email}</p>
             </div>
           </div>
-          <DropdownMenuSeparator className="bg-white/20" />
+          <DropdownMenuSeparator />
           <DropdownMenuItem asChild className="py-3">
             <Link href="/settings" className="cursor-pointer rounded-lg">
               <UserIcon className="mr-2 h-4 w-4" />
               Settings
             </Link>
           </DropdownMenuItem>
-          <DropdownMenuSeparator className="bg-white/20" />
+          <DropdownMenuSeparator />
           <DropdownMenuItem asChild className="py-3">
             <Link href="/logout" className="cursor-pointer text-destructive focus:text-destructive rounded-lg">
               <LogOut className="mr-2 h-4 w-4" />
