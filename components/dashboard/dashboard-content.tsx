@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Plus, PawPrint, ChevronRight, AlertTriangle, Sparkles, CalendarDays, Activity, Crown, ExternalLink, Users, X } from 'lucide-react'
+import { Plus, PawPrint, ChevronRight, AlertTriangle, Sparkles, CalendarDays, Activity, Crown, ExternalLink, Users, Trash2 } from 'lucide-react'
 import { AnimatedMascot } from '@/components/ui/animated-mascot'
 import { ProfileCompletion } from '@/components/pets/profile-completion'
 import { DeletePetButton } from '@/components/pets/delete-pet-button'
@@ -346,7 +346,7 @@ function SharedPetCard({ saved, onRemove }: { saved: SavedPet; onRemove?: () => 
           className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-10 p-1.5 rounded-full hover:bg-destructive/10 text-muted-foreground hover:text-destructive"
           title="Remove from saved"
         >
-          <X className="h-4 w-4" />
+          <Trash2 className="h-4 w-4" />
         </button>
       )}
       <Link href={`/share/${saved.share_token}`}>
