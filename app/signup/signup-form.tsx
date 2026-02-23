@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label'
 import { Logo } from '@/components/ui/logo'
 import { Mail, Eye, EyeOff, Bookmark, Check } from 'lucide-react'
 import { toast } from 'sonner'
+import { OAuthButtons } from '@/components/auth/oauth-buttons'
 
 export function SignupForm() {
   const router = useRouter()
@@ -165,7 +166,7 @@ export function SignupForm() {
             <p className="text-muted-foreground mt-1">Enter your email to get started</p>
           </div>
 
-          <form onSubmit={handleSignup} className="space-y-4">
+          <div className="space-y-4">
             {saveToken && (
               <div className="rounded-xl bg-primary/10 p-3 text-sm text-primary flex items-center gap-2 glass-subtle">
                 <Bookmark className="h-4 w-4 shrink-0" />
@@ -173,6 +174,21 @@ export function SignupForm() {
               </div>
             )}
 
+            {/* OAuth Buttons */}
+            <OAuthButtons returnTo={returnTo || undefined} saveToken={saveToken || undefined} />
+
+            {/* Divider */}
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t border-white/20" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-background px-2 text-muted-foreground">or continue with email</span>
+              </div>
+            </div>
+          </div>
+
+          <form onSubmit={handleSignup} className="space-y-4">
             {error && (
               <div className="rounded-xl bg-destructive/10 p-3 text-sm text-destructive glass-subtle">
                 {error}

@@ -5,11 +5,21 @@ export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url)
   const code = searchParams.get('code')
   const next = searchParams.get('next') ?? '/dashboard'
+  const saveToken = searchParams.get('saveToken')
 
   if (code) {
     const supabase = await createClient()
     const { error, data } = await supabase.auth.exchangeCodeForSession(code)
     if (!error && data.user) {
+      // If saveToken is provided (from OAuth signup via share link), save it
+      if (saveToken) {
+        await supabase.rpc('save_share_link', {
+          p_share_token: saveToken,
+        })
+        // Redirect to saved pets page after saving
+        return NextResponse.redirect(`${origin}/saved`)
+      }
+
       // Check if user has any pending invitations
       const { data: pendingInvitation } = await supabase
         .from('pet_invitations')

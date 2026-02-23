@@ -17,41 +17,78 @@ export async function generateMetadata({
     share_token: token,
   })
 
+  const siteName = 'Pet ShareLink'
+  const defaultDescription = 'Share your pet\'s care info safely with vets, sitters, and family.'
+
   if (!data) {
     return {
-      title: 'Pet ShareLink',
-      description: 'View pet information shared with you',
+      title: siteName,
+      description: defaultDescription,
+      openGraph: {
+        title: siteName,
+        description: defaultDescription,
+        siteName,
+        type: 'website',
+      },
+      twitter: {
+        card: 'summary',
+        title: siteName,
+        description: defaultDescription,
+      },
     }
   }
 
   // Handle PIN-protected links
   if ((data as SharePinRequired).pin_required) {
     const pinData = data as SharePinRequired
+    const title = `${pinData.pet_name}'s Care Info`
+    const description = `View care instructions, emergency contacts, and health info for ${pinData.pet_name}`
+
     return {
-      title: `${pinData.pet_name}'s ShareLink`,
-      description: `View care information for ${pinData.pet_name}`,
+      title,
+      description,
       openGraph: {
-        title: `${pinData.pet_name}'s ShareLink`,
-        description: `View care information for ${pinData.pet_name}`,
+        title,
+        description,
+        siteName,
         type: 'website',
+      },
+      twitter: {
+        card: 'summary',
+        title,
+        description,
       },
     }
   }
 
   const petData = data as SharedPetData
   const petName = petData.pet?.name || 'Pet'
+  const species = petData.pet?.species || 'pet'
   const breed = petData.pet?.breed
+  const title = `${petName}'s Care Info`
   const description = breed
-    ? `Care information for ${petName} the ${breed}`
-    : `Care information for ${petName}`
+    ? `Care instructions, emergency contacts, and health info for ${petName} the ${breed}`
+    : `Care instructions, emergency contacts, and health info for ${petName}`
 
   return {
-    title: `${petName}'s ShareLink`,
+    title,
     description,
     openGraph: {
-      title: `${petName}'s ShareLink`,
+      title,
       description,
+      siteName,
       type: 'website',
+      images: petData.pet?.photo_url ? [{
+        url: petData.pet.photo_url,
+        width: 400,
+        height: 400,
+        alt: `Photo of ${petName}`,
+      }] : undefined,
+    },
+    twitter: {
+      card: petData.pet?.photo_url ? 'summary_large_image' : 'summary',
+      title,
+      description,
       images: petData.pet?.photo_url ? [petData.pet.photo_url] : undefined,
     },
   }

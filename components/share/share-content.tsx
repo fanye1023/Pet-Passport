@@ -868,7 +868,15 @@ export function ShareContent({ data, shareToken }: ShareContentProps) {
         {/* Footer */}
         <div className="span-full flex flex-col items-center gap-3 py-4 print:hidden">
           <PrintButton />
-          <p className="text-sm text-muted-foreground">Shared via Pet ShareLink</p>
+          <a
+            href="https://petsharelink.com/signup"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-1.5"
+          >
+            <PawPrint className="h-3.5 w-3.5" />
+            Create your own Pet ShareLink — it&apos;s free
+          </a>
         </div>
       </div>
 
