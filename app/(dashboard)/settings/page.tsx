@@ -45,9 +45,9 @@ export default function SettingsPage() {
     toast.success('Password reset email sent! Check your inbox.')
   }
 
-  const handleSignOut = async () => {
-    await supabase.auth.signOut()
-    router.push('/login')
+  const handleSignOut = () => {
+    // Use server-side logout route for proper cookie clearing
+    window.location.href = '/logout'
   }
 
   if (isLoading) {
