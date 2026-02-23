@@ -14,7 +14,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { PhotoUpload } from '@/components/pets/photo-upload'
-import { Sparkles, ArrowRight, Dog, Cat, Rabbit } from 'lucide-react'
+import { Sparkles, ArrowRight, Dog, Cat, Rabbit, Clock } from 'lucide-react'
 import Link from 'next/link'
 
 const speciesOptions = [
@@ -157,9 +157,15 @@ export default function NewPetOnboardingPage() {
     <div className="w-full max-w-md mx-auto animate-fade-in">
       {/* Welcome message */}
       <div className="text-center mb-6">
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
-          <Sparkles className="h-4 w-4" />
-          <span>Let&apos;s get started!</span>
+        <div className="flex items-center justify-center gap-2 mb-4">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium">
+            <Sparkles className="h-4 w-4" />
+            <span>Let&apos;s get started!</span>
+          </div>
+          <div className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full bg-muted text-muted-foreground text-sm">
+            <Clock className="h-3.5 w-3.5" />
+            <span>~3 min</span>
+          </div>
         </div>
         <h1 className="text-2xl font-bold mb-2">Meet your new companion</h1>
         <p className="text-muted-foreground">

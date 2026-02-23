@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Logo } from '@/components/ui/logo'
-import { Mail, Eye, EyeOff, Bookmark } from 'lucide-react'
+import { Mail, Eye, EyeOff, Bookmark, Check } from 'lucide-react'
 import { toast } from 'sonner'
 
 export function SignupForm() {
@@ -75,6 +75,24 @@ export function SignupForm() {
     }
   }
 
+  const handleResendEmail = async () => {
+    setLoading(true)
+    const { error } = await supabase.auth.resend({
+      type: 'signup',
+      email,
+      options: {
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
+      },
+    })
+    setLoading(false)
+
+    if (error) {
+      toast.error('Failed to resend email. Please try again.')
+    } else {
+      toast.success('Confirmation email sent!')
+    }
+  }
+
   if (success) {
     return (
       <div className="flex min-h-screen items-center justify-center px-4 py-12">
@@ -96,13 +114,30 @@ export function SignupForm() {
             </div>
             <h1 className="text-2xl font-bold">Check your email</h1>
             <p className="text-muted-foreground mt-2">
-              We&apos;ve sent you a confirmation link. Please check your email to verify your account.
+              We&apos;ve sent a confirmation link to <span className="font-medium text-foreground">{email}</span>
             </p>
-            <Link href="/login" className="block mt-6">
-              <Button variant="outline" className="glass border-white/30">
-                Back to login
+
+            {/* Help text */}
+            <div className="mt-4 p-3 rounded-xl bg-muted/50 text-sm text-muted-foreground">
+              <p>Can&apos;t find it? Check your spam folder.</p>
+            </div>
+
+            {/* Actions */}
+            <div className="mt-6 space-y-3">
+              <Button
+                variant="outline"
+                className="w-full glass border-white/30"
+                onClick={handleResendEmail}
+                disabled={loading}
+              >
+                {loading ? 'Sending...' : 'Resend confirmation email'}
               </Button>
-            </Link>
+              <Link href="/login" className="block">
+                <Button variant="ghost" className="w-full text-muted-foreground">
+                  Back to login
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </div>
@@ -179,6 +214,40 @@ export function SignupForm() {
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
+              {/* Password strength indicator */}
+              {password && (
+                <div className="space-y-2">
+                  <div className="flex gap-1">
+                    {[1, 2, 3, 4].map((level) => {
+                      const strength =
+                        (password.length >= 6 ? 1 : 0) +
+                        (password.length >= 8 ? 1 : 0) +
+                        (/[A-Z]/.test(password) && /[a-z]/.test(password) ? 1 : 0) +
+                        (/[0-9]/.test(password) || /[^A-Za-z0-9]/.test(password) ? 1 : 0)
+                      return (
+                        <div
+                          key={level}
+                          className={`h-1 flex-1 rounded-full transition-colors ${
+                            level <= strength
+                              ? strength <= 1 ? 'bg-red-500'
+                                : strength <= 2 ? 'bg-yellow-500'
+                                : strength <= 3 ? 'bg-green-400'
+                                : 'bg-green-500'
+                              : 'bg-muted'
+                          }`}
+                        />
+                      )
+                    })}
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    {password.length < 6 ? 'Too short' :
+                     password.length < 8 ? 'Add more characters for a stronger password' :
+                     !(/[A-Z]/.test(password) && /[a-z]/.test(password)) ? 'Add uppercase and lowercase letters' :
+                     !(/[0-9]/.test(password) || /[^A-Za-z0-9]/.test(password)) ? 'Add numbers or symbols' :
+                     'Strong password'}
+                  </p>
+                </div>
+              )}
             </div>
 
             <div className="space-y-2">

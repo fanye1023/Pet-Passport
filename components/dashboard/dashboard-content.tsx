@@ -275,6 +275,44 @@ export function DashboardContent() {
           </div>
         )}
 
+        {/* Onboarding Nudge - Show when any pet has very incomplete profile */}
+        {(() => {
+          const incompletePet = petsWithStats.find(pet => {
+            const sections = [
+              pet.vaccinations > 0,
+              pet.healthRecords > 0,
+              pet.insurance > 0,
+              pet.vets > 0,
+              pet.emergencyContacts > 0,
+              pet.food > 0,
+              pet.routines > 0,
+            ]
+            const completedSections = sections.filter(Boolean).length
+            return completedSections < 2 // Show nudge if less than 2 sections completed
+          })
+          if (incompletePet) {
+            return (
+              <div className="bento-item span-full">
+                <Link href={`/pets/${incompletePet.id}/onboarding`}>
+                  <div className="glass-card rounded-2xl p-4 border-primary/20 bg-primary/5 hover:bg-primary/10 transition-colors cursor-pointer group">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                        <Sparkles className="h-6 w-6 text-primary" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium">Continue setting up {incompletePet.name}&apos;s profile</p>
+                        <p className="text-sm text-muted-foreground">Add vet info, vaccinations, and emergency contacts — takes ~2 min</p>
+                      </div>
+                      <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:translate-x-1 transition-transform flex-shrink-0" />
+                    </div>
+                  </div>
+                </Link>
+              </div>
+            )
+          }
+          return null
+        })()}
+
         {/* My Pets Section Header */}
         {petsWithStats.length > 0 && (
           <div className="bento-item span-full">
@@ -432,7 +470,9 @@ function PetCardWithStats({ pet, onDeleted }: { pet: PetWithStats; onDeleted: ()
   ]
   const completedSections = sections.filter(Boolean).length
   const completionPercentage = Math.round((completedSections / sections.length) * 100)
-  const showOnboardingButton = completionPercentage < 50
+  // Show the onboarding button more prominently for incomplete profiles
+  const showOnboardingButton = completionPercentage < 100
+  const isNewProfile = completionPercentage < 30
 
   return (
     <div className="glass-card rounded-2xl p-5 h-full group relative transition-all hover:scale-[1.01]">
@@ -504,9 +544,13 @@ function PetCardWithStats({ pet, onDeleted }: { pet: PetWithStats; onDeleted: ()
 
       {showOnboardingButton && (
         <Link href={`/pets/${pet.id}/onboarding`} className="block mt-4">
-          <Button variant="outline" size="sm" className="w-full btn-press glass border-white/30">
+          <Button
+            variant={isNewProfile ? "default" : "outline"}
+            size="sm"
+            className={`w-full btn-press ${isNewProfile ? 'shadow-lg' : 'glass border-white/30'}`}
+          >
             <Sparkles className="h-4 w-4 mr-2" />
-            Complete Profile
+            {isNewProfile ? 'Continue Setup' : `Add ${sections.length - completedSections} more sections`}
           </Button>
         </Link>
       )}

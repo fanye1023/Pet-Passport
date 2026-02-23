@@ -36,12 +36,12 @@ interface OnboardingContainerNewProps {
 }
 
 const STEPS = [
-  { id: 'vet', title: 'Vet Info', icon: Stethoscope, description: 'Where does your pet go for checkups?' },
-  { id: 'vaccination', title: 'Vaccines', icon: Syringe, description: 'Keep vaccination records up to date' },
-  { id: 'emergency', title: 'Emergency', icon: Phone, description: 'Who to call in case of emergency' },
-  { id: 'food', title: 'Food & Diet', icon: Utensils, description: 'What does your pet eat?' },
-  { id: 'routine', title: 'Routine', icon: Clock, description: 'Daily activities and schedule' },
-  { id: 'insurance', title: 'Insurance', icon: Shield, description: 'Pet insurance information' },
+  { id: 'vet', title: 'Vet Info', icon: Stethoscope, description: 'Where does your pet go for checkups?', benefit: 'So sitters know where to go in an emergency' },
+  { id: 'vaccination', title: 'Vaccines', icon: Syringe, description: 'Keep vaccination records up to date', benefit: 'Get reminders before they expire' },
+  { id: 'emergency', title: 'Emergency', icon: Phone, description: 'Who to call in case of emergency', benefit: 'Peace of mind when you\'re away' },
+  { id: 'food', title: 'Food & Diet', icon: Utensils, description: 'What does your pet eat?', benefit: 'Prevent feeding mistakes' },
+  { id: 'routine', title: 'Routine', icon: Clock, description: 'Daily activities and schedule', benefit: 'Keep their schedule consistent' },
+  { id: 'insurance', title: 'Insurance', icon: Shield, description: 'Pet insurance information', benefit: 'Quick access to policy details when needed' },
 ]
 
 interface OnboardingState {
@@ -427,6 +427,13 @@ export function OnboardingContainerNew({ petId, petName, petSpecies, petPhotoUrl
               )
             })}
           </div>
+        </div>
+
+        {/* Step header with benefit */}
+        <div className="mb-4 text-center">
+          <p className="text-sm text-primary font-medium">
+            {STEPS[currentStep]?.benefit}
+          </p>
         </div>
 
         {/* Step content */}
