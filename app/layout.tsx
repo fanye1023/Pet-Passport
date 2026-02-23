@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
 import { QueryProvider } from "@/components/providers/query-provider";
+import { ConnectionStatus } from "@/components/ui/connection-status";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -68,6 +69,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
+            <ConnectionStatus />
             {children}
             <Toaster position="top-center" richColors toastOptions={{ className: 'md:mr-4' }} />
           </ThemeProvider>
