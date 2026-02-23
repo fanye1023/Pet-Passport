@@ -8,20 +8,15 @@ import {
   Users,
   Mail,
   ChevronDown,
-  AlertTriangle,
-  Phone,
-  Share2,
   Syringe,
-  FileText,
-  Heart,
   Clock,
-  Shield,
   Utensils,
   Moon,
   Sun,
   ClipboardList,
   Key,
   Wifi,
+  Share2,
 } from 'lucide-react'
 import { useScrollAnimation } from '@/hooks/use-scroll-animation'
 
@@ -370,64 +365,6 @@ function MockCollaborators() {
   )
 }
 
-// ─── Mock: Share & Emergency ────────────────────────────────────────────────
-
-function MockSharePage() {
-  return (
-    <div className="rounded-2xl bg-gradient-to-br from-primary/20 via-accent/20 to-transparent p-4">
-      <div className="rounded-xl bg-card/80 backdrop-blur border shadow-2xl overflow-hidden p-5 animate-float-slow">
-        {/* Pet header */}
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-12 h-12 rounded-full bg-primary/15 flex items-center justify-center text-lg">
-            🐕
-          </div>
-          <div>
-            <p className="text-sm font-semibold">Charlie</p>
-            <p className="text-[11px] text-muted-foreground">Golden Retriever · 3 years</p>
-          </div>
-          <Share2 className="w-4 h-4 text-muted-foreground ml-auto" />
-        </div>
-
-        {/* Info cards */}
-        <div className="grid grid-cols-2 gap-2 mb-4">
-          {[
-            { icon: Heart, label: 'Food', detail: 'Blue Buffalo, 2 cups/day' },
-            { icon: Clock, label: 'Routine', detail: 'Walks at 8am & 6pm' },
-            { icon: FileText, label: 'Allergies', detail: 'Chicken, dust mites' },
-            { icon: Shield, label: 'Insurance', detail: 'Healthy Paws #4821' },
-          ].map((card) => (
-            <div key={card.label} className="rounded-md border bg-muted/30 p-2.5">
-              <div className="flex items-center gap-1.5 mb-1">
-                <card.icon className="w-3 h-3 text-primary" />
-                <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
-                  {card.label}
-                </span>
-              </div>
-              <p className="text-[11px] font-medium leading-tight">{card.detail}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* Emergency banner */}
-        <div className="rounded-lg bg-red-500/10 border border-red-500/20 p-3 flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full bg-red-500/20 flex items-center justify-center flex-shrink-0">
-            <AlertTriangle className="w-4 h-4 text-red-500" />
-          </div>
-          <div className="flex-1">
-            <p className="text-[11px] font-semibold text-red-600 dark:text-red-400">
-              Emergency Access
-            </p>
-            <p className="text-[10px] text-muted-foreground">
-              One-tap vet contacts & nearest ER
-            </p>
-          </div>
-          <Phone className="w-4 h-4 text-red-500" />
-        </div>
-      </div>
-    </div>
-  )
-}
-
 // ─── Feature Section Data ───────────────────────────────────────────────────
 
 interface FeatureSection {
@@ -443,20 +380,11 @@ const sections: FeatureSection[] = [
   {
     title: 'Shareable Links You Control',
     description:
-      'Create custom share links for different people — one for your pet sitter, another for your dog walker — each with exactly the info they need. Links are PIN-protected, can expire, and update automatically when you add or change information.',
-    bullets: ['Choose what to share with each person', 'PIN-protected & expiring links', 'One-tap emergency contacts'],
-    mock: <MockSharePage />,
+      'Create custom share links for different people — one for your pet sitter, another for your dog walker — each with exactly the info they need. Include feeding schedules, daily routines, house access instructions, and emergency contacts. Links are PIN-protected, can expire, and update automatically.',
+    bullets: ['Food schedules, routines & sitter notes', 'PIN-protected & expiring links', 'One-tap emergency contacts'],
+    mock: <MockFoodRoutine />,
     reversed: false,
     muted: false,
-  },
-  {
-    title: 'Food, Routine & Sitter Instructions',
-    description:
-      'Track feeding schedules, daily routines, and care instructions in one place. Keep everything organized so pet care is consistent whether you\'re home or away.',
-    bullets: ['Meal schedules & portion sizes', 'Daily routines & activities', 'House access & sitter notes'],
-    mock: <MockFoodRoutine />,
-    reversed: true,
-    muted: true,
   },
   {
     title: 'AI-Powered Document Extraction',
@@ -464,8 +392,8 @@ const sections: FeatureSection[] = [
       'Upload vaccine records or insurance PDFs and AI automatically extracts all relevant data — vaccine names, dates, policy numbers, coverage details. Due dates are automatically added to your calendar.',
     bullets: ['Vaccine records & insurance policies', 'Instant data extraction', 'Auto-sync due dates to calendar'],
     mock: <MockExtraction />,
-    reversed: false,
-    muted: false,
+    reversed: true,
+    muted: true,
   },
   {
     title: 'Unified Calendar for All Your Pets',
@@ -473,8 +401,8 @@ const sections: FeatureSection[] = [
       'See appointments, medications, and care events for all your pets in one calendar. Color-coded by pet so you never miss a thing. Syncs with Google Calendar, Apple Calendar, and Outlook.',
     bullets: ['Multi-pet support', 'Color-coded events', 'Sync with Google, Apple & Outlook'],
     mock: <MockCalendar />,
-    reversed: true,
-    muted: true,
+    reversed: false,
+    muted: false,
   },
   {
     title: 'Share With Your Whole Family',
@@ -482,8 +410,8 @@ const sections: FeatureSection[] = [
       'Invite family members, vets, or caretakers with role-based access. Owners control everything, editors can update records, viewers can see but not change.',
     bullets: ['Role-based permissions', 'Easy email invites', 'Full audit control'],
     mock: <MockCollaborators />,
-    reversed: false,
-    muted: false,
+    reversed: true,
+    muted: true,
   },
 ]
 

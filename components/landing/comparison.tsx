@@ -1,7 +1,7 @@
 'use client'
 
 import { useScrollAnimation } from '@/hooks/use-scroll-animation'
-import { Check, X, Lock, Clock, Eye, Share2 } from 'lucide-react'
+import { Check, X } from 'lucide-react'
 
 const features = [
   {
@@ -36,32 +36,8 @@ const features = [
   },
 ]
 
-const highlights = [
-  {
-    icon: Share2,
-    title: 'Share Without Oversharing',
-    description: 'Your dog walker doesn\'t need your insurance info. Your pet sitter doesn\'t need vaccination dates. Share exactly what each person needs.',
-  },
-  {
-    icon: Lock,
-    title: 'PIN Protection',
-    description: 'Add a PIN code to sensitive links. Even if someone finds the URL, they can\'t access it without the code.',
-  },
-  {
-    icon: Clock,
-    title: 'Auto-Expiring Links',
-    description: 'Set links to expire after your trip, after a week, or never. You decide how long access lasts.',
-  },
-  {
-    icon: Eye,
-    title: 'Always Up to Date',
-    description: 'Update your pet\'s info once, and everyone with access sees the latest version. No need to re-share.',
-  },
-]
-
 export function Comparison() {
   const { ref: tableRef, isVisible: tableVisible } = useScrollAnimation()
-  const { ref: highlightsRef, isVisible: highlightsVisible } = useScrollAnimation()
 
   return (
     <section className="border-t bg-muted/30">
@@ -84,7 +60,7 @@ export function Comparison() {
 
         {/* Comparison Table */}
         <div
-          className={`max-w-2xl mx-auto mb-16 transition-all duration-700 delay-100 ${
+          className={`max-w-2xl mx-auto transition-all duration-700 delay-100 ${
             tableVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`}
         >
@@ -118,30 +94,6 @@ export function Comparison() {
           </div>
         </div>
 
-        {/* Highlights Grid */}
-        <div
-          ref={highlightsRef}
-          className={`grid gap-6 sm:grid-cols-2 lg:grid-cols-4 transition-all duration-700 ${
-            highlightsVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-          }`}
-        >
-          {highlights.map((item, index) => {
-            const Icon = item.icon
-            return (
-              <div
-                key={item.title}
-                className="text-center"
-                style={{ transitionDelay: `${index * 100}ms` }}
-              >
-                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                  <Icon className="w-6 h-6 text-primary" />
-                </div>
-                <h3 className="font-semibold mb-2">{item.title}</h3>
-                <p className="text-sm text-muted-foreground">{item.description}</p>
-              </div>
-            )
-          })}
-        </div>
       </div>
     </section>
   )

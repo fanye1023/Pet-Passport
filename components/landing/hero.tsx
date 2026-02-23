@@ -142,7 +142,7 @@ export function Hero() {
             </div>
             <div className="flex items-center gap-2">
               <Check className="h-4 w-4 text-green-500" />
-              <span>Revoke anytime</span>
+              <span>Always up to date</span>
             </div>
           </div>
         </div>
