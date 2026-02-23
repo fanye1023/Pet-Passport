@@ -14,6 +14,13 @@ export function OAuthButtons({ returnTo, saveToken }: OAuthButtonsProps) {
   const [isLoading, setIsLoading] = useState<string | null>(null)
   const supabase = createClient()
 
+  // Hide OAuth buttons until Google is configured in Supabase
+  // TODO: Remove this check after enabling Google OAuth in Supabase dashboard
+  const isGoogleEnabled = process.env.NEXT_PUBLIC_GOOGLE_AUTH_ENABLED === 'true'
+  if (!isGoogleEnabled) {
+    return null
+  }
+
   const handleOAuthLogin = async (provider: 'google' | 'apple') => {
     setIsLoading(provider)
 
