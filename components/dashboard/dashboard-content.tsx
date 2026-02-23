@@ -544,7 +544,7 @@ function PetCardWithStats({ pet, onDeleted }: { pet: PetWithStats; onDeleted: ()
       </div>
 
       {showOnboardingButton && (
-        <Link href={`/pets/${pet.id}/onboarding`} className="block mt-4">
+        <Link href={isNewProfile ? `/pets/${pet.id}/onboarding` : `/pets/${pet.id}`} className="block mt-4">
           <Button
             variant={isNewProfile ? "default" : "outline"}
             size="sm"
