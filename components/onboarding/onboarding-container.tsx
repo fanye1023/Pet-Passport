@@ -3,17 +3,19 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { X } from 'lucide-react'
-import { Stethoscope, Syringe, Phone, Utensils, Clock, Shield } from 'lucide-react'
+import { Stethoscope, Syringe, HeartPulse, Phone, Utensils, Clock, Shield, Home } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { OnboardingProgress } from './onboarding-progress'
 import { PetMascot } from './pet-mascot'
 import { Confetti } from './confetti'
 import { StepVet } from './steps/step-vet'
 import { StepVaccination } from './steps/step-vaccination'
+import { StepHealth } from './steps/step-health'
 import { StepEmergency } from './steps/step-emergency'
 import { StepFood } from './steps/step-food'
 import { StepRoutine } from './steps/step-routine'
 import { StepInsurance } from './steps/step-insurance'
+import { StepSitter } from './steps/step-sitter'
 import { StepComplete } from './steps/step-complete'
 import { createClient } from '@/lib/supabase/client'
 import {
@@ -36,10 +38,12 @@ interface OnboardingContainerProps {
 const STEPS = [
   { id: 'vet', title: 'Vet', icon: Stethoscope },
   { id: 'vaccination', title: 'Vaccines', icon: Syringe },
+  { id: 'health', title: 'Health', icon: HeartPulse },
   { id: 'emergency', title: 'Emergency', icon: Phone },
   { id: 'food', title: 'Food', icon: Utensils },
   { id: 'routine', title: 'Routine', icon: Clock },
   { id: 'insurance', title: 'Insurance', icon: Shield },
+  { id: 'sitter', title: 'Sitter', icon: Home },
 ]
 
 interface OnboardingState {
@@ -116,28 +120,34 @@ export function OnboardingContainer({ petId, petName, petSpecies }: OnboardingCo
         { count: vetCount },
         { count: vaccinationCount },
         { count: vaccinationDocCount },
+        { count: healthCount },
         { count: emergencyCount },
         { count: foodCount },
         { count: routineCount },
         { count: insuranceCount },
+        { count: sitterCount },
       ] = await Promise.all([
         supabase.from('veterinarians').select('*', { count: 'exact', head: true }).eq('pet_id', petId),
         supabase.from('vaccination_records').select('*', { count: 'exact', head: true }).eq('pet_id', petId),
         supabase.from('pet_documents').select('*', { count: 'exact', head: true }).eq('pet_id', petId).eq('category', 'vaccination'),
+        supabase.from('health_records').select('*', { count: 'exact', head: true }).eq('pet_id', petId),
         supabase.from('emergency_contacts').select('*', { count: 'exact', head: true }).eq('pet_id', petId),
         supabase.from('food_preferences').select('*', { count: 'exact', head: true }).eq('pet_id', petId),
         supabase.from('daily_routines').select('*', { count: 'exact', head: true }).eq('pet_id', petId),
         supabase.from('pet_insurance').select('*', { count: 'exact', head: true }).eq('pet_id', petId),
+        supabase.from('behavioral_notes').select('*', { count: 'exact', head: true }).eq('pet_id', petId),
       ])
 
       // Determine which steps are already completed based on existing data
       const existingCompleted: number[] = []
       if ((vetCount ?? 0) > 0) existingCompleted.push(0)
       if ((vaccinationCount ?? 0) + (vaccinationDocCount ?? 0) > 0) existingCompleted.push(1)
-      if ((emergencyCount ?? 0) > 0) existingCompleted.push(2)
-      if ((foodCount ?? 0) > 0) existingCompleted.push(3)
-      if ((routineCount ?? 0) > 0) existingCompleted.push(4)
-      if ((insuranceCount ?? 0) > 0) existingCompleted.push(5)
+      if ((healthCount ?? 0) > 0) existingCompleted.push(2)
+      if ((emergencyCount ?? 0) > 0) existingCompleted.push(3)
+      if ((foodCount ?? 0) > 0) existingCompleted.push(4)
+      if ((routineCount ?? 0) > 0) existingCompleted.push(5)
+      if ((insuranceCount ?? 0) > 0) existingCompleted.push(6)
+      if ((sitterCount ?? 0) > 0) existingCompleted.push(7)
 
       // Load database state and merge with existing data
       const dbState = await loadStateFromDB(petId, supabase)
@@ -272,6 +282,16 @@ export function OnboardingContainer({ petId, petName, petSpecies }: OnboardingCo
             isFirstStep={isFirst}
           />
         )
+      case 'health':
+        return (
+          <StepHealth
+            petId={petId}
+            onComplete={handleStepComplete}
+            onSkip={handleStepSkip}
+            onBack={handleStepBack}
+            isFirstStep={isFirst}
+          />
+        )
       case 'emergency':
         return (
           <StepEmergency
@@ -307,6 +327,17 @@ export function OnboardingContainer({ petId, petName, petSpecies }: OnboardingCo
         return (
           <StepInsurance
             petId={petId}
+            onComplete={handleStepComplete}
+            onSkip={handleStepSkip}
+            onBack={handleStepBack}
+            isFirstStep={isFirst}
+          />
+        )
+      case 'sitter':
+        return (
+          <StepSitter
+            petId={petId}
+            petSpecies={petSpecies}
             onComplete={handleStepComplete}
             onSkip={handleStepSkip}
             onBack={handleStepBack}

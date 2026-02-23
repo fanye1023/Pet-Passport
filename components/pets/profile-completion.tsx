@@ -36,7 +36,6 @@ export function ProfileCompletion({
 
   const completedCount = sections.filter((s) => s.hasData).length
   const percentage = Math.round((completedCount / sections.length) * 100)
-  const missingSections = sections.filter((s) => !s.hasData).map((s) => s.name)
 
   return (
     <div className="space-y-2">
@@ -45,11 +44,6 @@ export function ProfileCompletion({
         <span className="font-medium">{percentage}%</span>
       </div>
       <Progress value={percentage} className="h-2" />
-      {missingSections.length > 0 && missingSections.length <= 3 && (
-        <p className="text-xs text-muted-foreground">
-          Add: {missingSections.join(', ')}
-        </p>
-      )}
     </div>
   )
 }

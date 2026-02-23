@@ -460,13 +460,14 @@ function PetCardWithStats({ pet, onDeleted }: { pet: PetWithStats; onDeleted: ()
   const hasAlerts = pet.expiredVaccinations > 0 || pet.expiringVaccinations > 0
 
   const sections = [
+    pet.vets > 0,
     pet.vaccinations > 0,
     pet.healthRecords > 0,
-    pet.insurance > 0,
-    pet.vets > 0,
     pet.emergencyContacts > 0,
     pet.food > 0,
     pet.routines > 0,
+    pet.insurance > 0,
+    pet.sitterInfo > 0,
   ]
   const completedSections = sections.filter(Boolean).length
   const completionPercentage = Math.round((completedSections / sections.length) * 100)
@@ -550,7 +551,7 @@ function PetCardWithStats({ pet, onDeleted }: { pet: PetWithStats; onDeleted: ()
             className={`w-full btn-press ${isNewProfile ? 'shadow-lg' : 'glass border-white/30'}`}
           >
             <Sparkles className="h-4 w-4 mr-2" />
-            {isNewProfile ? 'Continue Setup' : `Add ${sections.length - completedSections} more sections`}
+            {isNewProfile ? 'Continue Setup' : `Add ${sections.length - completedSections} more section${sections.length - completedSections !== 1 ? 's' : ''}`}
           </Button>
         </Link>
       )}

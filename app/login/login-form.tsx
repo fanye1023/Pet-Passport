@@ -76,27 +76,29 @@ export function LoginForm({ returnTo, saveToken }: LoginFormProps) {
             <p className="text-muted-foreground mt-1">Sign in to your account</p>
           </div>
 
-          <div className="space-y-4">
-            {saveToken && (
-              <div className="rounded-xl bg-primary/10 p-3 text-sm text-primary flex items-center gap-2 glass-subtle">
-                <Bookmark className="h-4 w-4 shrink-0" />
-                <span>Sign in to save this pet to your account</span>
-              </div>
-            )}
+          {saveToken && (
+            <div className="rounded-xl bg-primary/10 p-3 text-sm text-primary flex items-center gap-2 glass-subtle mb-4">
+              <Bookmark className="h-4 w-4 shrink-0" />
+              <span>Sign in to save this pet to your account</span>
+            </div>
+          )}
 
-            {/* OAuth Buttons */}
-            <OAuthButtons returnTo={returnTo || undefined} saveToken={saveToken || undefined} />
+          {/* OAuth Buttons - only shown when enabled */}
+          {process.env.NEXT_PUBLIC_GOOGLE_AUTH_ENABLED === 'true' && (
+            <div className="space-y-4 mb-4">
+              <OAuthButtons returnTo={returnTo || undefined} saveToken={saveToken || undefined} />
 
-            {/* Divider */}
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-white/20" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">or continue with email</span>
+              {/* Divider */}
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t border-white/20" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-background px-2 text-muted-foreground">or continue with email</span>
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
           <form onSubmit={handleLogin} className="space-y-4">
             {error && (
