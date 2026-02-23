@@ -43,6 +43,7 @@ export async function generateMetadata({
     const pinData = data as SharePinRequired
     const title = `${pinData.pet_name}'s Care Info`
     const description = `View care instructions, emergency contacts, and health info for ${pinData.pet_name}`
+    const photoUrl = pinData.pet_photo_url
 
     return {
       title,
@@ -52,11 +53,18 @@ export async function generateMetadata({
         description,
         siteName,
         type: 'website',
+        images: photoUrl ? [{
+          url: photoUrl,
+          width: 400,
+          height: 400,
+          alt: `Photo of ${pinData.pet_name}`,
+        }] : undefined,
       },
       twitter: {
-        card: 'summary',
+        card: photoUrl ? 'summary_large_image' : 'summary',
         title,
         description,
+        images: photoUrl ? [photoUrl] : undefined,
       },
     }
   }

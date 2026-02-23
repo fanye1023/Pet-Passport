@@ -152,6 +152,7 @@ export interface BehavioralNotes {
 export interface SharePinRequired {
   pin_required: true
   pet_name: string
+  pet_photo_url: string | null
 }
 
 export interface ShareLink {
