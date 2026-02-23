@@ -9,6 +9,7 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion'
 import { HelpCircle } from 'lucide-react'
+import { FAQPageJsonLd } from '@/components/seo/json-ld'
 
 export const metadata = {
   title: 'FAQ - Pet ShareLink',
@@ -128,9 +129,18 @@ const faqs = [
   },
 ]
 
+// Flatten FAQs for JSON-LD
+const allFaqs = faqs.flatMap((category) =>
+  category.questions.map((q) => ({
+    question: q.q,
+    answer: q.a,
+  }))
+)
+
 export default function FAQPage() {
   return (
     <div className="flex min-h-screen flex-col">
+      <FAQPageJsonLd faqs={allFaqs} />
       <Header />
       <main className="flex-1">
         {/* Hero Section */}
