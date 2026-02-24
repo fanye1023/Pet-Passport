@@ -39,14 +39,13 @@ export default withSentryConfig(nextConfig, {
   // Only upload source maps in production builds
   silent: !process.env.CI,
 
-  // Upload source maps for better stack traces
-  widenClientFileUpload: true,
-
-  // Hide source maps from client bundles
-  hideSourceMaps: true,
+  // Source maps configuration
+  sourcemaps: {
+    deleteSourcemapsAfterUpload: true,
+  },
 
   // Disable Sentry telemetry
-  disableLogger: true,
+  telemetry: false,
 
   // Automatically instrument API routes
   automaticVercelMonitors: true,
