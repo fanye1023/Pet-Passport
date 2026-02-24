@@ -459,22 +459,6 @@ function PetCardWithStats({ pet, onDeleted }: { pet: PetWithStats; onDeleted: ()
 
   const hasAlerts = pet.expiredVaccinations > 0 || pet.expiringVaccinations > 0
 
-  const sections = [
-    pet.vets > 0,
-    pet.vaccinations > 0,
-    pet.healthRecords > 0,
-    pet.emergencyContacts > 0,
-    pet.food > 0,
-    pet.routines > 0,
-    pet.insurance > 0,
-    pet.sitterInfo > 0,
-  ]
-  const completedSections = sections.filter(Boolean).length
-  const completionPercentage = Math.round((completedSections / sections.length) * 100)
-  // Show the onboarding button more prominently for incomplete profiles
-  const showOnboardingButton = completionPercentage < 100
-  const isNewProfile = completionPercentage < 30
-
   return (
     <div className="glass-card rounded-2xl p-5 h-full group relative transition-all hover:scale-[1.01]">
       <div className="absolute top-3 right-3 z-10">
@@ -543,18 +527,6 @@ function PetCardWithStats({ pet, onDeleted }: { pet: PetWithStats; onDeleted: ()
         />
       </div>
 
-      {showOnboardingButton && (
-        <Link href={isNewProfile ? `/pets/${pet.id}/onboarding` : `/pets/${pet.id}`} className="block mt-4">
-          <Button
-            variant={isNewProfile ? "default" : "outline"}
-            size="sm"
-            className={`w-full btn-press ${isNewProfile ? 'shadow-lg' : 'glass border-white/30'}`}
-          >
-            <Sparkles className="h-4 w-4 mr-2" />
-            {isNewProfile ? 'Continue Setup' : `Add ${sections.length - completedSections} more section${sections.length - completedSections !== 1 ? 's' : ''}`}
-          </Button>
-        </Link>
-      )}
     </div>
   )
 }
