@@ -1,10 +1,10 @@
 import Link from 'next/link'
 import { Pet } from '@/lib/types/pet'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { PawPrint, Pencil, ArrowLeft } from 'lucide-react'
+import { Pencil, ArrowLeft } from 'lucide-react'
 import { PetSwitcher } from './pet-switcher'
+import { PetPhotoEditor } from './pet-photo-editor'
 
 interface PetHeaderProps {
   pet: Pet
@@ -38,14 +38,11 @@ export function PetHeader({ pet }: PetHeaderProps) {
 
       <div className="glass-card rounded-2xl p-6">
         <div className="flex flex-col sm:flex-row sm:items-center gap-5">
-          <Link href={`/pets/${pet.id}`} className="group">
-            <Avatar className="h-28 w-28 ring-4 ring-white/50 dark:ring-white/10 shadow-xl group-hover:ring-primary/50 transition-all">
-              <AvatarImage src={pet.photo_url || undefined} alt={pet.name} />
-              <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/5">
-                <PawPrint className="h-14 w-14 text-primary/60" />
-              </AvatarFallback>
-            </Avatar>
-          </Link>
+          <PetPhotoEditor
+            petId={pet.id}
+            petName={pet.name}
+            photoUrl={pet.photo_url}
+          />
 
           <div className="flex-1">
             <div className="flex items-start justify-between gap-4">
