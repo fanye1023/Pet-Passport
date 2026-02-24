@@ -13,36 +13,84 @@ interface PhotoUploadProps {
   petId?: string
 }
 
-// Optimize image: resize if too large, maintain high quality
-async function optimizeImage(file: File, maxSize = 1600, quality = 0.92): Promise<Blob> {
-  return new Promise((resolve, reject) => {
-    const img = new Image()
-    img.onload = () => {
-      // Only resize if image is larger than maxSize
-      let { width, height } = img
-      if (width <= maxSize && height <= maxSize) {
-        // Image is small enough, return original
-        resolve(file)
+// Read EXIF orientation from image file
+async function getExifOrientation(file: File): Promise<number> {
+  return new Promise((resolve) => {
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      const view = new DataView(e.target?.result as ArrayBuffer)
+      if (view.getUint16(0, false) !== 0xFFD8) {
+        resolve(1) // Not a JPEG
         return
       }
 
-      // Calculate new dimensions maintaining aspect ratio
-      if (width > height) {
-        if (width > maxSize) {
-          height = Math.round((height * maxSize) / width)
-          width = maxSize
+      let offset = 2
+      while (offset < view.byteLength) {
+        const marker = view.getUint16(offset, false)
+        offset += 2
+
+        if (marker === 0xFFE1) { // APP1 marker (EXIF)
+          if (view.getUint32(offset + 2, false) !== 0x45786966) {
+            resolve(1) // Not EXIF
+            return
+          }
+
+          const little = view.getUint16(offset + 8, false) === 0x4949
+          const tags = view.getUint16(offset + 16, little)
+
+          for (let i = 0; i < tags; i++) {
+            const tagOffset = offset + 18 + i * 12
+            if (view.getUint16(tagOffset, little) === 0x0112) { // Orientation tag
+              resolve(view.getUint16(tagOffset + 8, little))
+              return
+            }
+          }
+        } else if ((marker & 0xFF00) !== 0xFF00) {
+          break
+        } else {
+          offset += view.getUint16(offset, false)
         }
-      } else {
-        if (height > maxSize) {
-          width = Math.round((width * maxSize) / height)
-          height = maxSize
+      }
+      resolve(1) // Default orientation
+    }
+    reader.onerror = () => resolve(1)
+    reader.readAsArrayBuffer(file.slice(0, 65536)) // Read first 64KB for EXIF
+  })
+}
+
+// Optimize image: resize if too large, fix orientation, maintain high quality
+async function optimizeImage(file: File, maxSize = 1600, quality = 0.92): Promise<Blob> {
+  const orientation = await getExifOrientation(file)
+
+  return new Promise((resolve, reject) => {
+    const img = new Image()
+    img.onload = () => {
+      let { width, height } = img
+
+      // Swap dimensions for orientations 5-8 (rotated 90 or 270 degrees)
+      const needsSwap = orientation >= 5 && orientation <= 8
+      if (needsSwap) {
+        [width, height] = [height, width]
+      }
+
+      // Calculate new dimensions maintaining aspect ratio
+      let newWidth = width
+      let newHeight = height
+
+      if (newWidth > maxSize || newHeight > maxSize) {
+        if (newWidth > newHeight) {
+          newHeight = Math.round((newHeight * maxSize) / newWidth)
+          newWidth = maxSize
+        } else {
+          newWidth = Math.round((newWidth * maxSize) / newHeight)
+          newHeight = maxSize
         }
       }
 
-      // Create canvas and draw resized image
+      // Create canvas with correct dimensions
       const canvas = document.createElement('canvas')
-      canvas.width = width
-      canvas.height = height
+      canvas.width = newWidth
+      canvas.height = newHeight
       const ctx = canvas.getContext('2d')
       if (!ctx) {
         reject(new Error('Could not get canvas context'))
@@ -52,7 +100,48 @@ async function optimizeImage(file: File, maxSize = 1600, quality = 0.92): Promis
       // Use high-quality image smoothing
       ctx.imageSmoothingEnabled = true
       ctx.imageSmoothingQuality = 'high'
-      ctx.drawImage(img, 0, 0, width, height)
+
+      // Apply transformations based on EXIF orientation
+      // 1: normal, 2: flip H, 3: rotate 180, 4: flip V
+      // 5: rotate 90 CW + flip H, 6: rotate 90 CW, 7: rotate 90 CCW + flip H, 8: rotate 90 CCW
+      ctx.save()
+      switch (orientation) {
+        case 2:
+          ctx.scale(-1, 1)
+          ctx.translate(-newWidth, 0)
+          break
+        case 3:
+          ctx.translate(newWidth, newHeight)
+          ctx.rotate(Math.PI)
+          break
+        case 4:
+          ctx.scale(1, -1)
+          ctx.translate(0, -newHeight)
+          break
+        case 5:
+          ctx.rotate(Math.PI / 2)
+          ctx.scale(1, -1)
+          break
+        case 6:
+          ctx.rotate(Math.PI / 2)
+          ctx.translate(0, -newHeight)
+          break
+        case 7:
+          ctx.rotate(-Math.PI / 2)
+          ctx.scale(1, -1)
+          ctx.translate(-newWidth, 0)
+          break
+        case 8:
+          ctx.rotate(-Math.PI / 2)
+          ctx.translate(-newWidth, 0)
+          break
+      }
+
+      // Draw image with correct scaling
+      const drawWidth = needsSwap ? newHeight : newWidth
+      const drawHeight = needsSwap ? newWidth : newHeight
+      ctx.drawImage(img, 0, 0, drawWidth, drawHeight)
+      ctx.restore()
 
       // Convert to blob with high quality
       canvas.toBlob(
