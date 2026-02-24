@@ -2,8 +2,42 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { Resend } from 'resend'
 
+// Simple in-memory rate limiter
+const rateLimitMap = new Map<string, { count: number; resetTime: number }>()
+const RATE_LIMIT = 5 // Max requests
+const RATE_LIMIT_WINDOW = 60 * 60 * 1000 // 1 hour in ms
+
+function checkRateLimit(ip: string): boolean {
+  const now = Date.now()
+  const record = rateLimitMap.get(ip)
+
+  if (!record || now > record.resetTime) {
+    rateLimitMap.set(ip, { count: 1, resetTime: now + RATE_LIMIT_WINDOW })
+    return true
+  }
+
+  if (record.count >= RATE_LIMIT) {
+    return false
+  }
+
+  record.count++
+  return true
+}
+
 export async function POST(request: NextRequest) {
   try {
+    // Rate limiting
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0] ||
+               request.headers.get('x-real-ip') ||
+               'unknown'
+
+    if (!checkRateLimit(ip)) {
+      return NextResponse.json(
+        { error: 'Too many feedback submissions. Please try again later.' },
+        { status: 429 }
+      )
+    }
+
     const { message, email, pageUrl } = await request.json()
 
     if (!message?.trim()) {
