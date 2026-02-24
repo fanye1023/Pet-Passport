@@ -25,6 +25,7 @@ import { ProfileCompletion } from '@/components/pets/profile-completion'
 import { DeletePetButton } from '@/components/pets/delete-pet-button'
 import { AggregateAlerts } from '@/components/dashboard/aggregate-alerts'
 import { UpgradePrompt } from '@/components/ui/upgrade-prompt'
+import { FeedbackDialog } from '@/components/feedback/feedback-dialog'
 import { useSubscription } from '@/hooks/use-subscription'
 import { toast } from 'sonner'
 import type { Pet, Vaccination, CareEvent } from '@/lib/types/pet'
@@ -226,6 +227,9 @@ export function DashboardContent() {
                   Activity
                 </Button>
               </Link>
+              <div className="hidden sm:block">
+                <FeedbackDialog />
+              </div>
               {(() => {
                 const petLimit = checkLimit('maxPets', petsWithStats.length)
                 if (petLimit.allowed) {
