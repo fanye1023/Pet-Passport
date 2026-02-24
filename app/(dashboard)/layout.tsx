@@ -4,6 +4,7 @@ import { Sidebar } from '@/components/dashboard/sidebar'
 import { DashboardHeader } from '@/components/dashboard/header'
 import { MobileNav } from '@/components/dashboard/mobile-nav'
 import { DashboardWrapper } from '@/components/dashboard/dashboard-wrapper'
+import { FeedbackButton } from '@/components/feedback/feedback-button'
 
 export default async function DashboardLayout({
   children,
@@ -29,6 +30,7 @@ export default async function DashboardLayout({
         </main>
       </div>
       <MobileNav />
+      <FeedbackButton />
     </div>
   )
 }
