@@ -439,23 +439,28 @@ export function PetMascot({ species, breed, petName, className }: PetMascotProps
   const [isHovered, setIsHovered] = useState(false)
   const [showBubble, setShowBubble] = useState(false)
   const [bubbleText, setBubbleText] = useState('')
+  const [tipIndex, setTipIndex] = useState(0)
 
   const actualSpecies = companion?.state.species || species
   const actualBreed = companion?.state.breed || breed
-  const actualName = companion?.state.petName || petName
   const isVisible = companion?.state.isVisible ?? true
 
   if (!isVisible) return null
 
   const traits = getBreedTraits(actualSpecies, actualBreed)
-  const isHappy = isHovered
+  const isHappy = isHovered || showBubble
 
   const handleClick = () => {
-    const tip = MASCOT_TIPS[Math.floor(Math.random() * MASCOT_TIPS.length)]
+    // Cycle through tips instead of random (avoids repeats)
+    const tip = MASCOT_TIPS[tipIndex % MASCOT_TIPS.length]
+    setTipIndex(prev => prev + 1)
     setBubbleText(tip)
     setShowBubble(true)
     companion?.celebrate()
-    setTimeout(() => setShowBubble(false), 3000)
+  }
+
+  const handleClose = () => {
+    setShowBubble(false)
   }
 
   return (
@@ -466,18 +471,17 @@ export function PetMascot({ species, breed, petName, className }: PetMascotProps
     >
       {showBubble && (
         <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50 animate-in fade-in slide-in-from-bottom-2 duration-200">
-          <div className="relative bg-popover border rounded-lg shadow-lg px-3 py-2 whitespace-nowrap">
+          <div className="relative bg-popover border rounded-lg shadow-lg pl-3 pr-7 py-2 max-w-[200px]">
             <p className="text-xs font-medium">{bubbleText}</p>
+            <button
+              onClick={handleClose}
+              className="absolute top-1 right-1 w-4 h-4 flex items-center justify-center text-muted-foreground hover:text-foreground rounded"
+              aria-label="Close tip"
+            >
+              <span className="text-xs">×</span>
+            </button>
             <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-popover border-r border-b rotate-45"/>
           </div>
-        </div>
-      )}
-
-      {isHovered && !showBubble && actualName && (
-        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 z-50">
-          <span className="text-xs bg-popover/90 border rounded px-2 py-0.5 shadow-sm whitespace-nowrap">
-            {actualName}
-          </span>
         </div>
       )}
 
@@ -488,7 +492,7 @@ export function PetMascot({ species, breed, petName, className }: PetMascotProps
           "hover:scale-110 active:scale-95",
           "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 rounded-lg"
         )}
-        aria-label={`${actualName || 'Pet'} mascot - click for a tip`}
+        aria-label="Click for a tip"
       >
         {actualSpecies === 'dog' && <DogMascot traits={traits} isHappy={isHappy} />}
         {actualSpecies === 'cat' && <CatMascot traits={traits} isHappy={isHappy} />}
