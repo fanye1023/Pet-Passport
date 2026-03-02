@@ -692,7 +692,7 @@ export function PetCompanion({ className }: PetCompanionProps) {
   return (
     <div
       className={cn(
-        "fixed bottom-4 left-4 z-50 transition-all duration-300",
+        "fixed bottom-4 left-4 z-40 transition-all duration-300",
         isHovered ? "scale-110" : "scale-100",
         className
       )}
@@ -722,7 +722,7 @@ export function PetCompanion({ className }: PetCompanionProps) {
             "absolute -top-1 -left-1 w-5 h-5 rounded-full bg-muted border flex items-center justify-center",
             "text-muted-foreground hover:text-foreground hover:bg-muted/80",
             "transition-opacity duration-200",
-            isHovered ? "opacity-100" : "opacity-0"
+            isHovered ? "opacity-100" : "opacity-0 pointer-events-none"
           )}
           aria-label="Hide companion"
         >
