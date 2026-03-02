@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useCompanionOptional } from '@/components/ui/pet-companion'
 
 interface CompanionSyncProps {
@@ -15,12 +15,17 @@ interface CompanionSyncProps {
  */
 export function CompanionSync({ species, breed, name }: CompanionSyncProps) {
   const companion = useCompanionOptional()
+  const setPetRef = useRef(companion?.setPet)
 
+  // Keep ref updated
   useEffect(() => {
-    if (companion) {
-      companion.setPet(species, breed, name)
-    }
-  }, [companion, species, breed, name])
+    setPetRef.current = companion?.setPet
+  }, [companion?.setPet])
+
+  // Sync pet data - only triggers when pet info changes, not on companion state changes
+  useEffect(() => {
+    setPetRef.current?.(species, breed, name)
+  }, [species, breed, name])
 
   // This component doesn't render anything
   return null

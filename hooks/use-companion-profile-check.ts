@@ -43,10 +43,17 @@ const PRIORITY_CHECKS = [
 export function useCompanionProfileCheck({ counts, enabled = true }: UseProfileCheckConfig) {
   const companion = useCompanionOptional()
   const hasShownRef = useRef(false)
+  const companionRef = useRef(companion)
+
+  // Keep ref updated
+  useEffect(() => {
+    companionRef.current = companion
+  }, [companion])
 
   useEffect(() => {
-    if (!enabled || !companion || !counts || hasShownRef.current) return
-    if (!companion.state.isVisible) return
+    const currentCompanion = companionRef.current
+    if (!enabled || !currentCompanion || !counts || hasShownRef.current) return
+    if (!currentCompanion.state.isVisible) return
 
     // Check for missing critical items
     const missingPriority = PRIORITY_CHECKS.find(check => {
@@ -57,16 +64,16 @@ export function useCompanionProfileCheck({ counts, enabled = true }: UseProfileC
     if (missingPriority) {
       // Delay to not interrupt initial load
       const timeout = setTimeout(() => {
-        companion.setMood('concerned')
+        companionRef.current?.setMood('concerned')
 
         // Show specific message after a moment
         setTimeout(() => {
-          companion.showMessage(missingPriority.message, 5000)
+          companionRef.current?.showMessage(missingPriority.message, 5000)
         }, 1000)
 
         // Return to idle after showing concern
         setTimeout(() => {
-          companion.setMood('idle')
+          companionRef.current?.setMood('idle')
         }, 6000)
 
         hasShownRef.current = true
@@ -74,7 +81,7 @@ export function useCompanionProfileCheck({ counts, enabled = true }: UseProfileC
 
       return () => clearTimeout(timeout)
     }
-  }, [counts, companion, enabled])
+  }, [counts, enabled])
 
   // Reset when navigating away
   useEffect(() => {

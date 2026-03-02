@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback, createContext, useContext, ReactNode } from 'react'
+import { useState, useEffect, useCallback, useMemo, createContext, useContext, ReactNode } from 'react'
 import { X, MessageCircle } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -648,20 +648,23 @@ export function CompanionProvider({ children, defaultVisible = true }: Companion
     }
   }, [state.mood])
 
+  const contextValue = useMemo(
+    () => ({
+      state,
+      setMood,
+      showMessage,
+      celebrate,
+      think,
+      hide,
+      show,
+      toggle,
+      setPet,
+    }),
+    [state, setMood, showMessage, celebrate, think, hide, show, toggle, setPet]
+  )
+
   return (
-    <CompanionContext.Provider
-      value={{
-        state,
-        setMood,
-        showMessage,
-        celebrate,
-        think,
-        hide,
-        show,
-        toggle,
-        setPet,
-      }}
-    >
+    <CompanionContext.Provider value={contextValue}>
       {children}
     </CompanionContext.Provider>
   )

@@ -94,6 +94,17 @@ export function useCompanionTips(config: UseTipsConfig = {}) {
   const pathname = usePathname()
   const tipCountRef = useRef(0)
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const companionRef = useRef(companion)
+  const pathnameRef = useRef(pathname)
+
+  // Keep refs updated
+  useEffect(() => {
+    companionRef.current = companion
+  }, [companion])
+
+  useEffect(() => {
+    pathnameRef.current = pathname
+  }, [pathname])
 
   // Get tips for current route
   const getTipsForRoute = useCallback((path: string): string[] => {
@@ -138,15 +149,16 @@ export function useCompanionTips(config: UseTipsConfig = {}) {
 
   // Show a random tip
   const showTip = useCallback(() => {
-    if (!companion || !companion.state.isVisible) return
+    const currentCompanion = companionRef.current
+    if (!currentCompanion || !currentCompanion.state.isVisible) return
     if (tipCountRef.current >= maxTipsPerSession) return
 
-    const tips = getTipsForRoute(pathname)
+    const tips = getTipsForRoute(pathnameRef.current)
     const tip = getRandomTip(tips)
 
-    companion.showMessage(tip, 4000)
+    currentCompanion.showMessage(tip, 4000)
     tipCountRef.current++
-  }, [companion, pathname, getTipsForRoute, getRandomTip, maxTipsPerSession])
+  }, [getTipsForRoute, getRandomTip, maxTipsPerSession])
 
   // Schedule next tip
   const scheduleNextTip = useCallback(() => {
@@ -167,9 +179,9 @@ export function useCompanionTips(config: UseTipsConfig = {}) {
     }, delay)
   }, [enabled, minDelay, maxDelay, tipInterval, maxTipsPerSession, showTip])
 
-  // Start tips on mount / when companion becomes visible
+  // Start tips on mount / when pathname changes
   useEffect(() => {
-    if (!enabled || !companion?.state.isVisible) return
+    if (!enabled) return
 
     // Reset count on page change
     tipCountRef.current = 0
@@ -180,7 +192,7 @@ export function useCompanionTips(config: UseTipsConfig = {}) {
         clearTimeout(timeoutRef.current)
       }
     }
-  }, [enabled, companion?.state.isVisible, pathname, scheduleNextTip])
+  }, [enabled, pathname, scheduleNextTip])
 
   // Manual tip trigger
   const triggerTip = useCallback(() => {
