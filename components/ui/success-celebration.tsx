@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { Check, Sparkles } from 'lucide-react'
 import { AnimatedMascot } from '@/components/ui/animated-mascot'
+import { useCompanionOptional } from '@/components/ui/pet-companion'
 
 interface SuccessCelebrationProps {
   show: boolean
@@ -71,12 +72,16 @@ export function useSuccessCelebration() {
   const [message, setMessage] = useState('Saved!')
   const [showMascot, setShowMascot] = useState(false)
   const [petSpecies, setPetSpecies] = useState('dog')
+  const companion = useCompanionOptional()
 
   const celebrate = (msg?: string, options?: { showMascot?: boolean; petSpecies?: string }) => {
     if (msg) setMessage(msg)
     if (options?.showMascot !== undefined) setShowMascot(options.showMascot)
     if (options?.petSpecies) setPetSpecies(options.petSpecies)
     setShowCelebration(true)
+
+    // Also trigger companion celebration
+    companion?.celebrate()
   }
 
   const reset = () => {

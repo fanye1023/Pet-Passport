@@ -4,6 +4,7 @@ import { ReactNode } from 'react'
 import { PullToRefresh } from '@/components/ui/pull-to-refresh'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { TourProvider } from '@/components/tour/tour-provider'
+import { CompanionProvider, PetCompanion } from '@/components/ui/pet-companion'
 
 interface DashboardWrapperProps {
   children: ReactNode
@@ -12,12 +13,16 @@ interface DashboardWrapperProps {
 /**
  * Wraps the entire dashboard layout with providers.
  * TourProvider wraps everything so components like HelpButton can access tour context.
+ * CompanionProvider enables the pet mascot companion feature.
  */
 export function DashboardWrapper({ children }: DashboardWrapperProps) {
   return (
     <TooltipProvider>
       <TourProvider>
-        {children}
+        <CompanionProvider>
+          {children}
+          <PetCompanion />
+        </CompanionProvider>
       </TourProvider>
     </TooltipProvider>
   )

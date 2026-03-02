@@ -12,6 +12,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { SpeciesDecoration } from '@/components/ui/species-decoration'
+import { CompanionSync } from '@/components/dashboard/companion-sync'
 
 export default async function PetDetailPage({
   params,
@@ -23,11 +24,11 @@ export default async function PetDetailPage({
 
   // Fetch pet info and all section counts in parallel (2 queries instead of 13)
   const [petResult, countsResult] = await Promise.all([
-    supabase.from('pets').select('species').eq('id', petId).single(),
+    supabase.from('pets').select('species, breed, name').eq('id', petId).single(),
     supabase.rpc('get_pet_section_counts', { p_pet_id: petId }).single(),
   ])
 
-  const pet = petResult.data
+  const pet = petResult.data as { species: string; breed: string | null; name: string } | null
   const counts = countsResult.data as {
     vaccination_records: number
     vaccination_docs: number
@@ -116,6 +117,9 @@ export default async function PetDetailPage({
 
   return (
     <SpeciesDecoration species={pet?.species || 'other'} intensity="light">
+      {/* Sync companion mascot with current pet */}
+      {pet && <CompanionSync species={pet.species} breed={pet.breed} name={pet.name} />}
+
       {/* Bento Grid Layout */}
       <div className="bento-grid">
         {sections.map((section) => (
