@@ -695,7 +695,7 @@ export function PetCompanion({ className }: PetCompanionProps) {
   return (
     <div
       className={cn(
-        "fixed bottom-4 left-4 z-40 transition-all duration-300",
+        "fixed bottom-20 left-4 z-40 transition-all duration-300",
         isHovered ? "scale-110" : "scale-100",
         className
       )}

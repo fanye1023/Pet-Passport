@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Pencil, ArrowLeft } from 'lucide-react'
 import { PetSwitcher } from './pet-switcher'
 import { PetPhotoEditor } from './pet-photo-editor'
+import { PetMascot } from './pet-mascot'
 
 interface PetHeaderProps {
   pet: Pet
@@ -61,12 +62,15 @@ export function PetHeader({ pet }: PetHeaderProps) {
                   </Link>
                 </p>
               </div>
-              <Link href={`/pets/${pet.id}/edit`}>
-                <Button variant="outline" size="sm" className="glass border-white/30 hover:bg-white/50 dark:hover:bg-white/10">
-                  <Pencil className="h-4 w-4 mr-2" />
-                  Edit
-                </Button>
-              </Link>
+              <div className="flex items-center gap-2">
+                <PetMascot species={pet.species} breed={pet.breed} />
+                <Link href={`/pets/${pet.id}/edit`}>
+                  <Button variant="outline" size="sm" className="glass border-white/30 hover:bg-white/50 dark:hover:bg-white/10">
+                    <Pencil className="h-4 w-4 mr-2" />
+                    Edit
+                  </Button>
+                </Link>
+              </div>
             </div>
 
             <div className="flex flex-wrap items-center gap-2 mt-3">
