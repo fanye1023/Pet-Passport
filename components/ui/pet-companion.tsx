@@ -27,6 +27,7 @@ interface CompanionContextValue {
   think: () => void
   hide: () => void
   show: () => void
+  toggle: () => void
   setPet: (species: string, breed: string | null, name: string | null) => void
 }
 
@@ -528,6 +529,8 @@ interface CompanionProviderProps {
   defaultVisible?: boolean
 }
 
+const COMPANION_STORAGE_KEY = 'pet-companion-visible'
+
 export function CompanionProvider({ children, defaultVisible = true }: CompanionProviderProps) {
   const [state, setState] = useState<CompanionState>({
     isVisible: defaultVisible,
@@ -537,6 +540,16 @@ export function CompanionProvider({ children, defaultVisible = true }: Companion
     breed: null,
     petName: null,
   })
+  const [isInitialized, setIsInitialized] = useState(false)
+
+  // Load visibility preference from localStorage on mount
+  useEffect(() => {
+    const stored = localStorage.getItem(COMPANION_STORAGE_KEY)
+    if (stored !== null) {
+      setState(prev => ({ ...prev, isVisible: stored === 'true' }))
+    }
+    setIsInitialized(true)
+  }, [])
 
   const [messageTimeout, setMessageTimeout] = useState<NodeJS.Timeout | null>(null)
   const [moodTimeout, setMoodTimeout] = useState<NodeJS.Timeout | null>(null)
@@ -577,10 +590,20 @@ export function CompanionProvider({ children, defaultVisible = true }: Companion
 
   const hide = useCallback(() => {
     setState(prev => ({ ...prev, isVisible: false }))
+    localStorage.setItem(COMPANION_STORAGE_KEY, 'false')
   }, [])
 
   const show = useCallback(() => {
     setState(prev => ({ ...prev, isVisible: true }))
+    localStorage.setItem(COMPANION_STORAGE_KEY, 'true')
+  }, [])
+
+  const toggle = useCallback(() => {
+    setState(prev => {
+      const newVisible = !prev.isVisible
+      localStorage.setItem(COMPANION_STORAGE_KEY, String(newVisible))
+      return { ...prev, isVisible: newVisible }
+    })
   }, [])
 
   const setPet = useCallback((species: string, breed: string | null, name: string | null) => {
@@ -635,6 +658,7 @@ export function CompanionProvider({ children, defaultVisible = true }: Companion
         think,
         hide,
         show,
+        toggle,
         setPet,
       }}
     >
@@ -668,7 +692,7 @@ export function PetCompanion({ className }: PetCompanionProps) {
   return (
     <div
       className={cn(
-        "fixed bottom-4 right-4 z-50 transition-all duration-300",
+        "fixed bottom-4 left-4 z-50 transition-all duration-300",
         isHovered ? "scale-110" : "scale-100",
         className
       )}
@@ -677,11 +701,11 @@ export function PetCompanion({ className }: PetCompanionProps) {
     >
       {/* Speech bubble */}
       {state.message && (
-        <div className="absolute bottom-full right-0 mb-2 animate-in fade-in slide-in-from-bottom-2 duration-200">
+        <div className="absolute bottom-full left-0 mb-2 animate-in fade-in slide-in-from-bottom-2 duration-200">
           <div className="relative bg-popover border rounded-lg shadow-lg p-3 max-w-[200px]">
             <p className="text-sm text-popover-foreground">{state.message}</p>
             {/* Bubble tail */}
-            <div className="absolute -bottom-2 right-4 w-4 h-4 bg-popover border-r border-b rotate-45 -z-10" />
+            <div className="absolute -bottom-2 left-4 w-4 h-4 bg-popover border-l border-b -rotate-45 -z-10" />
           </div>
         </div>
       )}
@@ -695,7 +719,7 @@ export function PetCompanion({ className }: PetCompanionProps) {
             hide()
           }}
           className={cn(
-            "absolute -top-1 -right-1 w-5 h-5 rounded-full bg-muted border flex items-center justify-center",
+            "absolute -top-1 -left-1 w-5 h-5 rounded-full bg-muted border flex items-center justify-center",
             "text-muted-foreground hover:text-foreground hover:bg-muted/80",
             "transition-opacity duration-200",
             isHovered ? "opacity-100" : "opacity-0"

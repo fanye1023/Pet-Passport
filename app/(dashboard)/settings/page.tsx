@@ -7,14 +7,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
-import { User, Mail, Shield, LogOut, Loader2 } from 'lucide-react'
+import { Switch } from '@/components/ui/switch'
+import { User, Mail, Shield, LogOut, Loader2, PawPrint } from 'lucide-react'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import { ThemeToggle } from '@/components/theme-toggle'
+import { useCompanionOptional } from '@/components/ui/pet-companion'
 
 export default function SettingsPage() {
   const router = useRouter()
   const supabase = createClient()
+  const companion = useCompanionOptional()
   const [email, setEmail] = useState('')
   const [isLoading, setIsLoading] = useState(true)
   const [isUpdating, setIsUpdating] = useState(false)
@@ -99,7 +102,7 @@ export default function SettingsPage() {
           <CardTitle>Appearance</CardTitle>
           <CardDescription>Customize how the app looks</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-6">
           <div className="flex items-center justify-between">
             <div>
               <p className="font-medium">Theme</p>
@@ -108,6 +111,27 @@ export default function SettingsPage() {
               </p>
             </div>
             <ThemeToggle />
+          </div>
+
+          <Separator />
+
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-primary/10">
+                <PawPrint className="h-4 w-4 text-primary" />
+              </div>
+              <div>
+                <p className="font-medium">Pet Companion</p>
+                <p className="text-sm text-muted-foreground">
+                  Show an animated pet mascot in the corner
+                </p>
+              </div>
+            </div>
+            <Switch
+              checked={companion?.state.isVisible ?? false}
+              onCheckedChange={() => companion?.toggle()}
+              aria-label="Toggle pet companion"
+            />
           </div>
         </CardContent>
       </Card>

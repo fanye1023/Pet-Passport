@@ -5,6 +5,7 @@ import { PullToRefresh } from '@/components/ui/pull-to-refresh'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { TourProvider } from '@/components/tour/tour-provider'
 import { CompanionProvider, PetCompanion } from '@/components/ui/pet-companion'
+import { CompanionTips } from '@/components/dashboard/companion-tips'
 
 interface DashboardWrapperProps {
   children: ReactNode
@@ -22,6 +23,7 @@ export function DashboardWrapper({ children }: DashboardWrapperProps) {
         <CompanionProvider>
           {children}
           <PetCompanion />
+          <CompanionTips />
         </CompanionProvider>
       </TourProvider>
     </TooltipProvider>

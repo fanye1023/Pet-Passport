@@ -13,6 +13,7 @@ import {
 import Link from 'next/link'
 import { SpeciesDecoration } from '@/components/ui/species-decoration'
 import { CompanionSync } from '@/components/dashboard/companion-sync'
+import { ProfileCheck } from '@/components/dashboard/profile-check'
 
 export default async function PetDetailPage({
   params,
@@ -119,6 +120,8 @@ export default async function PetDetailPage({
     <SpeciesDecoration species={pet?.species || 'other'} intensity="light">
       {/* Sync companion mascot with current pet */}
       {pet && <CompanionSync species={pet.species} breed={pet.breed} name={pet.name} />}
+      {/* Check profile completeness and show concerned mood if items missing */}
+      <ProfileCheck counts={counts} />
 
       {/* Bento Grid Layout */}
       <div className="bento-grid">
