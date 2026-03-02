@@ -470,17 +470,17 @@ export function PetMascot({ species, breed, petName, className }: PetMascotProps
       onMouseLeave={() => setIsHovered(false)}
     >
       {showBubble && (
-        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50 animate-in fade-in slide-in-from-bottom-2 duration-200">
-          <div className="relative bg-popover border rounded-lg shadow-lg pl-3 pr-7 py-2 max-w-[200px]">
-            <p className="text-xs font-medium">{bubbleText}</p>
+        <div className="absolute bottom-full -left-20 mb-2 z-50 animate-in fade-in slide-in-from-bottom-2 duration-200">
+          <div className="relative bg-popover border rounded-lg shadow-lg pl-3 pr-8 py-2 w-[180px]">
+            <p className="text-xs font-medium leading-relaxed">{bubbleText}</p>
             <button
               onClick={handleClose}
-              className="absolute top-1 right-1 w-4 h-4 flex items-center justify-center text-muted-foreground hover:text-foreground rounded"
+              className="absolute top-1.5 right-1.5 w-5 h-5 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted rounded"
               aria-label="Close tip"
             >
-              <span className="text-xs">×</span>
+              <span className="text-sm">×</span>
             </button>
-            <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-popover border-r border-b rotate-45"/>
+            <div className="absolute -bottom-1.5 right-6 w-3 h-3 bg-popover border-r border-b rotate-45"/>
           </div>
         </div>
       )}
