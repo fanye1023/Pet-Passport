@@ -21,7 +21,7 @@ export default function PrivacyPage() {
             </div>
             <h1 className="text-4xl font-bold mb-4">Privacy Policy</h1>
             <p className="text-muted-foreground">
-              Last updated: February 2025
+              Last updated: March 2025
             </p>
           </div>
         </section>
@@ -126,17 +126,49 @@ export default function PrivacyPage() {
               Pet ShareLink is not intended for children under 13 years of age. We do not knowingly collect personal information from children under 13. If you are a parent or guardian and believe your child has provided us with personal information, please contact us.
             </p>
 
-            <h2>8. Third-Party Links</h2>
+            <h2>8. Cookies and Tracking Technologies</h2>
             <p>
-              Pet ShareLink may contain links to third-party websites or services. We are not responsible for the privacy practices of these external sites. We encourage you to review their privacy policies.
+              We use cookies and similar tracking technologies to enhance your experience:
+            </p>
+            <ul>
+              <li><strong>Essential Cookies:</strong> Required for the Service to function properly, including authentication and security</li>
+              <li><strong>Preference Cookies:</strong> Remember your settings and preferences (like dark mode)</li>
+              <li><strong>Analytics Cookies:</strong> Help us understand how you use Pet ShareLink so we can improve it</li>
+            </ul>
+            <p>
+              You can control cookies through your browser settings. Note that disabling certain cookies may affect the functionality of the Service.
             </p>
 
-            <h2>9. Changes to This Policy</h2>
+            <h2>9. California Privacy Rights (CCPA)</h2>
+            <p>
+              If you are a California resident, you have additional rights under the California Consumer Privacy Act (CCPA):
+            </p>
+            <ul>
+              <li><strong>Right to Know:</strong> Request information about the categories and specific pieces of personal information we&apos;ve collected</li>
+              <li><strong>Right to Delete:</strong> Request deletion of your personal information</li>
+              <li><strong>Right to Opt-Out:</strong> Opt out of the &quot;sale&quot; of personal information (we do not sell your data)</li>
+              <li><strong>Right to Non-Discrimination:</strong> We will not discriminate against you for exercising your privacy rights</li>
+            </ul>
+            <p>
+              To exercise these rights, contact us at privacy@petsharelink.com.
+            </p>
+
+            <h2>10. International Data Transfers</h2>
+            <p>
+              Pet ShareLink is operated from the United States. If you are accessing the Service from outside the United States, please be aware that your information may be transferred to, stored, and processed in the United States where our servers are located. By using the Service, you consent to this transfer.
+            </p>
+
+            <h2>11. Third-Party Links</h2>
+            <p>
+              Pet ShareLink may contain links to third-party websites or services, such as veterinary clinic websites or pet supply stores. We are not responsible for the privacy practices of these external sites. We encourage you to review their privacy policies.
+            </p>
+
+            <h2>12. Changes to This Policy</h2>
             <p>
               We may update this Privacy Policy from time to time. We will notify you of any material changes by posting the new policy on this page and updating the &quot;Last updated&quot; date. We encourage you to review this policy periodically.
             </p>
 
-            <h2>10. Contact Us</h2>
+            <h2>13. Contact Us</h2>
             <p>
               If you have any questions about this Privacy Policy or our privacy practices, please contact us at:
             </p>

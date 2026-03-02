@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useParams, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
@@ -54,6 +54,9 @@ import {
   getPetcoSearchUrl,
   getPetSmartSearchUrl,
 } from '@/lib/constants'
+import { useTour } from '@/components/tour/tour-provider'
+import { useFeatureTour } from '@/hooks/use-feature-tour'
+import { DAILY_CARE_TOUR_ID, dailyCareTourSteps } from '@/lib/tours/daily-care-tour'
 
 export default function CarePage() {
   const params = useParams()
@@ -97,10 +100,26 @@ export default function CarePage() {
   const [selectedDays, setSelectedDays] = useState<string[]>([])
   const [routineNotes, setRoutineNotes] = useState('')
 
+  // Tour integration
+  const { startTour } = useTour()
+  const { shouldShowTour, isLoading: tourLoading } = useFeatureTour(DAILY_CARE_TOUR_ID)
+  const tourStartedRef = useRef(false)
+
   useEffect(() => {
     loadFoods()
     loadRoutines()
   }, [petId])
+
+  // Start tour on first visit
+  useEffect(() => {
+    if (!foodLoading && !routineLoading && !tourLoading && shouldShowTour && !tourStartedRef.current) {
+      tourStartedRef.current = true
+      const timer = setTimeout(() => {
+        startTour(DAILY_CARE_TOUR_ID, dailyCareTourSteps)
+      }, 500)
+      return () => clearTimeout(timer)
+    }
+  }, [foodLoading, routineLoading, tourLoading, shouldShowTour, startTour])
 
   // Food functions
   const loadFoods = async () => {
@@ -327,8 +346,8 @@ export default function CarePage() {
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <SubTabs
           tabs={[
-            { value: 'food', label: 'Food', icon: <Utensils className="h-4 w-4" /> },
-            { value: 'routine', label: 'Routine', icon: <Clock className="h-4 w-4" /> },
+            { value: 'food', label: 'Food', icon: <Utensils className="h-4 w-4" />, dataTour: 'food-tab' },
+            { value: 'routine', label: 'Routine', icon: <Clock className="h-4 w-4" />, dataTour: 'routine-tab' },
           ]}
         />
 
@@ -337,7 +356,7 @@ export default function CarePage() {
           <div className="flex justify-end">
             <Dialog open={foodDialogOpen} onOpenChange={handleFoodDialogChange}>
               <DialogTrigger asChild>
-                <Button>
+                <Button data-tour="add-food-button">
                   <Plus className="h-4 w-4 mr-2" />
                   Add Food
                 </Button>

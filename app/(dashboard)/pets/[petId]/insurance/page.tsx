@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
@@ -19,6 +19,14 @@ import { InsuranceComparison } from '@/components/insurance/insurance-comparison
 import { toast } from 'sonner'
 import { EmptyState } from '@/components/ui/empty-state'
 import { openPdfWithSignedUrl } from '@/lib/utils'
+import { useTour } from '@/components/tour/tour-provider'
+import { useFeatureTour } from '@/hooks/use-feature-tour'
+import { FINANCIAL_TOUR_ID, financialTourSteps } from '@/lib/tours/financial-tour'
+
+// Only use insurance-relevant steps (upload-policy and enter-manual)
+const insuranceTourSteps = financialTourSteps.filter(step =>
+  step.id === 'upload-policy' || step.id === 'enter-manual'
+)
 
 interface ExtractedInsurance {
   provider_name: string | null
@@ -75,9 +83,25 @@ export default function InsurancePage() {
   const [showReview, setShowReview] = useState(false)
   const [extractedData, setExtractedData] = useState<ExtractedInsurance | null>(null)
 
+  // Tour integration
+  const { startTour } = useTour()
+  const { shouldShowTour, isLoading: tourLoading } = useFeatureTour(FINANCIAL_TOUR_ID)
+  const tourStartedRef = useRef(false)
+
   useEffect(() => {
     loadInsurance()
   }, [petId])
+
+  // Start tour on first visit (only when showing empty state)
+  useEffect(() => {
+    if (!loading && !tourLoading && shouldShowTour && !tourStartedRef.current && !insurance && !editing) {
+      tourStartedRef.current = true
+      const timer = setTimeout(() => {
+        startTour(FINANCIAL_TOUR_ID, insuranceTourSteps)
+      }, 500)
+      return () => clearTimeout(timer)
+    }
+  }, [loading, tourLoading, shouldShowTour, insurance, editing, startTour])
 
   const loadInsurance = async () => {
     // Fetch pet name
@@ -337,15 +361,17 @@ export default function InsurancePage() {
           description="Upload a policy document and we'll automatically extract the details using AI"
           action={
             <div className="flex flex-col items-center gap-3">
-              <DocumentUpload
-                value=""
-                onChange={handleDocumentUpload}
-                petId={petId}
-                folder="insurance"
-                label="Upload Policy PDF"
-              />
+              <div data-tour="upload-policy-button">
+                <DocumentUpload
+                  value=""
+                  onChange={handleDocumentUpload}
+                  petId={petId}
+                  folder="insurance"
+                  label="Upload Policy PDF"
+                />
+              </div>
               <span className="text-xs text-muted-foreground">or</span>
-              <Button variant="outline" onClick={() => setEditing(true)}>
+              <Button variant="outline" onClick={() => setEditing(true)} data-tour="enter-manual-button">
                 Enter Manually
               </Button>
             </div>

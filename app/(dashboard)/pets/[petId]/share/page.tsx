@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { generateShareToken, getShareUrl } from '@/lib/share'
@@ -33,6 +33,15 @@ import { EmptyState } from '@/components/ui/empty-state'
 import { UpgradePrompt } from '@/components/ui/upgrade-prompt'
 import { PremiumBadge } from '@/components/ui/premium-badge'
 import { useSubscription } from '@/hooks/use-subscription'
+import { HelpTooltip } from '@/components/ui/help-tooltip'
+import { useTour } from '@/components/tour/tour-provider'
+import { useFeatureTour } from '@/hooks/use-feature-tour'
+import { SHARING_TOUR_ID, sharingTourSteps } from '@/lib/tours/sharing-tour'
+
+// Only use share page-relevant steps (create-link, visibility, pin)
+const sharePageTourSteps = sharingTourSteps.filter(step =>
+  step.id === 'create-link' || step.id === 'visibility' || step.id === 'pin-protection'
+)
 
 const visibilityOptions = [
   { key: 'show_vaccinations', label: 'Vaccinations' },
@@ -60,6 +69,11 @@ export default function SharePage() {
   const [showUpgradePrompt, setShowUpgradePrompt] = useState(false)
   const { isPremium, checkLimit } = useSubscription()
 
+  // Tour integration
+  const { startTour } = useTour()
+  const { shouldShowTour, isLoading: tourLoading } = useFeatureTour(SHARING_TOUR_ID)
+  const tourStartedRef = useRef(false)
+
   const [linkName, setLinkName] = useState('')
   const [expiresIn, setExpiresIn] = useState('never')
   const [customDays, setCustomDays] = useState('')
@@ -80,6 +94,18 @@ export default function SharePage() {
   useEffect(() => {
     loadLinks()
   }, [petId])
+
+  // Start tour on first visit after page loads
+  useEffect(() => {
+    if (!loading && !tourLoading && shouldShowTour && !tourStartedRef.current && dialogOpen) {
+      tourStartedRef.current = true
+      // Small delay to ensure dialog content is rendered
+      const timer = setTimeout(() => {
+        startTour(SHARING_TOUR_ID, sharePageTourSteps)
+      }, 500)
+      return () => clearTimeout(timer)
+    }
+  }, [loading, tourLoading, shouldShowTour, dialogOpen, startTour])
 
   const loadLinks = async () => {
     const [linksResult, petResult] = await Promise.all([
@@ -205,7 +231,7 @@ export default function SharePage() {
           if (!linkLimit.allowed) {
             return (
               <>
-                <Button onClick={() => setShowUpgradePrompt(true)}>
+                <Button onClick={() => setShowUpgradePrompt(true)} data-tour="create-link-button">
                   <Crown className="h-4 w-4 mr-2" />
                   Create Link
                 </Button>
@@ -225,7 +251,7 @@ export default function SharePage() {
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           {checkLimit('maxShareLinks', links.length).allowed && (
             <DialogTrigger asChild>
-              <Button>
+              <Button data-tour="create-link-button">
                 <Plus className="h-4 w-4 mr-2" />
                 Create Link
               </Button>
@@ -272,8 +298,11 @@ export default function SharePage() {
                   </div>
                 )}
               </div>
-              <div className="space-y-2">
-                <Label>What can they see?</Label>
+              <div className="space-y-2" data-tour="visibility-section">
+                <div className="flex items-center gap-2">
+                  <Label>What can they see?</Label>
+                  <HelpTooltip content="Control exactly what's shared" />
+                </div>
                 <div className="space-y-2">
                   {visibilityOptions.map((opt) => (
                     <label
@@ -291,8 +320,11 @@ export default function SharePage() {
                   ))}
                 </div>
               </div>
-              <div className="space-y-2">
-                <Label>PIN Protection (optional)</Label>
+              <div className="space-y-2" data-tour="pin-section">
+                <div className="flex items-center gap-2">
+                  <Label>PIN Protection (optional)</Label>
+                  <HelpTooltip content="Recipients enter this code to view" />
+                </div>
                 <Input
                   type="password"
                   inputMode="numeric"
@@ -407,6 +439,7 @@ export default function SharePage() {
                     variant="outline"
                     size="sm"
                     onClick={() => copyLink(link.token, link.id, link.name)}
+                    data-tour="copy-link-button"
                   >
                     {copiedId === link.id ? (
                       <>
@@ -420,10 +453,12 @@ export default function SharePage() {
                       </>
                     )}
                   </Button>
-                  <ShareQRCode
-                    url={getShareUrl(link.token)}
-                    petName={pet?.name || 'Pet'}
-                  />
+                  <div data-tour="qr-button">
+                    <ShareQRCode
+                      url={getShareUrl(link.token)}
+                      petName={pet?.name || 'Pet'}
+                    />
+                  </div>
                   <Button
                     variant="outline"
                     size="sm"
@@ -436,6 +471,7 @@ export default function SharePage() {
                     variant="ghost"
                     size="sm"
                     onClick={() => handleToggleActive(link)}
+                    data-tour="toggle-button"
                   >
                     {link.is_active ? 'Disable' : 'Enable'}
                   </Button>

@@ -21,7 +21,7 @@ export default function TermsPage() {
             </div>
             <h1 className="text-4xl font-bold mb-4">Terms of Service</h1>
             <p className="text-muted-foreground">
-              Last updated: February 2025
+              Last updated: March 2025
             </p>
           </div>
         </section>
@@ -113,13 +113,46 @@ export default function TermsPage() {
               <li>You can revoke access at any time</li>
               <li>Recipients must also comply with these Terms</li>
             </ul>
+            <p>
+              Share links may optionally be protected with a PIN code. You are responsible for securely communicating any PIN codes to intended recipients. We are not responsible for unauthorized access resulting from shared or compromised PIN codes.
+            </p>
 
-            <h2>7. Intellectual Property</h2>
+            <h2>7. Subscriptions and Payments</h2>
+            <p>
+              Pet ShareLink offers both free and paid subscription plans. For paid subscriptions:
+            </p>
+            <ul>
+              <li>Subscriptions are billed in advance on a monthly or annual basis</li>
+              <li>You authorize us to charge your payment method for all fees associated with your subscription</li>
+              <li>Subscriptions automatically renew unless you cancel before the renewal date</li>
+              <li>You may cancel your subscription at any time; access continues until the end of the current billing period</li>
+              <li>Refunds are provided in accordance with our refund policy or as required by applicable law</li>
+            </ul>
+            <p>
+              We may change subscription pricing with 30 days&apos; notice. Price changes will take effect at the start of your next billing cycle.
+            </p>
+
+            <h2>8. Intellectual Property</h2>
             <p>
               The Service, including its design, features, and content (excluding User Content), is owned by Pet ShareLink and is protected by copyright, trademark, and other intellectual property laws. You may not copy, modify, distribute, or create derivative works based on the Service without our express written permission.
             </p>
 
-            <h2>8. Disclaimer of Warranties</h2>
+            <h2>9. Medical Disclaimer</h2>
+            <p>
+              <strong>IMPORTANT: Pet ShareLink is a record-keeping and information management tool only.</strong>
+            </p>
+            <ul>
+              <li>The Service is NOT a substitute for professional veterinary advice, diagnosis, or treatment</li>
+              <li>Always seek the advice of a qualified veterinarian with any questions regarding your pet&apos;s health</li>
+              <li>Never disregard professional veterinary advice or delay seeking it because of information stored or displayed in the Service</li>
+              <li>We do not verify the accuracy of health information you enter or upload</li>
+              <li>In case of a pet emergency, contact your veterinarian or emergency animal hospital immediately</li>
+            </ul>
+            <p>
+              We are not responsible for any pet health outcomes, injuries, or deaths resulting from reliance on information stored in or shared through the Service.
+            </p>
+
+            <h2>10. Disclaimer of Warranties</h2>
             <p>
               THE SERVICE IS PROVIDED &quot;AS IS&quot; AND &quot;AS AVAILABLE&quot; WITHOUT WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
             </p>
@@ -133,20 +166,20 @@ export default function TermsPage() {
               <li>The information stored will be accurate or complete</li>
             </ul>
 
-            <h2>9. Limitation of Liability</h2>
+            <h2>11. Limitation of Liability</h2>
             <p>
-              TO THE MAXIMUM EXTENT PERMITTED BY LAW, PET PASSPORT AND ITS OFFICERS, DIRECTORS, EMPLOYEES, AND AGENTS SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING BUT NOT LIMITED TO LOSS OF DATA, LOSS OF PROFITS, OR LOSS OF GOODWILL, ARISING FROM YOUR USE OF THE SERVICE.
+              TO THE MAXIMUM EXTENT PERMITTED BY LAW, PET SHARELINK AND ITS OFFICERS, DIRECTORS, EMPLOYEES, AND AGENTS SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING BUT NOT LIMITED TO LOSS OF DATA, LOSS OF PROFITS, OR LOSS OF GOODWILL, ARISING FROM YOUR USE OF THE SERVICE.
             </p>
             <p>
-              Pet ShareLink is a record-keeping tool and is not a substitute for professional veterinary advice. We are not responsible for any decisions made based on information stored in the Service.
+              This includes, but is not limited to, any damages related to pet health, injury, or death, even if we have been advised of the possibility of such damages.
             </p>
 
-            <h2>10. Indemnification</h2>
+            <h2>12. Indemnification</h2>
             <p>
               You agree to indemnify and hold harmless Pet ShareLink and its officers, directors, employees, and agents from any claims, damages, losses, or expenses (including reasonable attorney&apos;s fees) arising from your use of the Service or violation of these Terms.
             </p>
 
-            <h2>11. Termination</h2>
+            <h2>13. Termination</h2>
             <p>
               You may terminate your account at any time by deleting your account through the Service settings. We may suspend or terminate your account if you violate these Terms or for any other reason at our discretion.
             </p>
@@ -155,26 +188,26 @@ export default function TermsPage() {
             </p>
             <ul>
               <li>Your right to use the Service will immediately cease</li>
-              <li>We may delete your User Content</li>
+              <li>We may delete your User Content after a reasonable retention period</li>
               <li>Provisions that by their nature should survive termination will remain in effect</li>
             </ul>
 
-            <h2>12. Governing Law</h2>
+            <h2>14. Governing Law</h2>
             <p>
               These Terms shall be governed by and construed in accordance with the laws of the United States, without regard to conflict of law principles. Any disputes arising from these Terms or the Service shall be resolved in the courts of competent jurisdiction.
             </p>
 
-            <h2>13. Severability</h2>
+            <h2>15. Severability</h2>
             <p>
               If any provision of these Terms is found to be unenforceable, the remaining provisions will continue in full force and effect.
             </p>
 
-            <h2>14. Entire Agreement</h2>
+            <h2>16. Entire Agreement</h2>
             <p>
               These Terms, together with our Privacy Policy, constitute the entire agreement between you and Pet ShareLink regarding the Service and supersede any prior agreements.
             </p>
 
-            <h2>15. Contact Us</h2>
+            <h2>17. Contact Us</h2>
             <p>
               If you have any questions about these Terms of Service, please contact us at:
             </p>

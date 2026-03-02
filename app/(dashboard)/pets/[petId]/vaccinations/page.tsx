@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
@@ -25,6 +25,14 @@ import { ExtractionProgress } from '@/components/vaccines/extraction-progress'
 import { toast } from 'sonner'
 import { EmptyState } from '@/components/ui/empty-state'
 import { sanitizeFileName, openPdfWithSignedUrl, isDateExpired, isDateExpiringSoon } from '@/lib/utils'
+import { useTour } from '@/components/tour/tour-provider'
+import { useFeatureTour } from '@/hooks/use-feature-tour'
+import { HEALTH_RECORDS_TOUR_ID, healthRecordsTourSteps } from '@/lib/tours/health-records-tour'
+
+// Only use vaccination-relevant steps (upload-pdf, add-record) - exclude vaccinations-tab
+const vaccinationsTourSteps = healthRecordsTourSteps.filter(step =>
+  step.id === 'upload-pdf' || step.id === 'add-record'
+)
 
 interface ExtractedVaccine {
   vaccine_name: string
@@ -80,9 +88,25 @@ export default function VaccinationsPage() {
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false)
   const [savingExtracted, setSavingExtracted] = useState(false)
 
+  // Tour integration
+  const { startTour } = useTour()
+  const { shouldShowTour, isLoading: tourLoading } = useFeatureTour(HEALTH_RECORDS_TOUR_ID)
+  const tourStartedRef = useRef(false)
+
   useEffect(() => {
     loadData()
   }, [petId])
+
+  // Start tour on first visit
+  useEffect(() => {
+    if (!loading && !tourLoading && shouldShowTour && !tourStartedRef.current) {
+      tourStartedRef.current = true
+      const timer = setTimeout(() => {
+        startTour(HEALTH_RECORDS_TOUR_ID, vaccinationsTourSteps)
+      }, 500)
+      return () => clearTimeout(timer)
+    }
+  }, [loading, tourLoading, shouldShowTour, startTour])
 
   const loadData = async () => {
     const [vaxResult, docsResult] = await Promise.all([
@@ -448,6 +472,7 @@ export default function VaccinationsPage() {
             variant="outline"
             onClick={() => document.getElementById('doc-upload')?.click()}
             disabled={uploading || extracting}
+            data-tour="upload-pdf-button"
           >
             {uploading ? (
               <>
@@ -469,7 +494,7 @@ export default function VaccinationsPage() {
 
           <Dialog open={dialogOpen} onOpenChange={handleDialogChange}>
             <DialogTrigger asChild>
-              <Button>
+              <Button data-tour="add-record-button">
                 <Plus className="h-4 w-4 mr-2" />
                 Add Record
               </Button>

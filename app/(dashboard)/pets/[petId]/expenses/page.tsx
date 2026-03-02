@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
@@ -23,6 +23,14 @@ import { claimStatusOptions } from '@/components/expenses/claim-status-badge'
 import { toast } from 'sonner'
 import { RecordCardSkeleton } from '@/components/ui/skeletons'
 import { EmptyState } from '@/components/ui/empty-state'
+import { useTour } from '@/components/tour/tour-provider'
+import { useFeatureTour } from '@/hooks/use-feature-tour'
+import { FINANCIAL_TOUR_ID, financialTourSteps } from '@/lib/tours/financial-tour'
+
+// Only use expenses-relevant steps (add-expense, file-claim, summary-tab)
+const expensesTourSteps = financialTourSteps.filter(step =>
+  step.id === 'add-expense' || step.id === 'file-claim' || step.id === 'summary-tab'
+)
 
 const expenseTypeOptions = [
   { value: 'all', label: 'All Types' },
@@ -84,9 +92,25 @@ export default function ExpensesPage() {
     setLoading(false)
   }, [supabase, petId])
 
+  // Tour integration
+  const { startTour } = useTour()
+  const { shouldShowTour, isLoading: tourLoading } = useFeatureTour(FINANCIAL_TOUR_ID)
+  const tourStartedRef = useRef(false)
+
   useEffect(() => {
     loadData()
   }, [loadData])
+
+  // Start tour on first visit
+  useEffect(() => {
+    if (!loading && !tourLoading && shouldShowTour && !tourStartedRef.current) {
+      tourStartedRef.current = true
+      const timer = setTimeout(() => {
+        startTour(FINANCIAL_TOUR_ID, expensesTourSteps)
+      }, 500)
+      return () => clearTimeout(timer)
+    }
+  }, [loading, tourLoading, shouldShowTour, startTour])
 
   // Filter expenses
   const filteredExpenses = expenses.filter((expense) => {
@@ -172,11 +196,11 @@ export default function ExpensesPage() {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={() => setClaimDialogOpen(true)}>
+          <Button variant="outline" onClick={() => setClaimDialogOpen(true)} data-tour="file-claim-button">
             <FileText className="h-4 w-4 mr-2" />
             File Claim
           </Button>
-          <Button onClick={() => setExpenseDialogOpen(true)}>
+          <Button onClick={() => setExpenseDialogOpen(true)} data-tour="add-expense-button">
             <Plus className="h-4 w-4 mr-2" />
             Add Expense
           </Button>
@@ -228,7 +252,7 @@ export default function ExpensesPage() {
                 </span>
               )}
             </TabsTrigger>
-            <TabsTrigger value="summary" className="flex items-center gap-2">
+            <TabsTrigger value="summary" className="flex items-center gap-2" data-tour="summary-tab">
               <BarChart3 className="h-4 w-4" />
               <span className="hidden sm:inline">Summary</span>
             </TabsTrigger>

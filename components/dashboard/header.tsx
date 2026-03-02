@@ -13,6 +13,8 @@ import { LogOut, User as UserIcon, Menu, LayoutDashboard, CalendarDays, Activity
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { Logo } from '@/components/ui/logo'
+// Tour feature disabled for now - keeping code for later
+// import { HelpButton } from '@/components/tour/help-button'
 
 const mobileNavItems = [
   { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
@@ -61,6 +63,7 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
       </div>
 
       <div className="flex items-center gap-2">
+        {/* <HelpButton /> */}
         <ThemeToggle />
         <DropdownMenu>
         <DropdownMenuTrigger asChild>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -27,6 +27,12 @@ import { Plus, Trash2, Mail, MapPin, Pencil, Phone, Star, User, Users, Home, Dog
 import { EmergencyContact, EmergencyContactType } from '@/lib/types/pet'
 import { useCrud } from '@/hooks/use-crud'
 import { EmptyState } from '@/components/ui/empty-state'
+import { useTour } from '@/components/tour/tour-provider'
+import { useFeatureTour } from '@/hooks/use-feature-tour'
+import { OVERVIEW_TOUR_ID, overviewTourSteps } from '@/lib/tours/overview-tour'
+
+// Only use emergency-relevant step (add-contact)
+const emergencyTourSteps = overviewTourSteps.filter(step => step.id === 'add-contact')
 
 const CONTACT_TYPES: { value: EmergencyContactType; label: string; icon: typeof User }[] = [
   { value: 'owner', label: 'Owner', icon: User },
@@ -100,11 +106,27 @@ export default function EmergencyPage() {
     return a.name.localeCompare(b.name)
   })
 
+  // Tour integration
+  const { startTour } = useTour()
+  const { shouldShowTour, isLoading: tourLoading } = useFeatureTour(OVERVIEW_TOUR_ID)
+  const tourStartedRef = useRef(false)
+
   const loadContacts = () => crud.load((q: any) => q.order('created_at', { ascending: true }))
 
   useEffect(() => {
     loadContacts()
   }, [petId])
+
+  // Start tour on first visit
+  useEffect(() => {
+    if (!crud.loading && !tourLoading && shouldShowTour && !tourStartedRef.current) {
+      tourStartedRef.current = true
+      const timer = setTimeout(() => {
+        startTour(OVERVIEW_TOUR_ID, emergencyTourSteps)
+      }, 500)
+      return () => clearTimeout(timer)
+    }
+  }, [crud.loading, tourLoading, shouldShowTour, startTour])
 
   const resetForm = () => {
     setName('')
@@ -168,7 +190,7 @@ export default function EmergencyPage() {
 
         <Dialog open={crud.dialogOpen} onOpenChange={(open) => crud.handleDialogChange(open, resetForm)}>
           <DialogTrigger asChild>
-            <Button>
+            <Button data-tour="add-contact-button">
               <Plus className="h-4 w-4 mr-2" />
               Add Contact
             </Button>

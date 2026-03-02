@@ -22,6 +22,12 @@ import { toast } from 'sonner'
 import { VetCardSkeleton } from '@/components/ui/skeletons'
 import { VetMapPreview } from '@/components/vet/vet-map-preview'
 import { EmptyState } from '@/components/ui/empty-state'
+import { useTour } from '@/components/tour/tour-provider'
+import { useFeatureTour } from '@/hooks/use-feature-tour'
+import { OVERVIEW_TOUR_ID, overviewTourSteps } from '@/lib/tours/overview-tour'
+
+// Only use vet-relevant step (add-vet)
+const vetTourSteps = overviewTourSteps.filter(step => step.id === 'add-vet')
 
 interface PlaceResult {
   place_id: string
@@ -56,9 +62,25 @@ export default function VetPage() {
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
+  // Tour integration
+  const { startTour } = useTour()
+  const { shouldShowTour, isLoading: tourLoading } = useFeatureTour(OVERVIEW_TOUR_ID)
+  const tourStartedRef = useRef(false)
+
   useEffect(() => {
     loadVets()
   }, [petId])
+
+  // Start tour on first visit
+  useEffect(() => {
+    if (!loading && !tourLoading && shouldShowTour && !tourStartedRef.current) {
+      tourStartedRef.current = true
+      const timer = setTimeout(() => {
+        startTour(OVERVIEW_TOUR_ID, vetTourSteps)
+      }, 500)
+      return () => clearTimeout(timer)
+    }
+  }, [loading, tourLoading, shouldShowTour, startTour])
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -255,7 +277,7 @@ export default function VetPage() {
 
         <Dialog open={dialogOpen} onOpenChange={handleDialogChange}>
           <DialogTrigger asChild>
-            <Button>
+            <Button data-tour="add-vet-button">
               <Plus className="h-4 w-4 mr-2" />
               Add Vet
             </Button>

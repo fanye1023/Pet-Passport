@@ -8,6 +8,7 @@ interface SubTabItem {
   value: string
   label: string
   icon?: React.ReactNode
+  dataTour?: string
 }
 
 interface SubTabsProps {
@@ -49,6 +50,7 @@ export function SubTabs({ tabs, className }: SubTabsProps) {
                 "data-[state=active]:bg-background data-[state=active]:shadow-sm",
                 "transition-all duration-200"
               )}
+              data-tour={tab.dataTour}
             >
               {tab.icon}
               <span>{tab.label}</span>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, use } from 'react'
+import { useState, useEffect, use, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { getCollaborators, getPendingInvitations } from '@/lib/collaborators'
 import { useCollaboratorRole } from '@/hooks/use-collaborator-role'
@@ -16,6 +16,14 @@ import { UpgradePrompt } from '@/components/ui/upgrade-prompt'
 import { Button } from '@/components/ui/button'
 import type { PetCollaborator, PetInvitation, Pet } from '@/lib/types/pet'
 import { Users, Info, Crown } from 'lucide-react'
+import { useTour } from '@/components/tour/tour-provider'
+import { useFeatureTour } from '@/hooks/use-feature-tour'
+import { SHARING_TOUR_ID, sharingTourSteps } from '@/lib/tours/sharing-tour'
+
+// Only use collaborator-relevant steps (invite-button and role-info)
+const collaboratorsTourSteps = sharingTourSteps.filter(step =>
+  step.id === 'invite-button' || step.id === 'role-info'
+)
 
 export default function CollaboratorsPage({
   params
@@ -32,6 +40,11 @@ export default function CollaboratorsPage({
 
   const { role, isOwner, canManageCollaborators } = useCollaboratorRole(petId)
   const { checkLimit } = useSubscription()
+
+  // Tour integration
+  const { startTour } = useTour()
+  const { shouldShowTour, isLoading: tourLoading } = useFeatureTour(SHARING_TOUR_ID)
+  const tourStartedRef = useRef(false)
 
   const fetchData = async () => {
     setIsLoading(true)
@@ -65,6 +78,17 @@ export default function CollaboratorsPage({
     fetchData()
   }, [petId, canManageCollaborators])
 
+  // Start tour on first visit
+  useEffect(() => {
+    if (!isLoading && !tourLoading && shouldShowTour && !tourStartedRef.current) {
+      tourStartedRef.current = true
+      const timer = setTimeout(() => {
+        startTour(SHARING_TOUR_ID, collaboratorsTourSteps)
+      }, 500)
+      return () => clearTimeout(timer)
+    }
+  }, [isLoading, tourLoading, shouldShowTour, startTour])
+
   if (isLoading) {
     return (
       <div className="space-y-6">
@@ -96,38 +120,40 @@ export default function CollaboratorsPage({
         </div>
 
         {canManageCollaborators && (
-          (() => {
-            const collabLimit = checkLimit('maxCollaborators', collaborators.length)
-            if (!collabLimit.allowed) {
+          <div data-tour="invite-button">
+            {(() => {
+              const collabLimit = checkLimit('maxCollaborators', collaborators.length)
+              if (!collabLimit.allowed) {
+                return (
+                  <>
+                    <Button onClick={() => setShowUpgradePrompt(true)}>
+                      <Crown className="h-4 w-4 mr-2" />
+                      Invite
+                    </Button>
+                    <UpgradePrompt
+                      open={showUpgradePrompt}
+                      onOpenChange={setShowUpgradePrompt}
+                      feature="collaborators"
+                      currentUsage={collaborators.length}
+                      limit={typeof collabLimit.limit === 'number' ? collabLimit.limit : undefined}
+                    />
+                  </>
+                )
+              }
               return (
-                <>
-                  <Button onClick={() => setShowUpgradePrompt(true)}>
-                    <Crown className="h-4 w-4 mr-2" />
-                    Invite
-                  </Button>
-                  <UpgradePrompt
-                    open={showUpgradePrompt}
-                    onOpenChange={setShowUpgradePrompt}
-                    feature="collaborators"
-                    currentUsage={collaborators.length}
-                    limit={typeof collabLimit.limit === 'number' ? collabLimit.limit : undefined}
-                  />
-                </>
+                <InviteForm
+                  petId={petId}
+                  petName={pet.name}
+                  onInviteSent={fetchData}
+                />
               )
-            }
-            return (
-              <InviteForm
-                petId={petId}
-                petName={pet.name}
-                onInviteSent={fetchData}
-              />
-            )
-          })()
+            })()}
+          </div>
         )}
       </div>
 
       {role && (
-        <Alert>
+        <Alert data-tour="role-info">
           <Info className="h-4 w-4" />
           <AlertDescription className="flex items-center gap-2">
             Your role: <RoleBadge role={role} size="sm" />
