@@ -6,10 +6,11 @@ import { cn } from '@/lib/utils'
 
 // Breed characteristics for visual differentiation
 interface BreedTraits {
-  colors: { primary: string; secondary: string; nose: string }
-  earType: 'floppy' | 'pointed' | 'folded' | 'round' | 'small'
-  faceType: 'round' | 'long' | 'flat' | 'normal'
+  colors: { primary: string; secondary: string; nose: string; accent?: string }
+  earType: 'floppy' | 'pointed' | 'folded' | 'round' | 'small' | 'corgi' | 'bat'
+  faceType: 'round' | 'long' | 'flat' | 'normal' | 'fox'
   furType: 'fluffy' | 'sleek' | 'curly'
+  hasMarkings?: 'corgi' | 'husky' | 'collie' | 'none'
 }
 
 const dogBreedTraits: Record<string, BreedTraits> = {
@@ -19,20 +20,24 @@ const dogBreedTraits: Record<string, BreedTraits> = {
   'labrador retriever': { colors: { primary: '#F5DEB3', secondary: '#E8D4A8', nose: '#333' }, earType: 'floppy', faceType: 'normal', furType: 'sleek' },
 
   // Flat-faced breeds
-  'french bulldog': { colors: { primary: '#D4C4B0', secondary: '#C4B4A0', nose: '#333' }, earType: 'pointed', faceType: 'flat', furType: 'sleek' },
+  'french bulldog': { colors: { primary: '#D4C4B0', secondary: '#C4B4A0', nose: '#333' }, earType: 'bat', faceType: 'flat', furType: 'sleek' },
   'bulldog': { colors: { primary: '#D4C4B0', secondary: '#C4B4A0', nose: '#333' }, earType: 'folded', faceType: 'flat', furType: 'sleek' },
   'pug': { colors: { primary: '#D4B896', secondary: '#1A1A1A', nose: '#333' }, earType: 'folded', faceType: 'flat', furType: 'sleek' },
-  'boston terrier': { colors: { primary: '#1A1A1A', secondary: '#FFFFFF', nose: '#333' }, earType: 'pointed', faceType: 'flat', furType: 'sleek' },
+  'boston terrier': { colors: { primary: '#1A1A1A', secondary: '#FFFFFF', nose: '#333' }, earType: 'bat', faceType: 'flat', furType: 'sleek' },
+
+  // CORGI - Special treatment with huge ears and fox face
+  'corgi': { colors: { primary: '#E8A855', secondary: '#FFFFFF', nose: '#333', accent: '#D49845' }, earType: 'corgi', faceType: 'fox', furType: 'fluffy', hasMarkings: 'corgi' },
+  'pembroke welsh corgi': { colors: { primary: '#E8A855', secondary: '#FFFFFF', nose: '#333', accent: '#D49845' }, earType: 'corgi', faceType: 'fox', furType: 'fluffy', hasMarkings: 'corgi' },
+  'cardigan welsh corgi': { colors: { primary: '#8B7355', secondary: '#FFFFFF', nose: '#333', accent: '#6B5344' }, earType: 'corgi', faceType: 'fox', furType: 'fluffy', hasMarkings: 'corgi' },
 
   // Pointed ear breeds
   'german shepherd': { colors: { primary: '#8B7355', secondary: '#2D2D2D', nose: '#333' }, earType: 'pointed', faceType: 'long', furType: 'fluffy' },
-  'husky': { colors: { primary: '#808080', secondary: '#FFFFFF', nose: '#333' }, earType: 'pointed', faceType: 'normal', furType: 'fluffy' },
-  'siberian husky': { colors: { primary: '#808080', secondary: '#FFFFFF', nose: '#333' }, earType: 'pointed', faceType: 'normal', furType: 'fluffy' },
-  'corgi': { colors: { primary: '#E8A855', secondary: '#FFFFFF', nose: '#333' }, earType: 'pointed', faceType: 'long', furType: 'fluffy' },
-  'shiba inu': { colors: { primary: '#E8A855', secondary: '#F5F5F5', nose: '#333' }, earType: 'pointed', faceType: 'normal', furType: 'fluffy' },
+  'husky': { colors: { primary: '#808080', secondary: '#FFFFFF', nose: '#333' }, earType: 'pointed', faceType: 'normal', furType: 'fluffy', hasMarkings: 'husky' },
+  'siberian husky': { colors: { primary: '#808080', secondary: '#FFFFFF', nose: '#333' }, earType: 'pointed', faceType: 'normal', furType: 'fluffy', hasMarkings: 'husky' },
+  'shiba inu': { colors: { primary: '#E8A855', secondary: '#F5F5F5', nose: '#333' }, earType: 'pointed', faceType: 'fox', furType: 'fluffy' },
 
   // Small breeds
-  'chihuahua': { colors: { primary: '#D4A574', secondary: '#C4956A', nose: '#333' }, earType: 'pointed', faceType: 'round', furType: 'sleek' },
+  'chihuahua': { colors: { primary: '#D4A574', secondary: '#C4956A', nose: '#333' }, earType: 'bat', faceType: 'round', furType: 'sleek' },
   'yorkie': { colors: { primary: '#8B7355', secondary: '#D4A574', nose: '#333' }, earType: 'pointed', faceType: 'normal', furType: 'fluffy' },
   'yorkshire terrier': { colors: { primary: '#8B7355', secondary: '#D4A574', nose: '#333' }, earType: 'pointed', faceType: 'normal', furType: 'fluffy' },
   'pomeranian': { colors: { primary: '#E8A855', secondary: '#D49845', nose: '#333' }, earType: 'small', faceType: 'round', furType: 'fluffy' },
@@ -56,56 +61,36 @@ const dogBreedTraits: Record<string, BreedTraits> = {
   'boxer': { colors: { primary: '#8B5A2B', secondary: '#FFFFFF', nose: '#333' }, earType: 'folded', faceType: 'flat', furType: 'sleek' },
   'great dane': { colors: { primary: '#4A4A4A', secondary: '#3A3A3A', nose: '#333' }, earType: 'floppy', faceType: 'long', furType: 'sleek' },
 
+  // Collies
+  'border collie': { colors: { primary: '#1A1A1A', secondary: '#FFFFFF', nose: '#333' }, earType: 'folded', faceType: 'long', furType: 'fluffy', hasMarkings: 'collie' },
+  'australian shepherd': { colors: { primary: '#4A4A4A', secondary: '#D4A574', nose: '#333' }, earType: 'folded', faceType: 'normal', furType: 'fluffy' },
+  'collie': { colors: { primary: '#D4A574', secondary: '#FFFFFF', nose: '#333' }, earType: 'folded', faceType: 'long', furType: 'fluffy', hasMarkings: 'collie' },
+
   // Spaniels
   'cocker spaniel': { colors: { primary: '#D4A574', secondary: '#C4956A', nose: '#333' }, earType: 'floppy', faceType: 'normal', furType: 'fluffy' },
   'cavalier': { colors: { primary: '#8B4513', secondary: '#FFFFFF', nose: '#333' }, earType: 'floppy', faceType: 'round', furType: 'fluffy' },
   'cavalier king charles': { colors: { primary: '#8B4513', secondary: '#FFFFFF', nose: '#333' }, earType: 'floppy', faceType: 'round', furType: 'fluffy' },
 
-  // Border collie
-  'border collie': { colors: { primary: '#1A1A1A', secondary: '#FFFFFF', nose: '#333' }, earType: 'folded', faceType: 'long', furType: 'fluffy' },
-  'australian shepherd': { colors: { primary: '#4A4A4A', secondary: '#D4A574', nose: '#333' }, earType: 'folded', faceType: 'normal', furType: 'fluffy' },
-
   'default': { colors: { primary: '#D4A574', secondary: '#C4956A', nose: '#333' }, earType: 'floppy', faceType: 'normal', furType: 'sleek' },
 }
 
 const catBreedTraits: Record<string, BreedTraits> = {
-  // Standard cats
   'tabby': { colors: { primary: '#8B7355', secondary: '#6B5344', nose: '#FFB6C1' }, earType: 'pointed', faceType: 'normal', furType: 'sleek' },
   'orange tabby': { colors: { primary: '#E8A855', secondary: '#D49845', nose: '#FFB6C1' }, earType: 'pointed', faceType: 'normal', furType: 'sleek' },
   'domestic shorthair': { colors: { primary: '#808080', secondary: '#606060', nose: '#FFB6C1' }, earType: 'pointed', faceType: 'normal', furType: 'sleek' },
-
-  // Flat-faced cats
   'persian': { colors: { primary: '#F5F5F5', secondary: '#E8E8E8', nose: '#FFB6C1' }, earType: 'small', faceType: 'flat', furType: 'fluffy' },
-  'exotic shorthair': { colors: { primary: '#E8A855', secondary: '#D49845', nose: '#FFB6C1' }, earType: 'small', faceType: 'flat', furType: 'sleek' },
-  'himalayan': { colors: { primary: '#F5F5F5', secondary: '#8B7355', nose: '#FFB6C1' }, earType: 'small', faceType: 'flat', furType: 'fluffy' },
-
-  // Angular/sleek
   'siamese': { colors: { primary: '#F5DEB3', secondary: '#8B7355', nose: '#FFB6C1' }, earType: 'pointed', faceType: 'long', furType: 'sleek' },
-  'oriental': { colors: { primary: '#F5DEB3', secondary: '#8B7355', nose: '#FFB6C1' }, earType: 'pointed', faceType: 'long', furType: 'sleek' },
-  'abyssinian': { colors: { primary: '#C4956A', secondary: '#B4856A', nose: '#FFB6C1' }, earType: 'pointed', faceType: 'long', furType: 'sleek' },
-
-  // Folded ears
-  'scottish fold': { colors: { primary: '#808080', secondary: '#606060', nose: '#FFB6C1' }, earType: 'folded', faceType: 'round', furType: 'sleek' },
-
-  // Round face
-  'british shorthair': { colors: { primary: '#808080', secondary: '#606060', nose: '#FFB6C1' }, earType: 'small', faceType: 'round', furType: 'sleek' },
-  'ragdoll': { colors: { primary: '#F5F5F5', secondary: '#C4B4A0', nose: '#FFB6C1' }, earType: 'pointed', faceType: 'round', furType: 'fluffy' },
-
-  // Fluffy
   'maine coon': { colors: { primary: '#8B7355', secondary: '#6B5344', nose: '#FFB6C1' }, earType: 'pointed', faceType: 'long', furType: 'fluffy' },
-  'norwegian forest': { colors: { primary: '#8B7355', secondary: '#6B5344', nose: '#FFB6C1' }, earType: 'pointed', faceType: 'normal', furType: 'fluffy' },
-
-  // Special
-  'sphynx': { colors: { primary: '#E8D4C4', secondary: '#D8C4B4', nose: '#FFB6C1' }, earType: 'pointed', faceType: 'long', furType: 'sleek' },
+  'ragdoll': { colors: { primary: '#F5F5F5', secondary: '#C4B4A0', nose: '#FFB6C1' }, earType: 'pointed', faceType: 'round', furType: 'fluffy' },
+  'british shorthair': { colors: { primary: '#808080', secondary: '#606060', nose: '#FFB6C1' }, earType: 'small', faceType: 'round', furType: 'sleek' },
+  'scottish fold': { colors: { primary: '#808080', secondary: '#606060', nose: '#FFB6C1' }, earType: 'folded', faceType: 'round', furType: 'sleek' },
+  'sphynx': { colors: { primary: '#E8D4C4', secondary: '#D8C4B4', nose: '#FFB6C1' }, earType: 'bat', faceType: 'long', furType: 'sleek' },
   'bengal': { colors: { primary: '#D4A574', secondary: '#8B7355', nose: '#FFB6C1' }, earType: 'small', faceType: 'normal', furType: 'sleek' },
   'russian blue': { colors: { primary: '#6B7B8B', secondary: '#5B6B7B', nose: '#FFB6C1' }, earType: 'pointed', faceType: 'normal', furType: 'sleek' },
-
-  // Patterns
   'tuxedo': { colors: { primary: '#1A1A1A', secondary: '#FFFFFF', nose: '#FFB6C1' }, earType: 'pointed', faceType: 'normal', furType: 'sleek' },
-  'calico': { colors: { primary: '#FFFFFF', secondary: '#E8A855', nose: '#FFB6C1' }, earType: 'pointed', faceType: 'normal', furType: 'sleek' },
+  'calico': { colors: { primary: '#FFFFFF', secondary: '#E8A855', nose: '#FFB6C1', accent: '#1A1A1A' }, earType: 'pointed', faceType: 'normal', furType: 'sleek' },
   'black cat': { colors: { primary: '#1A1A1A', secondary: '#0A0A0A', nose: '#333' }, earType: 'pointed', faceType: 'normal', furType: 'sleek' },
   'white cat': { colors: { primary: '#FFFFFF', secondary: '#F5F5F5', nose: '#FFB6C1' }, earType: 'pointed', faceType: 'normal', furType: 'sleek' },
-
   'default': { colors: { primary: '#808080', secondary: '#606060', nose: '#FFB6C1' }, earType: 'pointed', faceType: 'normal', furType: 'sleek' },
 }
 
@@ -128,99 +113,192 @@ function getBreedTraits(species: string, breed: string | null): BreedTraits {
 
 // Dog SVG with breed-specific features
 function DogMascot({ traits, isHappy }: { traits: BreedTraits; isHappy: boolean }) {
-  const { colors, earType, faceType, furType } = traits
+  const { colors, earType, faceType, furType, hasMarkings } = traits
 
-  // Adjust face proportions based on faceType
-  const snoutLength = faceType === 'long' ? 12 : faceType === 'flat' ? 4 : 8
-  const faceWidth = faceType === 'round' ? 38 : faceType === 'flat' ? 40 : 35
-  const eyeY = faceType === 'flat' ? 44 : 46
-  const noseY = faceType === 'flat' ? 52 : faceType === 'long' ? 58 : 55
-
-  // Fluffy outline effect
-  const fluffyFilter = furType === 'fluffy' || furType === 'curly'
+  // Special handling for corgi
+  const isCorgi = earType === 'corgi'
 
   return (
     <svg viewBox="0 0 100 100" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-      {fluffyFilter && (
+      {/* Fluffy fur effect */}
+      {furType === 'fluffy' && (
         <defs>
-          <filter id="fluffy" x="-20%" y="-20%" width="140%" height="140%">
-            <feTurbulence type="fractalNoise" baseFrequency={furType === 'curly' ? '0.08' : '0.04'} numOctaves="2" result="noise"/>
+          <filter id="fluffyDog" x="-10%" y="-10%" width="120%" height="120%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" result="noise"/>
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="2" xChannelSelector="R" yChannelSelector="G"/>
+          </filter>
+        </defs>
+      )}
+      {furType === 'curly' && (
+        <defs>
+          <filter id="curlyDog" x="-10%" y="-10%" width="120%" height="120%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.1" numOctaves="3" result="noise"/>
             <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" xChannelSelector="R" yChannelSelector="G"/>
           </filter>
         </defs>
       )}
 
-      {/* Head */}
-      <ellipse
-        cx="50" cy="52"
-        rx={faceWidth} ry="32"
-        fill={colors.primary}
-        filter={fluffyFilter ? "url(#fluffy)" : undefined}
-      />
+      {/* CORGI - Special design */}
+      {isCorgi && (
+        <>
+          {/* Big fluffy head */}
+          <ellipse cx="50" cy="55" rx="36" ry="30" fill={colors.primary} filter="url(#fluffyDog)"/>
 
-      {/* Ears based on type */}
-      {earType === 'floppy' && (
-        <>
-          <ellipse cx="22" cy="45" rx="10" ry="18" fill={colors.secondary} transform="rotate(-20 22 45)">
-            {isHappy && <animateTransform attributeName="transform" type="rotate" values="-20 22 45;-15 22 45;-20 22 45" dur="0.5s" repeatCount="indefinite"/>}
-          </ellipse>
-          <ellipse cx="78" cy="45" rx="10" ry="18" fill={colors.secondary} transform="rotate(20 78 45)">
-            {isHappy && <animateTransform attributeName="transform" type="rotate" values="20 78 45;15 78 45;20 78 45" dur="0.5s" repeatCount="indefinite" begin="0.1s"/>}
-          </ellipse>
-        </>
-      )}
-      {earType === 'pointed' && (
-        <>
-          <polygon points="25,40 15,12 38,32" fill={colors.secondary}>
-            {isHappy && <animateTransform attributeName="transform" type="rotate" values="0 25 40;-5 25 40;0 25 40" dur="0.4s" repeatCount="indefinite"/>}
+          {/* White face markings - the blaze */}
+          <path d="M50 25 L42 55 Q50 75 58 55 L50 25" fill={colors.secondary}/>
+          <ellipse cx="50" cy="68" rx="14" ry="10" fill={colors.secondary}/>
+
+          {/* Cheek fluff */}
+          <ellipse cx="28" cy="58" rx="10" ry="8" fill={colors.accent || colors.primary}/>
+          <ellipse cx="72" cy="58" rx="10" ry="8" fill={colors.accent || colors.primary}/>
+
+          {/* HUGE pointy ears - corgi signature */}
+          <polygon points="18,50 8,5 38,38" fill={colors.primary}>
+            {isHappy && <animateTransform attributeName="transform" type="rotate" values="0 18 50;-8 18 50;0 18 50" dur="0.3s" repeatCount="indefinite"/>}
           </polygon>
-          <polygon points="75,40 85,12 62,32" fill={colors.secondary}>
-            {isHappy && <animateTransform attributeName="transform" type="rotate" values="0 75 40;5 75 40;0 75 40" dur="0.4s" repeatCount="indefinite" begin="0.1s"/>}
+          <polygon points="82,50 92,5 62,38" fill={colors.primary}>
+            {isHappy && <animateTransform attributeName="transform" type="rotate" values="0 82 50;8 82 50;0 82 50" dur="0.3s" repeatCount="indefinite" begin="0.1s"/>}
           </polygon>
+          {/* Inner ear pink */}
+          <polygon points="20,48 14,15 34,40" fill="#FFB6C1"/>
+          <polygon points="80,48 86,15 66,40" fill="#FFB6C1"/>
+
+          {/* Eyes - alert corgi eyes */}
+          <ellipse cx="38" cy="48" rx="5" ry="6" fill="#333"/>
+          <ellipse cx="62" cy="48" rx="5" ry="6" fill="#333"/>
+          <circle cx="40" cy="46" r="2" fill="white"/>
+          <circle cx="64" cy="46" r="2" fill="white"/>
+
+          {/* Black nose */}
+          <ellipse cx="50" cy="62" rx="6" ry="5" fill={colors.nose}/>
+
+          {/* Happy corgi smile */}
+          <path
+            d={isHappy ? "M38 72 Q50 84 62 72" : "M42 70 Q50 76 58 70"}
+            fill="none" stroke="#333" strokeWidth="2.5" strokeLinecap="round"
+          />
+
+          {/* Tongue when happy */}
+          {isHappy && (
+            <ellipse cx="50" cy="80" rx="5" ry="6" fill="#FF9999">
+              <animate attributeName="cy" values="80;82;80" dur="0.3s" repeatCount="indefinite"/>
+            </ellipse>
+          )}
         </>
       )}
-      {earType === 'folded' && (
+
+      {/* Non-corgi dogs */}
+      {!isCorgi && (
         <>
-          <ellipse cx="25" cy="38" rx="12" ry="10" fill={colors.secondary} transform="rotate(-30 25 38)"/>
-          <ellipse cx="75" cy="38" rx="12" ry="10" fill={colors.secondary} transform="rotate(30 75 38)"/>
+          {/* Head shape based on face type */}
+          <ellipse
+            cx="50" cy="52"
+            rx={faceType === 'flat' ? 38 : faceType === 'fox' ? 32 : 35}
+            ry={faceType === 'long' ? 35 : faceType === 'flat' ? 28 : 32}
+            fill={colors.primary}
+            filter={furType === 'fluffy' ? "url(#fluffyDog)" : furType === 'curly' ? "url(#curlyDog)" : undefined}
+          />
+
+          {/* Husky markings */}
+          {hasMarkings === 'husky' && (
+            <path d="M50 20 L35 50 Q50 70 65 50 L50 20" fill={colors.secondary}/>
+          )}
+
+          {/* Collie markings */}
+          {hasMarkings === 'collie' && (
+            <>
+              <ellipse cx="50" cy="65" rx="15" ry="12" fill={colors.secondary}/>
+              <path d="M40 35 L50 25 L60 35" fill={colors.secondary} stroke={colors.secondary} strokeWidth="8" strokeLinejoin="round"/>
+            </>
+          )}
+
+          {/* Ears */}
+          {earType === 'floppy' && (
+            <>
+              <ellipse cx="22" cy="45" rx="10" ry="18" fill={colors.secondary} transform="rotate(-20 22 45)">
+                {isHappy && <animateTransform attributeName="transform" type="rotate" values="-20 22 45;-15 22 45;-20 22 45" dur="0.5s" repeatCount="indefinite"/>}
+              </ellipse>
+              <ellipse cx="78" cy="45" rx="10" ry="18" fill={colors.secondary} transform="rotate(20 78 45)">
+                {isHappy && <animateTransform attributeName="transform" type="rotate" values="20 78 45;15 78 45;20 78 45" dur="0.5s" repeatCount="indefinite" begin="0.1s"/>}
+              </ellipse>
+            </>
+          )}
+          {earType === 'pointed' && (
+            <>
+              <polygon points="25,42 12,8 42,32" fill={colors.secondary}>
+                {isHappy && <animateTransform attributeName="transform" type="rotate" values="0 25 42;-5 25 42;0 25 42" dur="0.4s" repeatCount="indefinite"/>}
+              </polygon>
+              <polygon points="75,42 88,8 58,32" fill={colors.secondary}>
+                {isHappy && <animateTransform attributeName="transform" type="rotate" values="0 75 42;5 75 42;0 75 42" dur="0.4s" repeatCount="indefinite" begin="0.1s"/>}
+              </polygon>
+              <polygon points="27,40 18,16 38,34" fill="#FFB6C1"/>
+              <polygon points="73,40 82,16 62,34" fill="#FFB6C1"/>
+            </>
+          )}
+          {earType === 'bat' && (
+            <>
+              <ellipse cx="25" cy="32" rx="14" ry="18" fill={colors.secondary} transform="rotate(-10 25 32)">
+                {isHappy && <animateTransform attributeName="transform" type="rotate" values="-10 25 32;-5 25 32;-10 25 32" dur="0.4s" repeatCount="indefinite"/>}
+              </ellipse>
+              <ellipse cx="75" cy="32" rx="14" ry="18" fill={colors.secondary} transform="rotate(10 75 32)">
+                {isHappy && <animateTransform attributeName="transform" type="rotate" values="10 75 32;5 75 32;10 75 32" dur="0.4s" repeatCount="indefinite" begin="0.1s"/>}
+              </ellipse>
+              <ellipse cx="25" cy="34" rx="10" ry="12" fill="#FFB6C1" transform="rotate(-10 25 34)"/>
+              <ellipse cx="75" cy="34" rx="10" ry="12" fill="#FFB6C1" transform="rotate(10 75 34)"/>
+            </>
+          )}
+          {earType === 'folded' && (
+            <>
+              <ellipse cx="25" cy="38" rx="12" ry="10" fill={colors.secondary} transform="rotate(-30 25 38)"/>
+              <ellipse cx="75" cy="38" rx="12" ry="10" fill={colors.secondary} transform="rotate(30 75 38)"/>
+            </>
+          )}
+          {earType === 'small' && (
+            <>
+              <ellipse cx="30" cy="30" rx="8" ry="10" fill={colors.secondary} transform="rotate(-15 30 30)"/>
+              <ellipse cx="70" cy="30" rx="8" ry="10" fill={colors.secondary} transform="rotate(15 70 30)"/>
+            </>
+          )}
+
+          {/* Fox face snout */}
+          {faceType === 'fox' && (
+            <ellipse cx="50" cy="62" rx="12" ry="10" fill={colors.secondary}/>
+          )}
+
+          {/* Flat face snout area */}
+          {faceType === 'flat' && (
+            <ellipse cx="50" cy="58" rx="18" ry="10" fill={colors.secondary} opacity="0.5"/>
+          )}
+
+          {/* Eyes */}
+          <circle cx="38" cy={faceType === 'flat' ? 44 : 46} r="5" fill="#333">
+            {isHappy && <animate attributeName="r" values="5;6;5" dur="0.3s" repeatCount="indefinite"/>}
+          </circle>
+          <circle cx="62" cy={faceType === 'flat' ? 44 : 46} r="5" fill="#333">
+            {isHappy && <animate attributeName="r" values="5;6;5" dur="0.3s" repeatCount="indefinite"/>}
+          </circle>
+          <circle cx="39" cy={faceType === 'flat' ? 43 : 45} r="2" fill="white"/>
+          <circle cx="63" cy={faceType === 'flat' ? 43 : 45} r="2" fill="white"/>
+
+          {/* Nose */}
+          <ellipse cx="50" cy={faceType === 'flat' ? 54 : faceType === 'long' ? 60 : 56} rx="6" ry="4" fill={colors.nose}/>
+
+          {/* Mouth */}
+          <path
+            d={isHappy
+              ? `M38 ${faceType === 'flat' ? 62 : 66} Q50 ${faceType === 'flat' ? 72 : 76} 62 ${faceType === 'flat' ? 62 : 66}`
+              : `M42 ${faceType === 'flat' ? 60 : 64} Q50 ${faceType === 'flat' ? 66 : 70} 58 ${faceType === 'flat' ? 60 : 64}`
+            }
+            fill="none" stroke="#333" strokeWidth="2" strokeLinecap="round"
+          />
+
+          {/* Tongue when happy */}
+          {isHappy && (
+            <ellipse cx="50" cy={faceType === 'flat' ? 68 : 74} rx="4" ry="5" fill="#FF9999">
+              <animate attributeName="cy" values={`${faceType === 'flat' ? 68 : 74};${faceType === 'flat' ? 70 : 76};${faceType === 'flat' ? 68 : 74}`} dur="0.3s" repeatCount="indefinite"/>
+            </ellipse>
+          )}
         </>
-      )}
-      {earType === 'small' && (
-        <>
-          <ellipse cx="28" cy="30" rx="8" ry="10" fill={colors.secondary} transform="rotate(-15 28 30)"/>
-          <ellipse cx="72" cy="30" rx="8" ry="10" fill={colors.secondary} transform="rotate(15 72 30)"/>
-        </>
-      )}
-
-      {/* Snout area for flat-faced breeds */}
-      {faceType === 'flat' && (
-        <ellipse cx="50" cy="58" rx="18" ry="12" fill={colors.secondary} opacity="0.3"/>
-      )}
-
-      {/* Eyes */}
-      <circle cx="38" cy={eyeY} r="5" fill="#333">
-        {isHappy && <animate attributeName="r" values="5;6;5" dur="0.3s" repeatCount="indefinite"/>}
-      </circle>
-      <circle cx="62" cy={eyeY} r="5" fill="#333">
-        {isHappy && <animate attributeName="r" values="5;6;5" dur="0.3s" repeatCount="indefinite"/>}
-      </circle>
-      <circle cx="39" cy={eyeY - 1} r="2" fill="white"/>
-      <circle cx="63" cy={eyeY - 1} r="2" fill="white"/>
-
-      {/* Nose */}
-      <ellipse cx="50" cy={noseY} rx="6" ry="4" fill={colors.nose}/>
-
-      {/* Mouth */}
-      <path
-        d={isHappy ? `M40 ${noseY + 8} Q50 ${noseY + 16} 60 ${noseY + 8}` : `M44 ${noseY + 6} Q50 ${noseY + 10} 56 ${noseY + 6}`}
-        fill="none" stroke="#333" strokeWidth="2" strokeLinecap="round"
-      />
-
-      {/* Tongue when happy */}
-      {isHappy && (
-        <ellipse cx="50" cy={noseY + 14} rx="4" ry="5" fill="#FF9999">
-          <animate attributeName="cy" values={`${noseY + 14};${noseY + 16};${noseY + 14}`} dur="0.3s" repeatCount="indefinite"/>
-        </ellipse>
       )}
     </svg>
   )
@@ -231,19 +309,17 @@ function CatMascot({ traits, isHappy }: { traits: BreedTraits; isHappy: boolean 
   const { colors, earType, faceType, furType } = traits
 
   const faceRx = faceType === 'round' ? 34 : faceType === 'long' ? 28 : 30
-  const faceRy = faceType === 'round' ? 30 : faceType === 'flat' ? 28 : 30
+  const faceRy = faceType === 'round' ? 30 : faceType === 'flat' ? 26 : 30
   const eyeSpacing = faceType === 'long' ? 10 : 12
-  const noseY = faceType === 'flat' ? 56 : faceType === 'long' ? 58 : 56
-
-  const fluffyFilter = furType === 'fluffy'
+  const noseY = faceType === 'flat' ? 54 : faceType === 'long' ? 58 : 56
 
   return (
     <svg viewBox="0 0 100 100" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-      {fluffyFilter && (
+      {furType === 'fluffy' && (
         <defs>
-          <filter id="fluffyCat" x="-20%" y="-20%" width="140%" height="140%">
+          <filter id="fluffyCat" x="-10%" y="-10%" width="120%" height="120%">
             <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" result="noise"/>
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale="4" xChannelSelector="R" yChannelSelector="G"/>
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" xChannelSelector="R" yChannelSelector="G"/>
           </filter>
         </defs>
       )}
@@ -253,7 +329,7 @@ function CatMascot({ traits, isHappy }: { traits: BreedTraits; isHappy: boolean 
         cx="50" cy="52"
         rx={faceRx} ry={faceRy}
         fill={colors.primary}
-        filter={fluffyFilter ? "url(#fluffyCat)" : undefined}
+        filter={furType === 'fluffy' ? "url(#fluffyCat)" : undefined}
       />
 
       {/* Ears */}
@@ -271,20 +347,28 @@ function CatMascot({ traits, isHappy }: { traits: BreedTraits; isHappy: boolean 
       )}
       {earType === 'folded' && (
         <>
-          <ellipse cx="28" cy="35" rx="12" ry="8" fill={colors.secondary} transform="rotate(-20 28 35)"/>
-          <ellipse cx="72" cy="35" rx="12" ry="8" fill={colors.secondary} transform="rotate(20 72 35)"/>
+          <ellipse cx="28" cy="38" rx="14" ry="8" fill={colors.secondary} transform="rotate(-25 28 38)"/>
+          <ellipse cx="72" cy="38" rx="14" ry="8" fill={colors.secondary} transform="rotate(25 72 38)"/>
         </>
       )}
       {earType === 'small' && (
         <>
-          <polygon points="30,38 24,20 40,34" fill={colors.secondary}/>
-          <polygon points="70,38 76,20 60,34" fill={colors.secondary}/>
-          <polygon points="31,37 26,24 38,34" fill="#FFB6C1"/>
-          <polygon points="69,37 74,24 62,34" fill="#FFB6C1"/>
+          <polygon points="30,40 24,22 42,36" fill={colors.secondary}/>
+          <polygon points="70,40 76,22 58,36" fill={colors.secondary}/>
+          <polygon points="31,39 26,26 40,36" fill="#FFB6C1"/>
+          <polygon points="69,39 74,26 60,36" fill="#FFB6C1"/>
+        </>
+      )}
+      {earType === 'bat' && (
+        <>
+          <ellipse cx="24" cy="30" rx="14" ry="20" fill={colors.secondary} transform="rotate(-8 24 30)"/>
+          <ellipse cx="76" cy="30" rx="14" ry="20" fill={colors.secondary} transform="rotate(8 76 30)"/>
+          <ellipse cx="24" cy="32" rx="10" ry="14" fill="#FFB6C1" transform="rotate(-8 24 32)"/>
+          <ellipse cx="76" cy="32" rx="10" ry="14" fill="#FFB6C1" transform="rotate(8 76 32)"/>
         </>
       )}
 
-      {/* Eyes - cat eyes are more almond shaped */}
+      {/* Eyes */}
       <ellipse cx={50 - eyeSpacing} cy="48" rx="5" ry={isHappy ? 6 : 5} fill="#7EC87E"/>
       <ellipse cx={50 + eyeSpacing} cy="48" rx="5" ry={isHappy ? 6 : 5} fill="#7EC87E"/>
       <ellipse cx={50 - eyeSpacing} cy="48" rx="2" ry={isHappy ? 4 : 3} fill="#333"/>
@@ -301,12 +385,12 @@ function CatMascot({ traits, isHappy }: { traits: BreedTraits; isHappy: boolean 
 
       {/* Whiskers */}
       <g stroke="#666" strokeWidth="0.75">
-        <line x1="20" y1="52" x2="36" y2="54"/>
-        <line x1="20" y1="56" x2="36" y2="56"/>
-        <line x1="20" y1="60" x2="36" y2="58"/>
-        <line x1="80" y1="52" x2="64" y2="54"/>
-        <line x1="80" y1="56" x2="64" y2="56"/>
-        <line x1="80" y1="60" x2="64" y2="58"/>
+        <line x1="18" y1="52" x2="36" y2="54"/>
+        <line x1="18" y1="56" x2="36" y2="56"/>
+        <line x1="18" y1="60" x2="36" y2="58"/>
+        <line x1="82" y1="52" x2="64" y2="54"/>
+        <line x1="82" y1="56" x2="64" y2="56"/>
+        <line x1="82" y1="60" x2="64" y2="58"/>
       </g>
     </svg>
   )
@@ -337,16 +421,22 @@ function OtherMascot({ isHappy }: { isHappy: boolean }) {
   )
 }
 
-// Random tips for the speech bubble
+// App-relevant tips for the speech bubble
 const MASCOT_TIPS = [
-  "Looking good today!",
-  "Time for a walk?",
-  "Don't forget treats!",
-  "Belly rubs are the best!",
-  "Keep those records updated!",
-  "Ready for adventure!",
-  "You're doing great!",
-  "Stay pawsitive!",
+  "Are vaccinations up to date?",
+  "Add your vet's contact info!",
+  "Set up emergency contacts!",
+  "Upload insurance documents",
+  "Track vet visits here",
+  "Share access with pet sitters",
+  "Log medications & treatments",
+  "Keep food preferences updated",
+  "Document daily routines",
+  "Add your vet's number!",
+  "Record microchip details",
+  "Note any allergies!",
+  "Schedule the next checkup",
+  "Back up important records",
 ]
 
 interface PetMascotProps {
@@ -375,7 +465,7 @@ export function PetMascot({ species, breed, petName, className }: PetMascotProps
 
   const handleClick = () => {
     const tip = MASCOT_TIPS[Math.floor(Math.random() * MASCOT_TIPS.length)]
-    setBubbleText(actualName ? `${tip} - ${actualName}` : tip)
+    setBubbleText(tip)
     setShowBubble(true)
 
     // Also trigger companion celebration if available
