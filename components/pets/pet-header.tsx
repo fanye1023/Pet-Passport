@@ -63,7 +63,7 @@ export function PetHeader({ pet }: PetHeaderProps) {
                 </p>
               </div>
               <div className="flex items-center gap-2">
-                <PetMascot species={pet.species} breed={pet.breed} />
+                <PetMascot species={pet.species} breed={pet.breed} petName={pet.name} />
                 <Link href={`/pets/${pet.id}/edit`}>
                   <Button variant="outline" size="sm" className="glass border-white/30 hover:bg-white/50 dark:hover:bg-white/10">
                     <Pencil className="h-4 w-4 mr-2" />
