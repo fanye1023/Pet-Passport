@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
 import { Switch } from '@/components/ui/switch'
 import { Badge } from '@/components/ui/badge'
-import { User, Mail, Shield, LogOut, Loader2, PawPrint, Crown, Check } from 'lucide-react'
+import { User, Mail, Shield, LogOut, Loader2, PawPrint, Crown, Check, ExternalLink } from 'lucide-react'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import { ThemeToggle } from '@/components/theme-toggle'
@@ -25,6 +25,27 @@ export default function SettingsPage() {
   const [email, setEmail] = useState('')
   const [isLoading, setIsLoading] = useState(true)
   const [isUpdating, setIsUpdating] = useState(false)
+  const [isBillingLoading, setIsBillingLoading] = useState(false)
+
+  const handleViewBilling = async () => {
+    setIsBillingLoading(true)
+    try {
+      const response = await fetch('/api/billing-portal', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      })
+      const data = await response.json()
+      if (response.ok && data.url) {
+        window.location.href = data.url
+      } else {
+        toast.error(data.error || 'Failed to open billing portal')
+        setIsBillingLoading(false)
+      }
+    } catch {
+      toast.error('Failed to open billing portal')
+      setIsBillingLoading(false)
+    }
+  }
 
   useEffect(() => {
     const getUser = async () => {
@@ -110,11 +131,28 @@ export default function SettingsPage() {
                   <li>All features included</li>
                 </ul>
               </div>
-              {subscription?.started_at && (
-                <p className="text-xs text-muted-foreground">
-                  Member since {new Date(subscription.started_at).toLocaleDateString()}
-                </p>
-              )}
+              <div className="flex items-center justify-between pt-2">
+                {subscription?.started_at && (
+                  <p className="text-xs text-muted-foreground">
+                    Member since {new Date(subscription.started_at).toLocaleDateString()}
+                  </p>
+                )}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleViewBilling}
+                  disabled={isBillingLoading}
+                >
+                  {isBillingLoading ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <>
+                      <ExternalLink className="h-4 w-4 mr-2" />
+                      View Receipt
+                    </>
+                  )}
+                </Button>
+              </div>
             </div>
           ) : (
             <div className="space-y-4">
