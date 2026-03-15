@@ -19,7 +19,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
-import { Plus, PawPrint, ChevronRight, AlertTriangle, Sparkles, CalendarDays, Activity, Crown, ExternalLink, Users, Trash2 } from 'lucide-react'
+import { Plus, PawPrint, ChevronRight, AlertTriangle, Sparkles, CalendarDays, Activity, Crown, ExternalLink, Users, Trash2, X } from 'lucide-react'
 import { AnimatedMascot } from '@/components/ui/animated-mascot'
 import { ProfileCompletion } from '@/components/pets/profile-completion'
 import { DeletePetButton } from '@/components/pets/delete-pet-button'
@@ -65,6 +65,7 @@ export function DashboardContent() {
   const [isLoading, setIsLoading] = useState(true)
   const [showUpgradePrompt, setShowUpgradePrompt] = useState(false)
   const { isPremium, checkLimit } = useSubscription()
+  const [showPremiumBanner, setShowPremiumBanner] = useState(true)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -253,16 +254,45 @@ export function DashboardContent() {
         </div>
 
         {/* Upgrade Prompt Modal */}
-        <UpgradePrompt
-          open={showUpgradePrompt}
-          onOpenChange={setShowUpgradePrompt}
-          feature="pets"
-          currentUsage={petsWithStats.length}
-          limit={(() => {
-            const l = checkLimit('maxPets', 0).limit
-            return typeof l === 'number' ? l : undefined
-          })()}
-        />
+        {!isPremium && (
+          <UpgradePrompt
+            open={showUpgradePrompt}
+            onOpenChange={setShowUpgradePrompt}
+            feature="pets"
+            currentUsage={petsWithStats.length}
+            limit={(() => {
+              const l = checkLimit('maxPets', 0).limit
+              return typeof l === 'number' ? l : undefined
+            })()}
+          />
+        )}
+
+        {/* Premium Member Banner */}
+        {isPremium && showPremiumBanner && (
+          <div className="bento-item span-full">
+            <div className="relative rounded-2xl p-4 bg-gradient-to-r from-amber-500/10 via-yellow-500/10 to-amber-500/10 border border-amber-500/20">
+              <button
+                onClick={() => setShowPremiumBanner(false)}
+                className="absolute top-2 right-2 p-1 rounded-full hover:bg-amber-500/20 text-amber-600 dark:text-amber-400"
+              >
+                <X className="h-4 w-4" />
+              </button>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-yellow-500 flex items-center justify-center">
+                  <Crown className="h-5 w-5 text-white" />
+                </div>
+                <div>
+                  <p className="font-medium text-amber-700 dark:text-amber-400">
+                    You're a Premium member
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    Thanks for your support! Enjoy unlimited pets and share links.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Aggregate Alerts */}
         {petsWithStats.length > 0 && (

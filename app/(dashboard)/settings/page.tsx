@@ -8,16 +8,20 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
 import { Switch } from '@/components/ui/switch'
-import { User, Mail, Shield, LogOut, Loader2, PawPrint } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
+import { User, Mail, Shield, LogOut, Loader2, PawPrint, Crown, Check } from 'lucide-react'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { useCompanionOptional } from '@/components/ui/pet-companion'
+import { useSubscription } from '@/hooks/use-subscription'
+import { UpgradeButton } from '@/components/pricing/upgrade-button'
 
 export default function SettingsPage() {
   const router = useRouter()
   const supabase = createClient()
   const companion = useCompanionOptional()
+  const { isPremium, subscription, isLoading: subscriptionLoading } = useSubscription()
   const [email, setEmail] = useState('')
   const [isLoading, setIsLoading] = useState(true)
   const [isUpdating, setIsUpdating] = useState(false)
@@ -67,6 +71,70 @@ export default function SettingsPage() {
         <h1 className="text-2xl font-bold">Settings</h1>
         <p className="text-muted-foreground">Manage your account settings</p>
       </div>
+
+      {/* Subscription */}
+      <Card className={isPremium ? 'border-amber-500/50 bg-gradient-to-br from-amber-500/5 to-yellow-500/5' : ''}>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Crown className={`h-5 w-5 ${isPremium ? 'text-amber-500' : ''}`} />
+            Subscription
+            {isPremium && (
+              <Badge className="bg-gradient-to-r from-amber-500 to-yellow-500 text-white border-0">
+                Premium
+              </Badge>
+            )}
+          </CardTitle>
+          <CardDescription>
+            {isPremium ? 'You have lifetime premium access' : 'Your current plan'}
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {subscriptionLoading ? (
+            <div className="flex items-center justify-center py-4">
+              <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+            </div>
+          ) : isPremium ? (
+            <div className="space-y-4">
+              <div className="flex items-center gap-3 p-3 rounded-lg bg-green-500/10 border border-green-500/20">
+                <Check className="h-5 w-5 text-green-500" />
+                <div>
+                  <p className="font-medium text-green-700 dark:text-green-400">Lifetime Access</p>
+                  <p className="text-sm text-muted-foreground">Thank you for your support!</p>
+                </div>
+              </div>
+              <div className="text-sm text-muted-foreground space-y-1">
+                <p>Your premium benefits:</p>
+                <ul className="list-disc list-inside space-y-0.5 ml-2">
+                  <li>Unlimited pet profiles</li>
+                  <li>Unlimited share links</li>
+                  <li>All features included</li>
+                </ul>
+              </div>
+              {subscription?.started_at && (
+                <p className="text-xs text-muted-foreground">
+                  Member since {new Date(subscription.started_at).toLocaleDateString()}
+                </p>
+              )}
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <div className="text-sm text-muted-foreground">
+                <p className="font-medium text-foreground mb-2">Free Plan</p>
+                <ul className="space-y-1">
+                  <li>• 1 pet profile</li>
+                  <li>• 3 share links</li>
+                  <li>• All features included</li>
+                </ul>
+              </div>
+              <Separator />
+              <div>
+                <p className="text-sm mb-3">Upgrade for unlimited pets and share links</p>
+                <UpgradeButton className="w-full sm:w-auto" />
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Account Settings */}
       <Card>
