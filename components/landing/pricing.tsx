@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Check } from 'lucide-react'
 import { useScrollAnimation } from '@/hooks/use-scroll-animation'
+import { UpgradeButton } from '@/components/pricing/upgrade-button'
 
 const tiers = [
   {
@@ -26,9 +27,8 @@ const tiers = [
   },
   {
     name: 'Premium',
-    price: '$4.99',
-    period: '/month',
-    yearlyPrice: '$49/year (save 18%)',
+    price: '$7.99',
+    priceLabel: 'one-time',
     description: 'For families with multiple pets',
     features: [
       'Unlimited pet profiles',
@@ -38,10 +38,10 @@ const tiers = [
       'SMS reminders for appointments',
       'Priority support',
     ],
-    cta: 'Coming Soon',
+    cta: 'Upgrade Now',
     href: '/signup',
     highlighted: true,
-    comingSoon: true,
+    isPremiumUpgrade: true,
   },
 ]
 
@@ -89,12 +89,12 @@ export function Pricing() {
               <CardTitle className="text-xl">{tier.name}</CardTitle>
               <div className="mt-4">
                 <span className="text-4xl font-bold">{tier.price}</span>
-                {tier.period && (
-                  <span className="text-muted-foreground">{tier.period}</span>
+                {'priceLabel' in tier && tier.priceLabel && (
+                  <span className="text-muted-foreground ml-1">{tier.priceLabel}</span>
                 )}
               </div>
-              {tier.yearlyPrice && (
-                <p className="text-xs text-muted-foreground mt-1">{tier.yearlyPrice}</p>
+              {'priceLabel' in tier && tier.priceLabel && (
+                <p className="text-xs text-muted-foreground mt-1">Lifetime access</p>
               )}
               <CardDescription className="mt-2">{tier.description}</CardDescription>
             </CardHeader>
@@ -109,14 +109,8 @@ export function Pricing() {
               </ul>
             </CardContent>
             <CardFooter>
-              {tier.comingSoon ? (
-                <Button
-                  className="w-full"
-                  variant="default"
-                  disabled
-                >
-                  {tier.cta}
-                </Button>
+              {'isPremiumUpgrade' in tier && tier.isPremiumUpgrade ? (
+                <UpgradeButton className="w-full" />
               ) : (
                 <Link href={tier.href} className="w-full">
                   <Button

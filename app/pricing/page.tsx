@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Check, X, ArrowRight, Sparkles } from 'lucide-react'
 import { Header } from '@/components/landing/header'
 import { Footer } from '@/components/landing/footer'
+import { UpgradeButton } from '@/components/pricing/upgrade-button'
 
 const tiers = [
   {
@@ -27,9 +28,8 @@ const tiers = [
   },
   {
     name: 'Premium',
-    price: '$4.99',
-    period: '/month',
-    yearlyPrice: '$49/year (save 18%)',
+    price: '$7.99',
+    priceLabel: 'one-time',
     description: 'For families with multiple pets',
     features: [
       { name: 'Unlimited pet profiles', included: true },
@@ -45,10 +45,10 @@ const tiers = [
       { name: 'SMS reminders for appointments', included: true, premium: true },
       { name: 'Priority support', included: true, premium: true },
     ],
-    cta: 'Coming Soon',
+    cta: 'Upgrade Now',
     href: '/signup',
     highlighted: true,
-    comingSoon: true,
+    isPremiumUpgrade: true,
   },
 ]
 
@@ -75,20 +75,16 @@ const faqs = [
     answer: 'Yes! The free plan includes everything you need for one pet with no time limits or hidden fees. Use it as long as you want.',
   },
   {
-    question: 'Can I upgrade or downgrade anytime?',
-    answer: 'Absolutely. Upgrade to Premium whenever you need more pets or features, and you can cancel anytime. Your data stays safe.',
+    question: 'Is Premium a one-time purchase?',
+    answer: 'Yes! Pay $7.99 once and get lifetime access to all premium features. No subscriptions, no recurring charges.',
   },
   {
-    question: 'What happens to my data if I downgrade?',
-    answer: 'Your data is never deleted. If you downgrade and exceed the free tier limits, you\'ll keep read access to everything but won\'t be able to add new pets or links until you\'re within limits.',
+    question: 'What happens to my data if I stay on Free?',
+    answer: 'Your data is always safe. If you exceed the free tier limits, you\'ll keep read access to everything but won\'t be able to add new pets or links until you\'re within limits.',
   },
   {
     question: 'Do you offer refunds?',
     answer: 'Yes, we offer a 30-day money-back guarantee. If Premium isn\'t right for you, just let us know.',
-  },
-  {
-    question: 'When will Premium be available?',
-    answer: 'Premium is coming soon! Start with the free plan now and you\'ll be notified when Premium launches.',
   },
 ]
 
@@ -128,12 +124,12 @@ export default function PricingPage() {
                   <CardTitle className="text-xl">{tier.name}</CardTitle>
                   <div className="mt-4">
                     <span className="text-5xl font-bold">{tier.price}</span>
-                    {tier.period && (
-                      <span className="text-muted-foreground">{tier.period}</span>
+                    {'priceLabel' in tier && tier.priceLabel && (
+                      <span className="text-muted-foreground ml-1">{tier.priceLabel}</span>
                     )}
                   </div>
-                  {tier.yearlyPrice && (
-                    <p className="text-sm text-muted-foreground mt-1">{tier.yearlyPrice}</p>
+                  {'priceLabel' in tier && tier.priceLabel && (
+                    <p className="text-sm text-muted-foreground mt-1">Lifetime access - pay once, enjoy forever</p>
                   )}
                   <CardDescription className="mt-2">{tier.description}</CardDescription>
                 </CardHeader>
@@ -153,14 +149,8 @@ export default function PricingPage() {
                   </ul>
                 </CardContent>
                 <CardFooter className="pt-4">
-                  {tier.comingSoon ? (
-                    <Button
-                      className="w-full"
-                      variant="default"
-                      disabled
-                    >
-                      {tier.cta}
-                    </Button>
+                  {'isPremiumUpgrade' in tier && tier.isPremiumUpgrade ? (
+                    <UpgradeButton className="w-full" />
                   ) : (
                     <Link href={tier.href} className="w-full">
                       <Button

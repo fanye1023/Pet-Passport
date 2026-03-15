@@ -1,6 +1,7 @@
 'use client'
 
-import { Crown, Check, X } from 'lucide-react'
+import { useState } from 'react'
+import { Crown, Check, Loader2 } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -34,6 +35,34 @@ export function UpgradePrompt({
   currentUsage,
   limit,
 }: UpgradePromptProps) {
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const handleUpgrade = async () => {
+    setIsLoading(true)
+    setError(null)
+
+    try {
+      const response = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to start checkout')
+      }
+
+      if (data.url) {
+        window.location.href = data.url
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Something went wrong')
+      setIsLoading(false)
+    }
+  }
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
@@ -66,24 +95,32 @@ export function UpgradePrompt({
 
           <div className="text-center">
             <p className="text-2xl font-bold">
-              $4.99<span className="text-sm font-normal text-muted-foreground">/month</span>
+              $7.99<span className="text-sm font-normal text-muted-foreground"> one-time</span>
             </p>
-            <p className="text-xs text-muted-foreground">or $49/year (save 18%)</p>
+            <p className="text-xs text-muted-foreground">Lifetime access - pay once, enjoy forever</p>
           </div>
 
+          {error && (
+            <p className="text-sm text-center text-destructive">{error}</p>
+          )}
+
           <div className="flex flex-col gap-2">
-            <Button className="w-full bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white">
-              <Crown className="h-4 w-4 mr-2" />
-              Upgrade Now
+            <Button
+              className="w-full bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white"
+              onClick={handleUpgrade}
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <Crown className="h-4 w-4 mr-2" />
+              )}
+              {isLoading ? 'Redirecting...' : 'Upgrade Now'}
             </Button>
-            <Button variant="ghost" onClick={() => onOpenChange(false)}>
+            <Button variant="ghost" onClick={() => onOpenChange(false)} disabled={isLoading}>
               Maybe Later
             </Button>
           </div>
-
-          <p className="text-xs text-center text-muted-foreground">
-            Coming soon! We'll notify you when premium is available.
-          </p>
         </div>
       </DialogContent>
     </Dialog>
@@ -98,6 +135,33 @@ interface UpgradeBannerProps {
 }
 
 export function UpgradeBanner({ feature, onUpgrade, className }: UpgradeBannerProps) {
+  const [isLoading, setIsLoading] = useState(false)
+
+  const handleUpgrade = async () => {
+    if (onUpgrade) {
+      onUpgrade()
+      return
+    }
+
+    setIsLoading(true)
+    try {
+      const response = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      })
+
+      const data = await response.json()
+
+      if (response.ok && data.url) {
+        window.location.href = data.url
+      }
+    } catch {
+      // Silently fail for banner - user can try again
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return (
     <div
       className={`rounded-lg border border-amber-500/30 bg-gradient-to-r from-amber-500/10 to-yellow-500/10 p-4 ${className}`}
@@ -109,16 +173,17 @@ export function UpgradeBanner({ feature, onUpgrade, className }: UpgradeBannerPr
         <div className="flex-1">
           <p className="text-sm font-medium">Upgrade for {feature}</p>
           <p className="text-xs text-muted-foreground mt-0.5">
-            Get unlimited access with Premium
+            Get unlimited access with Premium - $7.99 one-time
           </p>
         </div>
         <Button
           size="sm"
           variant="outline"
           className="border-amber-500/50 text-amber-700 dark:text-amber-400 hover:bg-amber-500/10"
-          onClick={onUpgrade}
+          onClick={handleUpgrade}
+          disabled={isLoading}
         >
-          Upgrade
+          {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Upgrade'}
         </Button>
       </div>
     </div>
