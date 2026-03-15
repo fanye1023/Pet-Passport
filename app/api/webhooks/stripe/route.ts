@@ -66,18 +66,38 @@ export async function POST(request: NextRequest) {
     }
 
     // Update user subscription to premium with no expiration (lifetime access)
-    const { error } = await getSupabaseAdmin()
+    // First try to update existing record
+    const { data: existingRecord } = await getSupabaseAdmin()
       .from('user_subscriptions')
-      .upsert(
-        {
-          user_id: userId,
+      .select('id')
+      .eq('user_id', userId)
+      .single()
+
+    let error
+    if (existingRecord) {
+      // Update existing record
+      const result = await getSupabaseAdmin()
+        .from('user_subscriptions')
+        .update({
           tier: 'premium',
           expires_at: null, // Lifetime access - never expires
           stripe_customer_id: session.customer as string,
           updated_at: new Date().toISOString(),
-        },
-        { onConflict: 'user_id' }
-      )
+        })
+        .eq('user_id', userId)
+      error = result.error
+    } else {
+      // Insert new record
+      const result = await getSupabaseAdmin()
+        .from('user_subscriptions')
+        .insert({
+          user_id: userId,
+          tier: 'premium',
+          expires_at: null,
+          stripe_customer_id: session.customer as string,
+        })
+      error = result.error
+    }
 
     if (error) {
       console.error('Failed to update subscription:', error)
