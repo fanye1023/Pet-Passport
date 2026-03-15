@@ -68,13 +68,16 @@ export async function POST(request: NextRequest) {
     // Update user subscription to premium with no expiration (lifetime access)
     const { error } = await getSupabaseAdmin()
       .from('user_subscriptions')
-      .upsert({
-        user_id: userId,
-        tier: 'premium',
-        expires_at: null, // Lifetime access - never expires
-        stripe_customer_id: session.customer as string,
-        updated_at: new Date().toISOString(),
-      })
+      .upsert(
+        {
+          user_id: userId,
+          tier: 'premium',
+          expires_at: null, // Lifetime access - never expires
+          stripe_customer_id: session.customer as string,
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: 'user_id' }
+      )
 
     if (error) {
       console.error('Failed to update subscription:', error)
