@@ -21,7 +21,12 @@ export default function SettingsPage() {
   const router = useRouter()
   const supabase = createClient()
   const companion = useCompanionOptional()
-  const { isPremium, subscription, isLoading: subscriptionLoading } = useSubscription()
+  const { isPremium, subscription, isLoading: subscriptionLoading, tier } = useSubscription()
+
+  // Debug logging
+  useEffect(() => {
+    console.log('Settings subscription state:', { isPremium, tier, subscription, subscriptionLoading })
+  }, [isPremium, tier, subscription, subscriptionLoading])
   const [email, setEmail] = useState('')
   const [isLoading, setIsLoading] = useState(true)
   const [isUpdating, setIsUpdating] = useState(false)
