@@ -20,12 +20,10 @@ interface UpgradePromptProps {
 }
 
 const premiumBenefits = [
-  'Unlimited pets',
+  'Unlimited pet profiles',
   'Unlimited share links',
-  'Unlimited collaborators',
-  'Calendar sync (Google, Apple, Outlook)',
-  'SMS reminders for appointments',
-  'Priority support',
+  'All features you already love',
+  'Lifetime access - pay once',
 ]
 
 export function UpgradePrompt({

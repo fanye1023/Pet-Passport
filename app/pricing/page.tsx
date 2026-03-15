@@ -10,17 +10,17 @@ const tiers = [
   {
     name: 'Free',
     price: '$0',
-    description: 'Perfect for getting started with one pet',
+    description: 'All features for one pet',
     features: [
       { name: '1 pet profile', included: true },
       { name: '3 share links', included: true },
-      { name: '2 collaborators per pet', included: true },
+      { name: 'Unlimited collaborators', included: true },
       { name: 'Health records & vaccinations', included: true },
       { name: 'Emergency contacts', included: true },
       { name: 'Food & routine tracking', included: true },
       { name: 'AI document extraction', included: true },
+      { name: 'Calendar sync (Google, Apple, Outlook)', included: true },
       { name: 'PIN-protected links', included: true },
-      { name: 'Expiring share links', included: true },
     ],
     cta: 'Get Started Free',
     href: '/signup',
@@ -32,18 +32,15 @@ const tiers = [
     priceLabel: 'one-time',
     description: 'For families with multiple pets',
     features: [
-      { name: 'Unlimited pet profiles', included: true },
-      { name: 'Unlimited share links', included: true },
+      { name: 'Unlimited pet profiles', included: true, premium: true },
+      { name: 'Unlimited share links', included: true, premium: true },
       { name: 'Unlimited collaborators', included: true },
       { name: 'Health records & vaccinations', included: true },
       { name: 'Emergency contacts', included: true },
       { name: 'Food & routine tracking', included: true },
       { name: 'AI document extraction', included: true },
+      { name: 'Calendar sync (Google, Apple, Outlook)', included: true },
       { name: 'PIN-protected links', included: true },
-      { name: 'Expiring share links', included: true },
-      { name: 'Calendar sync (Google, Apple, Outlook)', included: true, premium: true },
-      { name: 'SMS reminders for appointments', included: true, premium: true },
-      { name: 'Priority support', included: true, premium: true },
     ],
     cta: 'Upgrade Now',
     href: '/signup',
@@ -54,19 +51,16 @@ const tiers = [
 
 const comparisonFeatures = [
   { feature: 'Pet profiles', free: '1', premium: 'Unlimited' },
-  { feature: 'Share links per pet', free: '3', premium: 'Unlimited' },
-  { feature: 'Collaborators per pet', free: '2', premium: 'Unlimited' },
+  { feature: 'Share links', free: '3', premium: 'Unlimited' },
+  { feature: 'Collaborators', free: 'Unlimited', premium: 'Unlimited' },
   { feature: 'Health records', free: true, premium: true },
   { feature: 'Vaccination tracking', free: true, premium: true },
   { feature: 'Emergency contacts', free: true, premium: true },
   { feature: 'Food & routine info', free: true, premium: true },
   { feature: 'AI document extraction', free: true, premium: true },
+  { feature: 'Calendar sync', free: true, premium: true },
   { feature: 'PIN-protected links', free: true, premium: true },
   { feature: 'Auto-expiring links', free: true, premium: true },
-  { feature: 'Revoke access anytime', free: true, premium: true },
-  { feature: 'Calendar sync', free: false, premium: true },
-  { feature: 'SMS reminders', free: false, premium: true },
-  { feature: 'Priority support', free: false, premium: true },
 ]
 
 const faqs = [
@@ -101,7 +95,7 @@ export default function PricingPage() {
             Simple, transparent pricing
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Start free with everything you need for one pet. Upgrade to Premium when your family grows.
+            Get all features free for one pet. Upgrade for unlimited pets and share links.
           </p>
         </section>
 

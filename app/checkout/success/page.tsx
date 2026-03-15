@@ -28,14 +28,12 @@ export default function CheckoutSuccessPage() {
           </div>
 
           <div className="text-left space-y-2">
-            <p className="text-sm font-medium">What's included:</p>
+            <p className="text-sm font-medium">What's unlocked:</p>
             <ul className="text-sm text-muted-foreground space-y-1">
               <li>• Unlimited pet profiles</li>
               <li>• Unlimited share links</li>
-              <li>• Unlimited collaborators</li>
-              <li>• Calendar sync (Google, Apple, Outlook)</li>
-              <li>• SMS reminders for appointments</li>
-              <li>• Priority support</li>
+              <li>• All features included</li>
+              <li>• Lifetime access</li>
             </ul>
           </div>
 

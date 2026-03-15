@@ -394,9 +394,9 @@ export interface UserSubscription {
 export const FREE_TIER_LIMITS = {
   maxPets: 1,
   maxShareLinks: 3,
-  maxCollaborators: 2,
-  calendarSync: false,
-  smsReminders: false,
+  maxCollaborators: Infinity,
+  calendarSync: true,
+  smsReminders: true,
 } as const
 
 export const PREMIUM_FEATURES = {
