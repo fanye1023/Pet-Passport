@@ -98,12 +98,17 @@ export function Pricing() {
             </CardHeader>
             <CardContent className="flex-1">
               <ul className="space-y-3">
-                {tier.features.map((feature) => (
-                  <li key={feature} className="flex items-center gap-2">
-                    <Check className="h-4 w-4 text-primary flex-shrink-0" />
-                    <span className="text-sm">{feature}</span>
-                  </li>
-                ))}
+                {tier.features.map((feature) => {
+                  const isHighlighted = tier.highlighted && (
+                    feature === 'Unlimited pet profiles' || feature === 'Unlimited share links'
+                  )
+                  return (
+                    <li key={feature} className="flex items-center gap-2">
+                      <Check className={`h-4 w-4 flex-shrink-0 ${isHighlighted ? 'text-amber-500' : 'text-primary'}`} />
+                      <span className={`text-sm ${isHighlighted ? 'font-semibold' : ''}`}>{feature}</span>
+                    </li>
+                  )
+                })}
               </ul>
             </CardContent>
             <CardFooter>

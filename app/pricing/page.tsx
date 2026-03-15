@@ -129,17 +129,20 @@ export default function PricingPage() {
                 </CardHeader>
                 <CardContent className="flex-1 pt-4">
                   <ul className="space-y-3">
-                    {tier.features.map((feature) => (
-                      <li key={feature.name} className="flex items-center gap-3">
-                        <Check className={`h-5 w-5 flex-shrink-0 ${'premium' in feature && feature.premium ? 'text-amber-500' : 'text-primary'}`} />
-                        <span className="text-sm">
-                          {feature.name}
-                          {'premium' in feature && feature.premium && (
-                            <Sparkles className="inline ml-1 h-3 w-3 text-amber-500" />
-                          )}
-                        </span>
-                      </li>
-                    ))}
+                    {tier.features.map((feature) => {
+                      const isPremiumFeature = 'premium' in feature && feature.premium
+                      return (
+                        <li key={feature.name} className="flex items-center gap-3">
+                          <Check className={`h-5 w-5 flex-shrink-0 ${isPremiumFeature ? 'text-amber-500' : 'text-primary'}`} />
+                          <span className={`text-sm ${isPremiumFeature ? 'font-semibold' : ''}`}>
+                            {feature.name}
+                            {isPremiumFeature && (
+                              <Sparkles className="inline ml-1 h-3 w-3 text-amber-500" />
+                            )}
+                          </span>
+                        </li>
+                      )
+                    })}
                   </ul>
                 </CardContent>
                 <CardFooter className="pt-4">
