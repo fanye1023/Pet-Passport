@@ -83,22 +83,9 @@ export function DashboardContent() {
 
     // Use cached pets if available (survives component remounts)
     if (petsCache.fetched && petsCache.data && petsCache.data.length > 0) {
-      console.log('[Dashboard] Using cached pets:', petsCache.data.length)
-      // Restore from cache with default stats
-      const cachedPetsWithStats: PetWithStats[] = (petsCache.data as Pet[]).map(pet => ({
-        ...pet,
-        vaccinations: 0,
-        healthRecords: 0,
-        insurance: 0,
-        vets: 0,
-        emergencyContacts: 0,
-        food: 0,
-        routines: 0,
-        expiringVaccinations: 0,
-        expiredVaccinations: 0,
-        sitterInfo: 0,
-      }))
-      setPetsWithStats(cachedPetsWithStats)
+      console.log('[Dashboard] Using cached pets with stats:', petsCache.data.length)
+      // Restore full petsWithStats from cache (includes stats)
+      setPetsWithStats(petsCache.data as PetWithStats[])
       setIsLoading(false)
       return
     }
@@ -131,9 +118,6 @@ export function DashboardContent() {
         setIsLoading(false)
         return
       }
-
-      // Cache the pets data in context (survives component remounts)
-      setPetsCache(pets)
 
       const petIds = pets.map((p: Pet) => p.id)
 
@@ -192,6 +176,9 @@ export function DashboardContent() {
       })
 
       setPetsWithStats(petsStats)
+
+      // Cache the FULL pets data with stats (survives component remounts)
+      setPetsCache(petsStats)
 
       // Fetch saved share links (pets shared with me)
       const { data: savedData } = await supabase.rpc('get_saved_share_links')
