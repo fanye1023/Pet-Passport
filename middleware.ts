@@ -41,7 +41,21 @@ export async function middleware(request: NextRequest) {
   // Refresh the session - this is critical for maintaining auth state
   const {
     data: { user },
+    error,
   } = await supabase.auth.getUser()
+
+  // Debug logging for auth issues
+  if (request.nextUrl.pathname.startsWith('/pets/') || request.nextUrl.pathname === '/dashboard') {
+    const authCookies = request.cookies.getAll().filter(c =>
+      c.name.includes('sb-') || c.name.includes('auth')
+    )
+    console.log('[Middleware]', request.nextUrl.pathname, {
+      hasUser: !!user,
+      userId: user?.id?.slice(0, 8),
+      error: error?.message,
+      authCookiesCount: authCookies.length
+    })
+  }
 
   return supabaseResponse
 }
