@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
@@ -66,6 +66,7 @@ export function DashboardContent() {
   const [showUpgradePrompt, setShowUpgradePrompt] = useState(false)
   const { isPremium, checkLimit, isLoading: isSubscriptionLoading, email } = useSubscription()
   const [showPremiumBanner, setShowPremiumBanner] = useState(true)
+  const hasFetchedPets = useRef(false)
 
   useEffect(() => {
     // Wait for subscription context to be ready (auth established)
@@ -79,6 +80,13 @@ export function DashboardContent() {
       console.log('[Dashboard] No authenticated user found after subscription loaded')
       return
     }
+
+    // Prevent duplicate fetches
+    if (hasFetchedPets.current) {
+      console.log('[Dashboard] Skipping fetch - already fetched pets')
+      return
+    }
+    hasFetchedPets.current = true
 
     console.log('[Dashboard] Auth ready, fetching pets for:', email)
 
