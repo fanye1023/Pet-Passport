@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import {
   SubscriptionTier,
@@ -23,31 +23,19 @@ interface UseSubscriptionReturn {
   refresh: () => Promise<void>
 }
 
+// Create a single supabase client instance for this module
+const supabase = createClient()
+
 export function useSubscription(): UseSubscriptionReturn {
   const [subscription, setSubscription] = useState<UserSubscription | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const hasFetched = useRef(false)
 
-  const fetchSubscription = useCallback(async () => {
-    // Prevent multiple fetches
-    if (hasFetched.current) return
-    hasFetched.current = true
-
-    const supabase = createClient()
-
+  const fetchSubscriptionForUser = useCallback(async (userId: string) => {
     try {
-      const { data: { user } } = await supabase.auth.getUser()
-
-      if (!user) {
-        // Don't overwrite existing subscription data if auth fails
-        setIsLoading(false)
-        return
-      }
-
       const { data, error } = await supabase
         .from('user_subscriptions')
         .select('*')
-        .eq('user_id', user.id)
+        .eq('user_id', userId)
         .single()
 
       if (error && error.code !== 'PGRST116') {
@@ -55,11 +43,9 @@ export function useSubscription(): UseSubscriptionReturn {
         console.error('Error fetching subscription:', error)
       }
 
-      // Only update if we got data
       if (data) {
         // Check if subscription is expired
         if (data.expires_at && new Date(data.expires_at) < new Date()) {
-          // Subscription expired, treat as free
           setSubscription({ ...data, tier: 'free' })
         } else {
           setSubscription(data)
@@ -73,8 +59,32 @@ export function useSubscription(): UseSubscriptionReturn {
   }, [])
 
   useEffect(() => {
-    fetchSubscription()
-  }, [fetchSubscription])
+    // Get initial session (reads from storage, fast)
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        fetchSubscriptionForUser(session.user.id)
+      } else {
+        setIsLoading(false)
+      }
+    })
+
+    // Listen for auth state changes
+    const { data: { subscription: authListener } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        if (event === 'SIGNED_IN' && session?.user) {
+          setIsLoading(true)
+          fetchSubscriptionForUser(session.user.id)
+        } else if (event === 'SIGNED_OUT') {
+          setSubscription(null)
+          setIsLoading(false)
+        }
+      }
+    )
+
+    return () => {
+      authListener.unsubscribe()
+    }
+  }, [fetchSubscriptionForUser])
 
   const tier: SubscriptionTier = subscription?.tier || 'free'
   const isPremium = tier === 'premium'
@@ -103,10 +113,14 @@ export function useSubscription(): UseSubscriptionReturn {
   }, [limits])
 
   const refresh = useCallback(async () => {
-    hasFetched.current = false
     setIsLoading(true)
-    await fetchSubscription()
-  }, [fetchSubscription])
+    const { data: { session } } = await supabase.auth.getSession()
+    if (session?.user) {
+      await fetchSubscriptionForUser(session.user.id)
+    } else {
+      setIsLoading(false)
+    }
+  }, [fetchSubscriptionForUser])
 
   return {
     tier,
