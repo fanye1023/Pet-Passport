@@ -86,6 +86,10 @@ export function DashboardContent() {
       console.log('[Dashboard] Using cached pets with stats:', petsCache.data.length)
       // Restore full petsWithStats from cache (includes stats)
       setPetsWithStats(petsCache.data as PetWithStats[])
+      // Restore saved pets from cache
+      if (petsCache.savedPets) {
+        setSavedPets(petsCache.savedPets as SavedPet[])
+      }
       setIsLoading(false)
       return
     }
@@ -177,14 +181,13 @@ export function DashboardContent() {
 
       setPetsWithStats(petsStats)
 
-      // Cache the FULL pets data with stats (survives component remounts)
-      setPetsCache(petsStats)
-
       // Fetch saved share links (pets shared with me)
       const { data: savedData } = await supabase.rpc('get_saved_share_links')
-      if (savedData && Array.isArray(savedData)) {
-        setSavedPets(savedData)
-      }
+      const savedPetsData = savedData && Array.isArray(savedData) ? savedData : []
+      setSavedPets(savedPetsData)
+
+      // Cache the FULL pets data with stats AND saved pets (survives component remounts)
+      setPetsCache(petsStats, savedPetsData)
 
       setIsLoading(false)
     }
