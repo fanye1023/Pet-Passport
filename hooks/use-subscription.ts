@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import {
   SubscriptionTier,
@@ -26,11 +26,15 @@ interface UseSubscriptionReturn {
 export function useSubscription(): UseSubscriptionReturn {
   const [subscription, setSubscription] = useState<UserSubscription | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-
-  // Memoize supabase client to prevent recreation on every render
-  const supabase = useMemo(() => createClient(), [])
+  const hasFetched = useRef(false)
 
   const fetchSubscription = useCallback(async () => {
+    // Prevent multiple fetches
+    if (hasFetched.current) return
+    hasFetched.current = true
+
+    const supabase = createClient()
+
     try {
       const { data: { user }, error: authError } = await supabase.auth.getUser()
       console.log('Subscription hook - auth result:', { userId: user?.id, authError })
@@ -67,7 +71,7 @@ export function useSubscription(): UseSubscriptionReturn {
     } finally {
       setIsLoading(false)
     }
-  }, [supabase])
+  }, [])
 
   useEffect(() => {
     fetchSubscription()
@@ -99,6 +103,12 @@ export function useSubscription(): UseSubscriptionReturn {
     }
   }, [limits])
 
+  const refresh = useCallback(async () => {
+    hasFetched.current = false
+    setIsLoading(true)
+    await fetchSubscription()
+  }, [fetchSubscription])
+
   return {
     tier,
     isPremium,
@@ -106,6 +116,6 @@ export function useSubscription(): UseSubscriptionReturn {
     subscription,
     limits,
     checkLimit,
-    refresh: fetchSubscription,
+    refresh,
   }
 }
