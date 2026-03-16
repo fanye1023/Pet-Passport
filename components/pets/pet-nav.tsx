@@ -25,7 +25,7 @@ const navItems = [
   { href: '/vaccinations', label: 'Vaccines', icon: Syringe },
   { href: '/health', label: 'Health', icon: Heart },
   { href: '/insurance', label: 'Insurance', icon: Shield },
-  { href: '/expenses', label: 'Expenses', icon: Receipt },
+  // { href: '/expenses', label: 'Expenses', icon: Receipt }, // Hidden for now - feature may add clutter
   { href: '/calendar', label: 'Calendar', icon: CalendarDays },
   { href: '/vet', label: 'Vet', icon: Stethoscope },
   { href: '/emergency', label: 'Emergency', icon: Phone },
