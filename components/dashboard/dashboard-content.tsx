@@ -64,10 +64,16 @@ export function DashboardContent() {
   const [savedPets, setSavedPets] = useState<SavedPet[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [showUpgradePrompt, setShowUpgradePrompt] = useState(false)
-  const { isPremium, checkLimit } = useSubscription()
+  const { isPremium, checkLimit, isLoading: isSubscriptionLoading } = useSubscription()
   const [showPremiumBanner, setShowPremiumBanner] = useState(true)
 
   useEffect(() => {
+    // Wait for subscription context to be ready (auth established)
+    if (isSubscriptionLoading) {
+      console.log('[Dashboard] Waiting for subscription context...')
+      return
+    }
+
     const fetchData = async () => {
       setIsLoading(true)
       const supabase = createClient()
@@ -158,7 +164,7 @@ export function DashboardContent() {
     }
 
     fetchData()
-  }, [])
+  }, [isSubscriptionLoading, router])
 
   const handlePetDeleted = (petId: string) => {
     setPetsWithStats((prev) => prev.filter((p) => p.id !== petId))
