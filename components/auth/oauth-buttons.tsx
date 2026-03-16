@@ -8,9 +8,10 @@ import { Loader2 } from 'lucide-react'
 interface OAuthButtonsProps {
   returnTo?: string
   saveToken?: string
+  premiumIntent?: boolean
 }
 
-export function OAuthButtons({ returnTo, saveToken }: OAuthButtonsProps) {
+export function OAuthButtons({ returnTo, saveToken, premiumIntent }: OAuthButtonsProps) {
   const [isLoading, setIsLoading] = useState<string | null>(null)
   const supabase = createClient()
 
@@ -26,10 +27,11 @@ export function OAuthButtons({ returnTo, saveToken }: OAuthButtonsProps) {
 
     // Build the redirect URL with optional parameters
     let redirectTo = `${window.location.origin}/auth/callback`
-    if (returnTo || saveToken) {
-      const params = new URLSearchParams()
-      if (returnTo) params.set('next', returnTo)
-      if (saveToken) params.set('saveToken', saveToken)
+    const params = new URLSearchParams()
+    if (returnTo) params.set('next', returnTo)
+    if (saveToken) params.set('saveToken', saveToken)
+    if (premiumIntent) params.set('premiumIntent', 'true')
+    if (params.toString()) {
       redirectTo += `?${params.toString()}`
     }
 

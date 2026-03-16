@@ -14,6 +14,7 @@ export async function GET(request: Request) {
   const code = searchParams.get('code')
   const next = searchParams.get('next') ?? '/dashboard'
   const saveToken = searchParams.get('saveToken')
+  const premiumIntent = searchParams.get('premiumIntent') === 'true'
 
   if (code) {
     const cookieStore = await cookies()
@@ -44,6 +45,12 @@ export async function GET(request: Request) {
     const { error, data } = await supabase.auth.exchangeCodeForSession(code)
 
     if (!error && data.user) {
+      // If premiumIntent is set, redirect to signup-premium page to complete checkout
+      if (premiumIntent) {
+        redirectUrl = `${origin}/signup-premium?oauth_complete=true`
+        return NextResponse.redirect(redirectUrl)
+      }
+
       // If saveToken is provided (from OAuth signup via share link), save it
       if (saveToken) {
         await supabase.rpc('save_share_link', {

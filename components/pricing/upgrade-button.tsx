@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { ArrowRight, Loader2 } from 'lucide-react'
 
@@ -11,12 +12,23 @@ interface UpgradeButtonProps {
 export function UpgradeButton({ className }: UpgradeButtonProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const supabase = createClient()
 
   const handleUpgrade = async () => {
     setIsLoading(true)
     setError(null)
 
     try {
+      // Check if user is authenticated
+      const { data: { user } } = await supabase.auth.getUser()
+
+      if (!user) {
+        // Redirect to combined signup + checkout flow
+        window.location.href = '/signup-premium'
+        return
+      }
+
+      // User is authenticated - proceed with checkout
       const response = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

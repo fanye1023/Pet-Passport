@@ -14,10 +14,18 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
-  // Create initial response
+  // Clone the request headers - we'll modify these if tokens are refreshed
+  const requestHeaders = new Headers(request.headers)
+
+  // Create initial response - we'll replace this if cookies need to be set
   let supabaseResponse = NextResponse.next({
-    request,
+    request: {
+      headers: requestHeaders,
+    },
   })
+
+  // Track if we've updated cookies
+  let cookiesUpdated = false
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -28,19 +36,39 @@ export async function middleware(request: NextRequest) {
           return request.cookies.getAll()
         },
         setAll(cookiesToSet) {
-          // Update request cookies so subsequent server code can read them
-          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
-          // Create new response with updated request
+          cookiesUpdated = true
+
+          // Build the new cookie header value for the request
+          // Start with existing non-auth cookies
+          const existingCookies = request.cookies.getAll()
+          const authCookieNames = new Set(cookiesToSet.map(c => c.name))
+          const nonAuthCookies = existingCookies.filter(c => !authCookieNames.has(c.name))
+
+          // Combine non-auth cookies with new auth cookies
+          const allCookieStrings = [
+            ...nonAuthCookies.map(c => `${c.name}=${c.value}`),
+            ...cookiesToSet.map(c => `${c.name}=${c.value}`),
+          ]
+
+          // Update the Cookie header on the request
+          requestHeaders.set('Cookie', allCookieStrings.join('; '))
+
+          // Create new response with the updated request headers
           supabaseResponse = NextResponse.next({
-            request,
+            request: {
+              headers: requestHeaders,
+            },
           })
-          // Also set cookies on the response for the browser with explicit options
+
+          // Set cookies on the response for the browser
           cookiesToSet.forEach(({ name, value, options }) =>
             supabaseResponse.cookies.set(name, value, {
               ...options,
               ...cookieOptions,
             })
           )
+
+          console.log('[Middleware] Tokens refreshed, updated cookies:', cookiesToSet.map(c => c.name))
         },
       },
     }
@@ -67,6 +95,7 @@ export async function middleware(request: NextRequest) {
       hasUser: !!user,
       userId: user?.id?.slice(0, 8),
       error: error?.message,
+      cookiesUpdated,
       totalCookies: allCookies.length,
       authCookies: authCookies.map(c => ({
         name: c.name,

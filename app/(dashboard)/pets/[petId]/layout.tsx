@@ -1,4 +1,6 @@
 import { notFound } from 'next/navigation'
+import { headers } from 'next/headers'
+import { unstable_noStore as noStore } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { PetHeader } from '@/components/pets/pet-header'
 import { PetNav } from '@/components/pets/pet-nav'
@@ -17,6 +19,13 @@ export default async function PetLayout({
   children: React.ReactNode
   params: Promise<{ petId: string }>
 }) {
+  // Disable all caching
+  noStore()
+
+  // Force dynamic by reading headers
+  const headersList = await headers()
+  const cookie = headersList.get('cookie')
+
   const { petId } = await params
   const supabase = await createClient()
 
@@ -29,7 +38,9 @@ export default async function PetLayout({
   console.log('[PetLayout] Pet query:', {
     petId,
     petName: pet?.name,
-    error: error?.message
+    error: error?.message,
+    hasCookieHeader: !!cookie,
+    cookieLength: cookie?.length || 0,
   })
 
   if (error || !pet) {
