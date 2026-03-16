@@ -31,7 +31,7 @@ export function LoginForm({ returnTo, saveToken }: LoginFormProps) {
     setLoading(true)
     setError(null)
 
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data: authData, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     })
@@ -39,7 +39,21 @@ export function LoginForm({ returnTo, saveToken }: LoginFormProps) {
     if (error) {
       setError(error.message)
       setLoading(false)
-    } else {
+    } else if (authData.session) {
+      // Setup server-side session with cookies
+      try {
+        await fetch('/api/auth/session', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            access_token: authData.session.access_token,
+            refresh_token: authData.session.refresh_token,
+          }),
+        })
+      } catch (err) {
+        console.error('Failed to setup server session:', err)
+      }
+
       // If saveToken is provided, save the share link to user's account
       if (saveToken) {
         const { data } = await supabase.rpc('save_share_link', {
