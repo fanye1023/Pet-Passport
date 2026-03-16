@@ -33,19 +33,13 @@ export function useSubscription(): UseSubscriptionReturn {
   const fetchSubscription = useCallback(async () => {
     const supabase = createClient()
     try {
-      // Use getUser() which is more reliable than getSession()
-      const { data: { user }, error: userError } = await supabase.auth.getUser()
-
-      // Debug logging - check browser console
-      console.log('[useSubscription] getUser result:', { user: user?.id, email: user?.email, error: userError?.message })
+      const { data: { user } } = await supabase.auth.getUser()
 
       if (!user) {
-        console.log('[useSubscription] No user found, setting isLoading to false')
         setIsLoading(false)
         return
       }
 
-      // Capture email from the user object
       setEmail(user.email || null)
 
       const { data, error } = await supabase
@@ -54,24 +48,19 @@ export function useSubscription(): UseSubscriptionReturn {
         .eq('user_id', user.id)
         .single()
 
-      console.log('[useSubscription] subscription query result:', { data, error: error?.message })
-
       if (error && error.code !== 'PGRST116') {
-        console.error('Error fetching subscription:', error)
+        // Silently handle - no subscription is normal for free users
       }
 
       if (data) {
-        console.log('[useSubscription] Setting subscription tier:', data.tier)
         if (data.expires_at && new Date(data.expires_at) < new Date()) {
           setSubscription({ ...data, tier: 'free' })
         } else {
           setSubscription(data)
         }
-      } else {
-        console.log('[useSubscription] No subscription data found')
       }
-    } catch (error) {
-      console.error('Error fetching subscription:', error)
+    } catch {
+      // Silently handle errors
     } finally {
       setIsLoading(false)
     }
@@ -80,7 +69,6 @@ export function useSubscription(): UseSubscriptionReturn {
   useEffect(() => {
     // Prevent multiple fetches (e.g., from StrictMode or re-renders)
     if (hasFetched.current) {
-      console.log('[useSubscription] Skipping fetch - already fetched')
       return
     }
     hasFetched.current = true

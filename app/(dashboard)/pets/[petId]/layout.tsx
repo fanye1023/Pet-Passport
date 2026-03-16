@@ -24,12 +24,6 @@ export default async function PetLayout({
     .eq('id', petId)
     .single()
 
-  console.log('[PetLayout] Pet query:', {
-    petId,
-    petName: pet?.name,
-    error: error?.message,
-  })
-
   if (error || !pet) {
     notFound()
   }

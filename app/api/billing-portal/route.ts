@@ -1,33 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { cookies } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
 import { getStripe } from '@/lib/stripe'
 
 export async function POST(request: NextRequest) {
   try {
-    // Debug: log cookies
-    const cookieStore = await cookies()
-    const allCookies = cookieStore.getAll()
-    console.log('[billing-portal] cookies received:', allCookies.map(c => c.name))
-
     const supabase = await createClient()
-
-    // First check the session to see what tokens we have
-    const { data: { session }, error: sessionError } = await supabase.auth.getSession()
-    console.log('[billing-portal] getSession result:', {
-      hasSession: !!session,
-      userId: session?.user?.id,
-      accessTokenExpiry: session?.expires_at ? new Date(session.expires_at * 1000).toISOString() : null,
-      error: sessionError?.message
-    })
-
     const { data: { user }, error: authError } = await supabase.auth.getUser()
-
-    console.log('[billing-portal] getUser result:', {
-      user: user?.id,
-      email: user?.email,
-      error: authError?.message
-    })
 
     if (authError || !user) {
       return NextResponse.json(

@@ -42,22 +42,17 @@ export function LoginForm({ returnTo, saveToken }: LoginFormProps) {
     } else if (authData.session) {
       // Setup server-side session with cookies
       try {
-        const sessionResponse = await fetch('/api/auth/session', {
+        await fetch('/api/auth/session', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             access_token: authData.session.access_token,
             refresh_token: authData.session.refresh_token,
           }),
-          credentials: 'include', // Ensure cookies are sent/received
+          credentials: 'include',
         })
-        const sessionResult = await sessionResponse.json()
-        console.log('[Login] Server session sync result:', sessionResult)
-        if (!sessionResponse.ok) {
-          console.error('[Login] Failed to sync session:', sessionResult.error)
-        }
-      } catch (err) {
-        console.error('[Login] Failed to setup server session:', err)
+      } catch {
+        // Session sync failed, but client-side auth should still work
       }
 
       // If saveToken is provided, save the share link to user's account

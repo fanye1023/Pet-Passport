@@ -45,32 +45,7 @@ export async function middleware(request: NextRequest) {
 
   // IMPORTANT: Do not add any code between createServerClient and getUser()
   // This could cause issues with token refresh
-  const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser()
-
-  // Debug logging
-  const pathname = request.nextUrl.pathname
-  if (pathname.startsWith('/pets/') ||
-      pathname === '/dashboard' ||
-      pathname === '/settings' ||
-      pathname.startsWith('/api/')) {
-    const authCookies = request.cookies.getAll().filter(c =>
-      c.name.includes('sb-') || c.name.includes('auth')
-    )
-    // Also check raw Cookie header
-    const rawCookieHeader = request.headers.get('cookie')
-    console.log('[Middleware]', pathname, {
-      hasUser: !!user,
-      userId: user?.id?.slice(0, 8),
-      error: error?.message,
-      authCookieCount: authCookies.length,
-      authCookieNames: authCookies.map(c => c.name),
-      rawCookieHeaderPresent: !!rawCookieHeader,
-      rawCookieHeaderLength: rawCookieHeader?.length || 0,
-    })
-  }
+  await supabase.auth.getUser()
 
   return supabaseResponse
 }

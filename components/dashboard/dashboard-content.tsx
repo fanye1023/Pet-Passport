@@ -71,29 +71,18 @@ export function DashboardContent() {
   useEffect(() => {
     // Wait for subscription context to be ready (auth established)
     if (isSubscriptionLoading) {
-      console.log('[Dashboard] Waiting for subscription context...')
       return
     }
 
     // If no email after loading, auth failed - don't redirect to onboarding
     if (!email) {
-      console.log('[Dashboard] No authenticated user found after subscription loaded')
       return
     }
 
     // Use cached pets if available (survives component remounts)
     if (petsCache.fetched && petsCache.data && petsCache.data.length > 0) {
       const cached = petsCache.data as PetWithStats[]
-      console.log('[Dashboard] Using cached pets with stats:', cached.length,
-        'First pet stats:', cached[0] ? {
-          name: cached[0].name,
-          vaccinations: cached[0].vaccinations,
-          healthRecords: cached[0].healthRecords,
-          insurance: cached[0].insurance
-        } : 'none')
-      // Restore full petsWithStats from cache (includes stats)
       setPetsWithStats(cached)
-      // Restore saved pets from cache
       if (petsCache.savedPets) {
         setSavedPets(petsCache.savedPets as SavedPet[])
       }
@@ -103,12 +92,9 @@ export function DashboardContent() {
 
     // Prevent duplicate fetches within same mount
     if (hasFetchedPets.current) {
-      console.log('[Dashboard] Skipping fetch - already fetched pets this mount')
       return
     }
     hasFetchedPets.current = true
-
-    console.log('[Dashboard] Auth ready, fetching pets for:', email)
 
     const fetchData = async () => {
       setIsLoading(true)
@@ -118,22 +104,16 @@ export function DashboardContent() {
       // This ensures tokens are refreshed if expired
       const { data: { user }, error: authError } = await supabase.auth.getUser()
       if (authError || !user) {
-        console.log('[Dashboard] Auth validation failed:', authError?.message)
         setIsLoading(false)
         return
       }
-      console.log('[Dashboard] Auth validated, user:', user.id)
 
-      const { data: pets, error: petsError } = await supabase
+      const { data: pets } = await supabase
         .from('pets')
         .select('*')
         .order('created_at', { ascending: false })
 
-      console.log('[Dashboard] pets query result:', { count: pets?.length, error: petsError?.message })
-
       if (!pets || pets.length === 0) {
-        // TEMPORARY: Don't redirect, show message instead for debugging
-        console.log('[Dashboard] No pets found - NOT redirecting for debug')
         setIsLoading(false)
         return
       }

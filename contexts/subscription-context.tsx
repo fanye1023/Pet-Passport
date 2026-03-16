@@ -37,33 +37,21 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
   const [petsCache, setPetsCacheState] = useState<{ data: unknown[] | null; savedPets: unknown[] | null; fetched: boolean }>({ data: null, savedPets: null, fetched: false })
 
   const setPetsCache = useCallback((data: unknown[], savedPets: unknown[]) => {
-    console.log('[SubscriptionProvider] Setting pets cache:', data.length, 'saved:', savedPets.length)
     setPetsCacheState({ data, savedPets, fetched: true })
   }, [])
 
   const fetchSubscription = useCallback(async () => {
     // Prevent duplicate fetches
     if (hasFetched.current) {
-      console.log('[SubscriptionProvider] Skipping fetch - already fetched')
       return
     }
     hasFetched.current = true
 
     const supabase = createClient()
     try {
-      // Use getUser() to validate and refresh the session token
-      // This ensures tokens are valid before any queries are made
-      // It also handles token refresh if the access token has expired
       const { data: { user }, error: userError } = await supabase.auth.getUser()
 
-      console.log('[SubscriptionProvider] getUser result:', {
-        user: user?.id,
-        email: user?.email,
-        error: userError?.message
-      })
-
       if (userError || !user) {
-        console.log('[SubscriptionProvider] No valid user session')
         setIsLoading(false)
         return
       }
@@ -75,13 +63,8 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
         .eq('user_id', user.id)
         .single()
 
-      console.log('[SubscriptionProvider] subscription query result:', {
-        tier: data?.tier,
-        error: error?.message
-      })
-
       if (error && error.code !== 'PGRST116') {
-        console.error('Error fetching subscription:', error)
+        // Silently handle - no subscription is normal for free users
       }
 
       if (data) {
@@ -91,8 +74,8 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
           setSubscription(data)
         }
       }
-    } catch (error) {
-      console.error('Error fetching subscription:', error)
+    } catch {
+      // Silently handle errors
     } finally {
       setIsLoading(false)
     }
