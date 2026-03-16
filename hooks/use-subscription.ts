@@ -33,9 +33,13 @@ export function useSubscription(): UseSubscriptionReturn {
     const supabase = createClient()
     try {
       // Use getUser() which is more reliable than getSession()
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data: { user }, error: userError } = await supabase.auth.getUser()
+
+      // Debug logging - check browser console
+      console.log('[useSubscription] getUser result:', { user: user?.id, email: user?.email, error: userError?.message })
 
       if (!user) {
+        console.log('[useSubscription] No user found, setting isLoading to false')
         setIsLoading(false)
         return
       }
@@ -49,16 +53,21 @@ export function useSubscription(): UseSubscriptionReturn {
         .eq('user_id', user.id)
         .single()
 
+      console.log('[useSubscription] subscription query result:', { data, error: error?.message })
+
       if (error && error.code !== 'PGRST116') {
         console.error('Error fetching subscription:', error)
       }
 
       if (data) {
+        console.log('[useSubscription] Setting subscription tier:', data.tier)
         if (data.expires_at && new Date(data.expires_at) < new Date()) {
           setSubscription({ ...data, tier: 'free' })
         } else {
           setSubscription(data)
         }
+      } else {
+        console.log('[useSubscription] No subscription data found')
       }
     } catch (error) {
       console.error('Error fetching subscription:', error)
