@@ -2,13 +2,6 @@ import { NextResponse } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 
-// Consistent cookie options
-const cookieOptions = {
-  path: '/',
-  sameSite: 'lax' as const,
-  secure: process.env.NODE_ENV === 'production',
-}
-
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url)
   const code = searchParams.get('code')
@@ -19,7 +12,6 @@ export async function GET(request: Request) {
   if (code) {
     const cookieStore = await cookies()
 
-    // Create response first so we can set cookies on it
     let redirectUrl = `${origin}${next}`
 
     const supabase = createServerClient(
@@ -32,10 +24,7 @@ export async function GET(request: Request) {
           },
           setAll(cookiesToSet) {
             cookiesToSet.forEach(({ name, value, options }) => {
-              cookieStore.set(name, value, {
-                ...options,
-                ...cookieOptions,
-              })
+              cookieStore.set(name, value, options)
             })
           },
         },
