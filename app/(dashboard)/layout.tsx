@@ -12,16 +12,6 @@ export default async function DashboardLayout({
   children: React.ReactNode
 }) {
   const supabase = await createClient()
-
-  // First try getSession() which reads from cookies (fast, no network call)
-  // Then validate with getUser() if session exists
-  const { data: { session } } = await supabase.auth.getSession()
-
-  if (!session) {
-    redirect('/login')
-  }
-
-  // Validate the session is still valid
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
