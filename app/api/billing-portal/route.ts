@@ -1,9 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { cookies } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
 import { getStripe } from '@/lib/stripe'
 
 export async function POST(request: NextRequest) {
   try {
+    // Debug: log cookies
+    const cookieStore = await cookies()
+    const allCookies = cookieStore.getAll()
+    console.log('[billing-portal] cookies received:', allCookies.map(c => c.name))
+
     const supabase = await createClient()
     const { data: { user }, error: authError } = await supabase.auth.getUser()
 
