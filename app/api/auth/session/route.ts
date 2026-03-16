@@ -11,6 +11,7 @@ export async function POST(request: NextRequest) {
     }
 
     const cookieStore = await cookies()
+    const cookiesSet: string[] = []
 
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -22,7 +23,14 @@ export async function POST(request: NextRequest) {
           },
           setAll(cookiesToSet) {
             cookiesToSet.forEach(({ name, value, options }) => {
-              cookieStore.set(name, value, options)
+              cookiesSet.push(name)
+              cookieStore.set(name, value, {
+                ...options,
+                // Ensure proper cookie attributes for cross-request persistence
+                path: '/',
+                sameSite: 'lax',
+                secure: process.env.NODE_ENV === 'production',
+              })
             })
           },
         },
@@ -36,13 +44,15 @@ export async function POST(request: NextRequest) {
     })
 
     if (error) {
-      console.error('Session setup error:', error)
+      console.error('[/api/auth/session] Session setup error:', error)
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
 
-    return NextResponse.json({ success: true, user: data.user })
+    console.log('[/api/auth/session] Session established, cookies set:', cookiesSet)
+
+    return NextResponse.json({ success: true, user: data.user?.id })
   } catch (error) {
-    console.error('Session API error:', error)
+    console.error('[/api/auth/session] API error:', error)
     return NextResponse.json({ error: 'Failed to setup session' }, { status: 500 })
   }
 }
