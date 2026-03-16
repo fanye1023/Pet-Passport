@@ -51,20 +51,23 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
 
     const supabase = createClient()
     try {
-      const { data: { user }, error: userError } = await supabase.auth.getUser()
+      // Use getSession() instead of getUser() - reads local state without network call
+      // This avoids the "Auth session missing!" error on subsequent calls
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession()
 
-      console.log('[SubscriptionProvider] getUser result:', {
-        user: user?.id,
-        email: user?.email,
-        error: userError?.message
+      console.log('[SubscriptionProvider] getSession result:', {
+        user: session?.user?.id,
+        email: session?.user?.email,
+        error: sessionError?.message
       })
 
-      if (!user) {
-        console.log('[SubscriptionProvider] No user found')
+      if (!session?.user) {
+        console.log('[SubscriptionProvider] No session found')
         setIsLoading(false)
         return
       }
 
+      const user = session.user
       setEmail(user.email || null)
 
       const { data, error } = await supabase
