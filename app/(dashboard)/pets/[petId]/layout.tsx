@@ -5,6 +5,9 @@ import { PetNav } from '@/components/pets/pet-nav'
 import { PetStickyHeader } from '@/components/pets/pet-sticky-header'
 import { OnboardingPrompt } from '@/components/pets/onboarding-prompt'
 
+// Disable caching to ensure fresh auth check on every request
+export const dynamic = 'force-dynamic'
+
 export default async function PetLayout({
   children,
   params,

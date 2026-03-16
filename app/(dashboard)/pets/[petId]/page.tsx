@@ -15,6 +15,9 @@ import { SpeciesDecoration } from '@/components/ui/species-decoration'
 import { CompanionSync } from '@/components/dashboard/companion-sync'
 import { ProfileCheck } from '@/components/dashboard/profile-check'
 
+// Disable caching to ensure fresh data on every request
+export const dynamic = 'force-dynamic'
+
 export default async function PetDetailPage({
   params,
 }: {
