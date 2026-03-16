@@ -1,22 +1,28 @@
-import { createBrowserClient } from '@supabase/ssr'
+import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 
-// Only create singleton on client-side
-let supabaseClient: ReturnType<typeof createBrowserClient> | null = null
+// Singleton client for browser
+let supabaseClient: ReturnType<typeof createSupabaseClient> | null = null
 
 export function createClient() {
-  // Always create fresh on server (SSR) - will be discarded anyway
   if (typeof window === 'undefined') {
-    return createBrowserClient(
+    // Server-side: create fresh client (shouldn't really be used)
+    return createSupabaseClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     )
   }
 
-  // On client, use singleton
   if (!supabaseClient) {
-    supabaseClient = createBrowserClient(
+    supabaseClient = createSupabaseClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: true,
+        },
+      }
     )
   }
 
