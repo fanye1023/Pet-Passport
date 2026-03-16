@@ -7,6 +7,8 @@ import { OnboardingPrompt } from '@/components/pets/onboarding-prompt'
 
 // Disable caching to ensure fresh auth check on every request
 export const dynamic = 'force-dynamic'
+export const revalidate = 0
+export const fetchCache = 'force-no-store'
 
 export default async function PetLayout({
   children,
@@ -24,7 +26,14 @@ export default async function PetLayout({
     .eq('id', petId)
     .single()
 
+  console.log('[PetLayout] Pet query:', {
+    petId,
+    petName: pet?.name,
+    error: error?.message
+  })
+
   if (error || !pet) {
+    console.log('[PetLayout] Pet not found, calling notFound()')
     notFound()
   }
 
