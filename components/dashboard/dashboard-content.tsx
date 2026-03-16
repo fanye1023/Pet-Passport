@@ -552,7 +552,8 @@ function PetCardWithStats({ pet, onDeleted }: { pet: PetWithStats; onDeleted: ()
         <DeletePetButton petId={pet.id} petName={pet.name} onDeleted={onDeleted} />
       </div>
 
-      <Link href={`/pets/${pet.id}`} className="block">
+      {/* Using <a> instead of <Link> to force full page navigation with cookies */}
+      <a href={`/pets/${pet.id}`} className="block">
         <div className="flex items-center gap-4">
           <Avatar className="h-20 w-20 ring-4 ring-white/50 dark:ring-white/10 shadow-lg">
             <AvatarImage src={pet.photo_url || undefined} alt={pet.name} />
@@ -582,7 +583,7 @@ function PetCardWithStats({ pet, onDeleted }: { pet: PetWithStats; onDeleted: ()
 
           <ChevronRight className="h-5 w-5 text-muted-foreground flex-shrink-0 transition-transform group-hover:translate-x-1" />
         </div>
-      </Link>
+      </a>
 
       {hasAlerts && (
         <div className="mt-4 space-y-1">
