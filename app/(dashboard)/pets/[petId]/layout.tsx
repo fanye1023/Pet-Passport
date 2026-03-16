@@ -5,6 +5,9 @@ import { PetNav } from '@/components/pets/pet-nav'
 import { PetStickyHeader } from '@/components/pets/pet-sticky-header'
 import { OnboardingPrompt } from '@/components/pets/onboarding-prompt'
 
+// Force dynamic rendering to ensure fresh auth on every request
+export const dynamic = 'force-dynamic'
+
 export default async function PetLayout({
   children,
   params,

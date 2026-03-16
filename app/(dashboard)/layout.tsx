@@ -7,6 +7,9 @@ import { DashboardWrapper, MainContentWrapper } from '@/components/dashboard/das
 import { FeedbackButton } from '@/components/feedback/feedback-button'
 import { SubscriptionProvider } from '@/contexts/subscription-context'
 
+// Force dynamic rendering to ensure fresh auth check on every request
+export const dynamic = 'force-dynamic'
+
 export default async function DashboardLayout({
   children,
 }: {
