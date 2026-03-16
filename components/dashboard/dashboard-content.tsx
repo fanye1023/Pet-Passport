@@ -84,7 +84,21 @@ export function DashboardContent() {
     // Use cached pets if available (survives component remounts)
     if (petsCache.fetched && petsCache.data && petsCache.data.length > 0) {
       console.log('[Dashboard] Using cached pets:', petsCache.data.length)
-      // Restore from cache - we'll need to refetch stats but at least we have pets
+      // Restore from cache with default stats
+      const cachedPetsWithStats: PetWithStats[] = (petsCache.data as Pet[]).map(pet => ({
+        ...pet,
+        vaccinations: 0,
+        healthRecords: 0,
+        insurance: 0,
+        vets: 0,
+        emergencyContacts: 0,
+        food: 0,
+        routines: 0,
+        expiringVaccinations: 0,
+        expiredVaccinations: 0,
+        sitterInfo: 0,
+      }))
+      setPetsWithStats(cachedPetsWithStats)
       setIsLoading(false)
       return
     }
