@@ -6,6 +6,7 @@ import { TooltipProvider } from '@/components/ui/tooltip'
 import { TourProvider } from '@/components/tour/tour-provider'
 import { CompanionProvider } from '@/components/ui/pet-companion'
 import { CompanionTips } from '@/components/dashboard/companion-tips'
+import { AuthSync } from '@/components/auth/auth-sync'
 
 interface DashboardWrapperProps {
   children: ReactNode
@@ -21,6 +22,7 @@ export function DashboardWrapper({ children }: DashboardWrapperProps) {
     <TooltipProvider>
       <TourProvider>
         <CompanionProvider>
+          <AuthSync />
           {children}
           <CompanionTips />
         </CompanionProvider>
