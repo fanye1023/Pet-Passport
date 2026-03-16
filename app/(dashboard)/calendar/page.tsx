@@ -44,7 +44,7 @@ export default function UnifiedCalendarPage() {
         const { data: eventsData, error: eventsError } = await supabase
           .from('care_events')
           .select('*')
-          .in('pet_id', petsData.map(p => p.id))
+          .in('pet_id', petsData.map((p: Pet) => p.id))
 
         if (eventsError) {
           console.error('Failed to load events:', eventsError)

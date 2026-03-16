@@ -83,7 +83,7 @@ export function DashboardContent() {
         return
       }
 
-      const petIds = pets.map(p => p.id)
+      const petIds = pets.map((p: Pet) => p.id)
 
       // Fetch stats, vaccinations, and events in 3 queries total
       const [

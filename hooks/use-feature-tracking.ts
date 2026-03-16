@@ -76,7 +76,7 @@ export function useFeatureTracking() {
         .in("feature_id", featureIds)
 
       const usage: Record<string, number> = {}
-      data?.forEach((record) => {
+      data?.forEach((record: { feature_id: string; use_count: number }) => {
         usage[record.feature_id] = record.use_count
       })
 

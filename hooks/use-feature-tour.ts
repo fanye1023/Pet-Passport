@@ -142,7 +142,7 @@ export async function filterStepsByFeatureUsage(
     .in("feature_id", featureIds)
 
   const usedFeatureIds = new Set(
-    usedFeatures?.map((f) => f.feature_id) || []
+    usedFeatures?.map((f: { feature_id: string }) => f.feature_id) || []
   )
 
   // Filter out steps where the required feature has already been used

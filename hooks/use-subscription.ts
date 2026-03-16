@@ -1,7 +1,8 @@
 'use client'
 
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import type { Session } from '@supabase/supabase-js'
 import {
   SubscriptionTier,
   UserSubscription,
@@ -23,28 +24,24 @@ interface UseSubscriptionReturn {
   refresh: () => Promise<void>
 }
 
-// Create a single supabase client instance for this module
-const supabase = createClient()
-
 export function useSubscription(): UseSubscriptionReturn {
   const [subscription, setSubscription] = useState<UserSubscription | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const supabaseRef = useRef(createClient())
 
   const fetchSubscriptionForUser = useCallback(async (userId: string) => {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await supabaseRef.current
         .from('user_subscriptions')
         .select('*')
         .eq('user_id', userId)
         .single()
 
       if (error && error.code !== 'PGRST116') {
-        // PGRST116 = no rows found, which is fine (free tier)
         console.error('Error fetching subscription:', error)
       }
 
       if (data) {
-        // Check if subscription is expired
         if (data.expires_at && new Date(data.expires_at) < new Date()) {
           setSubscription({ ...data, tier: 'free' })
         } else {
@@ -59,8 +56,9 @@ export function useSubscription(): UseSubscriptionReturn {
   }, [])
 
   useEffect(() => {
-    // Get initial session (reads from storage, fast)
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    const supabase = supabaseRef.current
+
+    supabase.auth.getSession().then(({ data: { session } }: { data: { session: Session | null } }) => {
       if (session?.user) {
         fetchSubscriptionForUser(session.user.id)
       } else {
@@ -68,9 +66,8 @@ export function useSubscription(): UseSubscriptionReturn {
       }
     })
 
-    // Listen for auth state changes
     const { data: { subscription: authListener } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      (event: string, session: Session | null) => {
         if (event === 'SIGNED_IN' && session?.user) {
           setIsLoading(true)
           fetchSubscriptionForUser(session.user.id)
@@ -114,7 +111,7 @@ export function useSubscription(): UseSubscriptionReturn {
 
   const refresh = useCallback(async () => {
     setIsLoading(true)
-    const { data: { session } } = await supabase.auth.getSession()
+    const { data: { session } } = await supabaseRef.current.auth.getSession()
     if (session?.user) {
       await fetchSubscriptionForUser(session.user.id)
     } else {

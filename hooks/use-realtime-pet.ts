@@ -114,7 +114,7 @@ export function useRealtimePet({
     }
 
     // Subscribe to the channel
-    channel.subscribe((status) => {
+    channel.subscribe((status: string) => {
       if (status === 'SUBSCRIBED') {
         console.log(`Subscribed to realtime updates for pet ${petId}`)
       }
@@ -187,7 +187,7 @@ export function useRealtimeAllPets({
             table,
             filter: `pet_id=eq.${petId}`,
           },
-          (payload) => onAnyChange(petId, table, payload)
+          (payload: RealtimePostgresChangesPayload<Record<string, unknown>>) => onAnyChange(petId, table, payload)
         )
       }
     }
@@ -249,7 +249,7 @@ export function useRealtimeActivity({
       config.filter = `pet_id=eq.${petId}`
     }
 
-    channel.on('postgres_changes', config, (payload) => {
+    channel.on('postgres_changes', config, (payload: RealtimePostgresChangesPayload<Record<string, unknown>>) => {
       if (payload.new) {
         onNewActivity(payload.new)
       }

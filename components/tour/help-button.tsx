@@ -65,7 +65,7 @@ export function HelpButton() {
         .in("tour_id", tourIds)
 
       const statuses: Record<string, TourStatus> = {}
-      data?.forEach((record) => {
+      data?.forEach((record: { tour_id: string; completed_at: string | null; dismissed_at: string | null }) => {
         statuses[record.tour_id] = {
           tourId: record.tour_id,
           completed: !!record.completed_at,
