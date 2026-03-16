@@ -7,11 +7,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
-  // Debug: Log for API routes
-  if (request.nextUrl.pathname.startsWith('/api/')) {
-    console.log('[Middleware] API route:', request.nextUrl.pathname)
-  }
-
+  // Create initial response
   let supabaseResponse = NextResponse.next({
     request,
   })
@@ -25,10 +21,13 @@ export async function middleware(request: NextRequest) {
           return request.cookies.getAll()
         },
         setAll(cookiesToSet) {
+          // Update request cookies so subsequent server code can read them
           cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
+          // Create new response with updated request
           supabaseResponse = NextResponse.next({
             request,
           })
+          // Also set cookies on the response for the browser
           cookiesToSet.forEach(({ name, value, options }) =>
             supabaseResponse.cookies.set(name, value, options)
           )
@@ -37,15 +36,18 @@ export async function middleware(request: NextRequest) {
     }
   )
 
-  // IMPORTANT: Do not run code between createServerClient and getUser()
-  // Refresh the session - this is critical for maintaining auth state
+  // IMPORTANT: Avoid writing any logic between createServerClient and
+  // supabase.auth.getUser(). A simple mistake could make it very hard to debug
+  // issues with users being randomly logged out.
   const {
     data: { user },
     error,
   } = await supabase.auth.getUser()
 
   // Debug logging for auth issues
-  if (request.nextUrl.pathname.startsWith('/pets/') || request.nextUrl.pathname === '/dashboard') {
+  if (request.nextUrl.pathname.startsWith('/pets/') ||
+      request.nextUrl.pathname === '/dashboard' ||
+      request.nextUrl.pathname.startsWith('/api/')) {
     const authCookies = request.cookies.getAll().filter(c =>
       c.name.includes('sb-') || c.name.includes('auth')
     )
@@ -57,6 +59,8 @@ export async function middleware(request: NextRequest) {
     })
   }
 
+  // If no user and trying to access protected routes, the layout will handle redirect
+  // We still return the response with potentially refreshed cookies
   return supabaseResponse
 }
 
