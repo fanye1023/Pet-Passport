@@ -1,4 +1,5 @@
-import Link from 'next/link'
+'use client'
+
 import { Pet } from '@/lib/types/pet'
 import { Card, CardContent } from '@/components/ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -17,8 +18,13 @@ export function PetCard({ pet }: PetCardProps) {
       )
     : null
 
+  const handleClick = () => {
+    // Force full page navigation to ensure fresh auth check
+    window.location.href = `/pets/${pet.id}`
+  }
+
   return (
-    <Link href={`/pets/${pet.id}`}>
+    <div onClick={handleClick} className="cursor-pointer">
       <Card className="hover:bg-muted/50 cursor-pointer card-hover group">
         <CardContent className="flex items-center gap-4 p-4">
           <Avatar className="h-16 w-16">
@@ -50,6 +56,6 @@ export function PetCard({ pet }: PetCardProps) {
           <ChevronRight className="h-5 w-5 text-muted-foreground flex-shrink-0 transition-transform group-hover:translate-x-1" />
         </CardContent>
       </Card>
-    </Link>
+    </div>
   )
 }
