@@ -24,6 +24,13 @@ export default async function PetDetailPage({
   const supabase = await createClient()
 
   // Debug: check server-side auth
+  const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+  console.log('[PetDetailPage] Session check:', {
+    hasSession: !!session,
+    userId: session?.user?.id,
+    error: sessionError?.message
+  })
+
   const { data: { user }, error: authError } = await supabase.auth.getUser()
   console.log('[PetDetailPage] Server auth:', { user: user?.id, error: authError?.message })
 

@@ -83,9 +83,16 @@ export function DashboardContent() {
 
     // Use cached pets if available (survives component remounts)
     if (petsCache.fetched && petsCache.data && petsCache.data.length > 0) {
-      console.log('[Dashboard] Using cached pets with stats:', petsCache.data.length)
+      const cached = petsCache.data as PetWithStats[]
+      console.log('[Dashboard] Using cached pets with stats:', cached.length,
+        'First pet stats:', cached[0] ? {
+          name: cached[0].name,
+          vaccinations: cached[0].vaccinations,
+          healthRecords: cached[0].healthRecords,
+          insurance: cached[0].insurance
+        } : 'none')
       // Restore full petsWithStats from cache (includes stats)
-      setPetsWithStats(petsCache.data as PetWithStats[])
+      setPetsWithStats(cached)
       // Restore saved pets from cache
       if (petsCache.savedPets) {
         setSavedPets(petsCache.savedPets as SavedPet[])
@@ -107,8 +114,16 @@ export function DashboardContent() {
       setIsLoading(true)
       const supabase = createClient()
 
-      // Don't call getUser() here - the SubscriptionProvider already established auth
-      // Just query pets directly, RLS will use the existing session
+      // Verify auth is still valid before querying
+      // This ensures tokens are refreshed if expired
+      const { data: { user }, error: authError } = await supabase.auth.getUser()
+      if (authError || !user) {
+        console.log('[Dashboard] Auth validation failed:', authError?.message)
+        setIsLoading(false)
+        return
+      }
+      console.log('[Dashboard] Auth validated, user:', user.id)
+
       const { data: pets, error: petsError } = await supabase
         .from('pets')
         .select('*')

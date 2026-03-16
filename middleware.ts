@@ -7,6 +7,11 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
+  // Debug: Log for API routes
+  if (request.nextUrl.pathname.startsWith('/api/')) {
+    console.log('[Middleware] API route:', request.nextUrl.pathname)
+  }
+
   let supabaseResponse = NextResponse.next({
     request,
   })

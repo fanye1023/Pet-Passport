@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Sparkles } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
+import { useSubscription } from '@/contexts/subscription-context'
 
 interface OnboardingPromptProps {
   petId: string
@@ -16,8 +17,14 @@ export function OnboardingPrompt({ petId, petName }: OnboardingPromptProps) {
   const pathname = usePathname()
   const [showPrompt, setShowPrompt] = useState(false)
   const [completionPercent, setCompletionPercent] = useState(0)
+  const { isLoading: isAuthLoading, email } = useSubscription()
 
   useEffect(() => {
+    // Wait for auth to be ready
+    if (isAuthLoading || !email) {
+      return
+    }
+
     async function checkOnboardingStatus() {
       const supabase = createClient()
 
@@ -73,7 +80,7 @@ export function OnboardingPrompt({ petId, petName }: OnboardingPromptProps) {
     }
 
     checkOnboardingStatus()
-  }, [petId])
+  }, [petId, isAuthLoading, email])
 
   // Don't show on the onboarding page itself
   if (!showPrompt || pathname?.includes('/onboarding')) return null

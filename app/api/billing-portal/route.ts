@@ -11,6 +11,16 @@ export async function POST(request: NextRequest) {
     console.log('[billing-portal] cookies received:', allCookies.map(c => c.name))
 
     const supabase = await createClient()
+
+    // First check the session to see what tokens we have
+    const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+    console.log('[billing-portal] getSession result:', {
+      hasSession: !!session,
+      userId: session?.user?.id,
+      accessTokenExpiry: session?.expires_at ? new Date(session.expires_at * 1000).toISOString() : null,
+      error: sessionError?.message
+    })
+
     const { data: { user }, error: authError } = await supabase.auth.getUser()
 
     console.log('[billing-portal] getUser result:', {
