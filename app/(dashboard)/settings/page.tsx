@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -19,7 +19,8 @@ import type { UserSubscription } from '@/lib/types/pet'
 
 export default function SettingsPage() {
   const router = useRouter()
-  const supabase = createClient()
+  const supabaseRef = useRef(createClient())
+  const supabase = supabaseRef.current
   const companion = useCompanionOptional()
 
   const [email, setEmail] = useState('')
@@ -61,7 +62,7 @@ export default function SettingsPage() {
     }
 
     fetchData()
-  }, [supabase])
+  }, [])
 
   const handleViewBilling = async () => {
     setIsBillingLoading(true)
