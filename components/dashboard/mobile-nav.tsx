@@ -55,6 +55,7 @@ export function MobileNav() {
                 <Link
                   key={item.href}
                   href={item.href}
+                  prefetch={false}
                   className="flex flex-col items-center justify-center -mt-5"
                 >
                   <div className="flex items-center justify-center w-14 h-14 rounded-full bg-primary text-primary-foreground shadow-lg">
@@ -68,6 +69,7 @@ export function MobileNav() {
               <Link
                 key={item.label}
                 href={item.href}
+                prefetch={false}
                 className={cn(
                   'flex flex-col items-center justify-center gap-1 px-3 py-2 min-w-[64px] transition-colors',
                   isActive

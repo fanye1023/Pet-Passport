@@ -47,6 +47,7 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
                 <Link
                   key={item.href}
                   href={item.href}
+                  prefetch={false}
                   className="flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-muted-foreground hover:bg-white/50 dark:hover:bg-white/10 active:bg-white/70 dark:active:bg-white/20 transition-colors"
                 >
                   <item.icon className="h-4 w-4" />
@@ -83,14 +84,14 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
           </div>
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild className="py-3">
-            <Link href="/settings" className="cursor-pointer rounded-lg">
+            <Link href="/settings" prefetch={false} className="cursor-pointer rounded-lg">
               <UserIcon className="mr-2 h-4 w-4" />
               Settings
             </Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild className="py-3">
-            <Link href="/logout" className="cursor-pointer text-destructive focus:text-destructive rounded-lg">
+            <Link href="/logout" prefetch={false} className="cursor-pointer text-destructive focus:text-destructive rounded-lg">
               <LogOut className="mr-2 h-4 w-4" />
               Log out
             </Link>

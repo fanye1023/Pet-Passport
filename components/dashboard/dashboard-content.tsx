@@ -272,13 +272,13 @@ export function DashboardContent() {
               </p>
             </div>
             <div className="flex items-center gap-2">
-              <Link href="/calendar">
+              <Link href="/calendar" prefetch={false}>
                 <Button variant="outline" className="hidden sm:flex">
                   <CalendarDays className="h-4 w-4 mr-2" />
                   All Pets Calendar
                 </Button>
               </Link>
-              <Link href="/activity">
+              <Link href="/activity" prefetch={false}>
                 <Button variant="outline" className="hidden sm:flex">
                   <Activity className="h-4 w-4 mr-2" />
                   Activity
@@ -288,7 +288,7 @@ export function DashboardContent() {
                 const petLimit = checkLimit('maxPets', petsWithStats.length)
                 if (petLimit.allowed) {
                   return (
-                    <Link href="/pets/new">
+                    <Link href="/pets/new" prefetch={false}>
                       <Button className="shadow-lg">
                         <Plus className="h-4 w-4 mr-2" />
                         Add Pet
@@ -380,7 +380,7 @@ export function DashboardContent() {
           if (incompletePet) {
             return (
               <div className="bento-item span-full">
-                <Link href={`/pets/${incompletePet.id}/onboarding`}>
+                <Link href={`/pets/${incompletePet.id}/onboarding`} prefetch={false}>
                   <div className="glass-card rounded-2xl p-4 border-primary/20 bg-primary/5 hover:bg-primary/10 transition-colors cursor-pointer group">
                     <div className="flex items-center gap-4">
                       <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
@@ -428,7 +428,7 @@ export function DashboardContent() {
               <p className="text-muted-foreground mb-4">
                 Add your first pet to get started
               </p>
-              <Link href="/pets/new">
+              <Link href="/pets/new" prefetch={false}>
                 <Button className="shadow-lg">
                   <Plus className="h-4 w-4 mr-2" />
                   Add Your First Pet
@@ -448,7 +448,7 @@ export function DashboardContent() {
                   <h2 className="text-lg font-semibold">Pets Shared with Me</h2>
                   <Badge variant="secondary" className="ml-1">{savedPets.length}</Badge>
                 </div>
-                <Link href="/saved">
+                <Link href="/saved" prefetch={false}>
                   <Button variant="ghost" size="sm">
                     View All
                     <ChevronRight className="h-4 w-4 ml-1" />
@@ -506,7 +506,7 @@ function SharedPetCard({ saved, onRemove }: { saved: SavedPet; onRemove?: () => 
           </AlertDialogContent>
         </AlertDialog>
       )}
-      <Link href={`/share/${saved.share_token}`}>
+      <Link href={`/share/${saved.share_token}`} prefetch={false}>
         <div className="flex items-center gap-3">
           <Avatar className="h-12 w-12 ring-2 ring-primary/20">
             <AvatarImage src={saved.pet.photo_url || undefined} alt={saved.pet.name} />

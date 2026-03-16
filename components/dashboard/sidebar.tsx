@@ -39,6 +39,7 @@ export function Sidebar() {
           <Link
             key={item.href}
             href={item.href}
+            prefetch={false}
             className={cn(
               'flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium transition-all',
               pathname === item.href
@@ -53,7 +54,7 @@ export function Sidebar() {
       </nav>
 
       <div className="p-4 border-t border-white/20">
-        <Link href="/pets/new">
+        <Link href="/pets/new" prefetch={false}>
           <Button className="w-full shadow-lg">
             <Plus className="h-4 w-4 mr-2" />
             Add Pet

@@ -31,6 +31,7 @@ export function PetHeader({ pet }: PetHeaderProps) {
     <div className="space-y-4">
       <Link
         href="/dashboard"
+        prefetch={false}
         className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
       >
         <ArrowLeft className="h-4 w-4" />
@@ -49,7 +50,7 @@ export function PetHeader({ pet }: PetHeaderProps) {
             <div className="flex items-start justify-between gap-4">
               <div>
                 <div className="flex items-center gap-2">
-                  <Link href={`/pets/${pet.id}`} className="hover:text-primary transition-colors">
+                  <Link href={`/pets/${pet.id}`} prefetch={false} className="hover:text-primary transition-colors">
                     <h1 className="text-2xl font-bold">{pet.name}</h1>
                   </Link>
                   <PetSwitcher currentPetId={pet.id} />
@@ -57,14 +58,14 @@ export function PetHeader({ pet }: PetHeaderProps) {
                 <p className="text-muted-foreground">
                   {pet.breed ? `${pet.breed} ` : ''}{pet.species}
                   <span className="mx-2">·</span>
-                  <Link href={`/pets/${pet.id}`} className="text-primary/80 hover:text-primary text-sm">
+                  <Link href={`/pets/${pet.id}`} prefetch={false} className="text-primary/80 hover:text-primary text-sm">
                     View Overview
                   </Link>
                 </p>
               </div>
               <div className="flex items-center gap-2">
                 <PetMascot species={pet.species} breed={pet.breed} petName={pet.name} />
-                <Link href={`/pets/${pet.id}/edit`}>
+                <Link href={`/pets/${pet.id}/edit`} prefetch={false}>
                   <Button variant="outline" size="sm" className="glass border-white/30 hover:bg-white/50 dark:hover:bg-white/10">
                     <Pencil className="h-4 w-4 mr-2" />
                     Edit

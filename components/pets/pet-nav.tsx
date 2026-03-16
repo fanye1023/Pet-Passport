@@ -51,6 +51,7 @@ export function PetNav({ petId }: PetNavProps) {
             <Link
               key={item.href}
               href={href}
+              prefetch={false}
               className={cn(
                 'flex flex-col items-center gap-1.5 px-2 py-3 text-xs font-medium rounded-xl transition-all text-center',
                 isActive
@@ -75,6 +76,7 @@ export function PetNav({ petId }: PetNavProps) {
             <Link
               key={item.href}
               href={href}
+              prefetch={false}
               className={cn(
                 'flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-xl whitespace-nowrap transition-all',
                 isActive

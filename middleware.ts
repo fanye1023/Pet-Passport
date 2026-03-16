@@ -59,12 +59,16 @@ export async function middleware(request: NextRequest) {
     const authCookies = request.cookies.getAll().filter(c =>
       c.name.includes('sb-') || c.name.includes('auth')
     )
+    // Also check raw Cookie header
+    const rawCookieHeader = request.headers.get('cookie')
     console.log('[Middleware]', pathname, {
       hasUser: !!user,
       userId: user?.id?.slice(0, 8),
       error: error?.message,
       authCookieCount: authCookies.length,
       authCookieNames: authCookies.map(c => c.name),
+      rawCookieHeaderPresent: !!rawCookieHeader,
+      rawCookieHeaderLength: rawCookieHeader?.length || 0,
     })
   }
 

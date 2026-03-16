@@ -45,6 +45,7 @@ export function PetStickyHeader({ pet }: PetStickyHeaderProps) {
           <div className="flex items-center justify-between h-14">
             <Link
               href={`/pets/${pet.id}`}
+              prefetch={false}
               className="flex items-center gap-3 group"
             >
               <Avatar className="h-9 w-9 ring-2 ring-primary/20 group-hover:ring-primary/50 transition-all">
@@ -71,7 +72,7 @@ export function PetStickyHeader({ pet }: PetStickyHeaderProps) {
             </Link>
 
             <div className="flex items-center gap-2">
-              <Link href={`/pets/${pet.id}/edit`}>
+              <Link href={`/pets/${pet.id}/edit`} prefetch={false}>
                 <Button variant="ghost" size="sm" className="h-8 px-2">
                   <Pencil className="h-3.5 w-3.5" />
                   <span className="hidden sm:inline ml-1.5">Edit</span>
