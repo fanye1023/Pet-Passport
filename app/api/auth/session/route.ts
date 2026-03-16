@@ -22,15 +22,22 @@ export async function POST(request: NextRequest) {
             return cookieStore.getAll()
           },
           setAll(cookiesToSet) {
+            console.log('[/api/auth/session] setAll called with:', cookiesToSet.map(c => ({
+              name: c.name,
+              valueLength: c.value.length,
+              options: c.options
+            })))
             cookiesToSet.forEach(({ name, value, options }) => {
               cookiesSet.push(name)
-              cookieStore.set(name, value, {
+              const finalOptions = {
                 ...options,
                 // Ensure proper cookie attributes for cross-request persistence
                 path: '/',
-                sameSite: 'lax',
+                sameSite: 'lax' as const,
                 secure: process.env.NODE_ENV === 'production',
-              })
+              }
+              console.log('[/api/auth/session] Setting cookie:', name, 'with options:', finalOptions)
+              cookieStore.set(name, value, finalOptions)
             })
           },
         },

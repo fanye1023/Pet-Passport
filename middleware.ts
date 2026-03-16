@@ -1,6 +1,13 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
+// Consistent cookie options across client, server, and middleware
+const cookieOptions = {
+  path: '/',
+  sameSite: 'lax' as const,
+  secure: process.env.NODE_ENV === 'production',
+}
+
 export async function middleware(request: NextRequest) {
   // Skip if Supabase is not configured
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL === 'your_project_url') {
@@ -27,9 +34,12 @@ export async function middleware(request: NextRequest) {
           supabaseResponse = NextResponse.next({
             request,
           })
-          // Also set cookies on the response for the browser
+          // Also set cookies on the response for the browser with explicit options
           cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
+            supabaseResponse.cookies.set(name, value, {
+              ...options,
+              ...cookieOptions,
+            })
           )
         },
       },
@@ -47,15 +57,21 @@ export async function middleware(request: NextRequest) {
   // Debug logging for auth issues
   if (request.nextUrl.pathname.startsWith('/pets/') ||
       request.nextUrl.pathname === '/dashboard' ||
+      request.nextUrl.pathname === '/settings' ||
       request.nextUrl.pathname.startsWith('/api/')) {
-    const authCookies = request.cookies.getAll().filter(c =>
+    const allCookies = request.cookies.getAll()
+    const authCookies = allCookies.filter(c =>
       c.name.includes('sb-') || c.name.includes('auth')
     )
     console.log('[Middleware]', request.nextUrl.pathname, {
       hasUser: !!user,
       userId: user?.id?.slice(0, 8),
       error: error?.message,
-      authCookiesCount: authCookies.length
+      totalCookies: allCookies.length,
+      authCookies: authCookies.map(c => ({
+        name: c.name,
+        valueLength: c.value?.length || 0
+      }))
     })
   }
 

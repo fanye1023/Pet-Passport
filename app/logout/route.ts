@@ -2,6 +2,13 @@ import { NextResponse } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 
+// Consistent cookie options
+const cookieOptions = {
+  path: '/',
+  sameSite: 'lax' as const,
+  secure: process.env.NODE_ENV === 'production',
+}
+
 export async function GET(request: Request) {
   const { origin } = new URL(request.url)
   const cookieStore = await cookies()
@@ -19,7 +26,10 @@ export async function GET(request: Request) {
         },
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value, options }) => {
-            response.cookies.set(name, value, options)
+            response.cookies.set(name, value, {
+              ...options,
+              ...cookieOptions,
+            })
           })
         },
       },

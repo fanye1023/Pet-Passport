@@ -1,6 +1,13 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
+// Consistent cookie options
+const cookieOptions = {
+  path: '/',
+  sameSite: 'lax' as const,
+  secure: process.env.NODE_ENV === 'production',
+}
+
 export async function updateSession(request: NextRequest) {
   // Skip session refresh if Supabase is not configured
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL === 'your_project_url') {
@@ -33,9 +40,12 @@ export async function updateSession(request: NextRequest) {
             request,
           })
 
-          // Also set cookies on the response so the browser receives them
+          // Also set cookies on the response so the browser receives them with explicit options
           cookiesToSet.forEach(({ name, value, options }) => {
-            response.cookies.set(name, value, options)
+            response.cookies.set(name, value, {
+              ...options,
+              ...cookieOptions,
+            })
           })
         },
       },
