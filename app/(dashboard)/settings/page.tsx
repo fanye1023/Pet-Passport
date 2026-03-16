@@ -15,7 +15,7 @@ import { toast } from 'sonner'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { useCompanionOptional } from '@/components/ui/pet-companion'
 import { UpgradeButton } from '@/components/pricing/upgrade-button'
-import { useSubscription } from '@/hooks/use-subscription'
+import { useSubscription } from '@/contexts/subscription-context'
 
 export default function SettingsPage() {
   const companion = useCompanionOptional()

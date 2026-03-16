@@ -37,7 +37,7 @@ import { toast } from 'sonner'
 import { generateCalendarFeedToken, getCalendarFeedUrl } from '@/lib/calendar/ics-generator'
 import { PremiumBadge } from '@/components/ui/premium-badge'
 import { UpgradePrompt } from '@/components/ui/upgrade-prompt'
-import { useSubscription } from '@/hooks/use-subscription'
+import { useSubscription } from '@/contexts/subscription-context'
 
 interface CalendarFeedToken {
   id: string

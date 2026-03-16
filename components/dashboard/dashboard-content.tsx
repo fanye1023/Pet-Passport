@@ -25,7 +25,7 @@ import { ProfileCompletion } from '@/components/pets/profile-completion'
 import { DeletePetButton } from '@/components/pets/delete-pet-button'
 import { AggregateAlerts } from '@/components/dashboard/aggregate-alerts'
 import { UpgradePrompt } from '@/components/ui/upgrade-prompt'
-import { useSubscription } from '@/hooks/use-subscription'
+import { useSubscription } from '@/contexts/subscription-context'
 import { toast } from 'sonner'
 import type { Pet, Vaccination, CareEvent } from '@/lib/types/pet'
 
