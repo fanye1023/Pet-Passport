@@ -23,14 +23,12 @@ interface UseSubscriptionReturn {
   refresh: () => Promise<void>
 }
 
-// Use singleton client
-const supabase = createClient()
-
 export function useSubscription(): UseSubscriptionReturn {
   const [subscription, setSubscription] = useState<UserSubscription | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
   const fetchSubscription = useCallback(async () => {
+    const supabase = createClient()
     try {
       // Use getUser() which is more reliable than getSession()
       const { data: { user } } = await supabase.auth.getUser()
