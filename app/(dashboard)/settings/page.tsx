@@ -14,18 +14,54 @@ import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { useCompanionOptional } from '@/components/ui/pet-companion'
-import { useSubscription } from '@/hooks/use-subscription'
 import { UpgradeButton } from '@/components/pricing/upgrade-button'
+import type { UserSubscription } from '@/lib/types/pet'
 
 export default function SettingsPage() {
   const router = useRouter()
   const supabase = createClient()
   const companion = useCompanionOptional()
-  const { isPremium, subscription, isLoading: subscriptionLoading, tier } = useSubscription()
+
   const [email, setEmail] = useState('')
   const [isLoading, setIsLoading] = useState(true)
   const [isUpdating, setIsUpdating] = useState(false)
   const [isBillingLoading, setIsBillingLoading] = useState(false)
+  const [subscription, setSubscription] = useState<UserSubscription | null>(null)
+
+  // Derived state
+  const isPremium = subscription?.tier === 'premium'
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+
+      if (user?.email) {
+        setEmail(user.email)
+      }
+
+      if (user?.id) {
+        // Fetch subscription directly
+        const { data: subData } = await supabase
+          .from('user_subscriptions')
+          .select('*')
+          .eq('user_id', user.id)
+          .single()
+
+        if (subData) {
+          // Check if expired
+          if (subData.expires_at && new Date(subData.expires_at) < new Date()) {
+            setSubscription({ ...subData, tier: 'free' })
+          } else {
+            setSubscription(subData)
+          }
+        }
+      }
+
+      setIsLoading(false)
+    }
+
+    fetchData()
+  }, [supabase])
 
   const handleViewBilling = async () => {
     setIsBillingLoading(true)
@@ -47,17 +83,6 @@ export default function SettingsPage() {
     }
   }
 
-  useEffect(() => {
-    const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (user?.email) {
-        setEmail(user.email)
-      }
-      setIsLoading(false)
-    }
-    getUser()
-  }, [])
-
   const handlePasswordReset = async () => {
     setIsUpdating(true)
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
@@ -74,7 +99,6 @@ export default function SettingsPage() {
   }
 
   const handleSignOut = () => {
-    // Use server-side logout route for proper cookie clearing
     window.location.href = '/logout'
   }
 
@@ -110,11 +134,7 @@ export default function SettingsPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {subscriptionLoading ? (
-            <div className="flex items-center justify-center py-4">
-              <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-            </div>
-          ) : isPremium ? (
+          {isPremium ? (
             <div className="space-y-4">
               <div className="flex items-center gap-3 p-3 rounded-lg bg-green-500/10 border border-green-500/20">
                 <Check className="h-5 w-5 text-green-500" />
