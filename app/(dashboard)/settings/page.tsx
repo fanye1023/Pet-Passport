@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -19,25 +19,11 @@ import { useSubscription } from '@/hooks/use-subscription'
 
 export default function SettingsPage() {
   const companion = useCompanionOptional()
-  const [email, setEmail] = useState<string>('')
   const [isUpdating, setIsUpdating] = useState(false)
   const [isBillingLoading, setIsBillingLoading] = useState(false)
-  const [isLoadingEmail, setIsLoadingEmail] = useState(true)
 
-  // Use the same hook as dashboard
-  const { isPremium, subscription, isLoading: isLoadingSubscription } = useSubscription()
-
-  useEffect(() => {
-    const fetchEmail = async () => {
-      const supabase = createClient()
-      const { data: { user } } = await supabase.auth.getUser()
-      if (user?.email) {
-        setEmail(user.email)
-      }
-      setIsLoadingEmail(false)
-    }
-    fetchEmail()
-  }, [])
+  // Use the same hook as dashboard - now also returns email
+  const { isPremium, subscription, email, isLoading } = useSubscription()
 
   const handleViewBilling = useCallback(async () => {
     setIsBillingLoading(true)
@@ -60,7 +46,10 @@ export default function SettingsPage() {
   }, [])
 
   const handlePasswordReset = useCallback(async () => {
-    if (!email) return
+    if (!email) {
+      toast.error('Email not available')
+      return
+    }
     setIsUpdating(true)
     const supabase = createClient()
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
@@ -79,8 +68,6 @@ export default function SettingsPage() {
   const handleSignOut = useCallback(() => {
     window.location.href = '/logout'
   }, [])
-
-  const isLoading = isLoadingEmail || isLoadingSubscription
 
   if (isLoading) {
     return (
@@ -196,7 +183,7 @@ export default function SettingsPage() {
               <Mail className="h-4 w-4 text-muted-foreground" />
               <Input
                 id="email"
-                value={email}
+                value={email || ''}
                 disabled
                 className="bg-muted"
               />
