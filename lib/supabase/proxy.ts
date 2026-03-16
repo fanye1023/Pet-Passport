@@ -32,8 +32,10 @@ export async function updateSession(request: NextRequest) {
     }
   )
 
-  // Use getClaims() not getUser() as per instructions
-  await supabase.auth.getClaims()
+  // IMPORTANT: Always call getUser() to refresh the session
+  // Do not run code between createServerClient and getUser()
+  // A simple mistake could make it hard to debug users being randomly logged out
+  await supabase.auth.getUser()
 
   return supabaseResponse
 }

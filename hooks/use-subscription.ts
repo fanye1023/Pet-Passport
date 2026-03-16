@@ -30,20 +30,15 @@ export function useSubscription(): UseSubscriptionReturn {
 
   const fetchSubscription = useCallback(async () => {
     // Prevent multiple fetches
-    if (hasFetched.current) {
-      console.log('Subscription hook - already fetched, skipping')
-      return
-    }
+    if (hasFetched.current) return
     hasFetched.current = true
 
     const supabase = createClient()
 
     try {
-      const { data: { user }, error: authError } = await supabase.auth.getUser()
-      console.log('Subscription hook - auth result:', { userId: user?.id, authError })
+      const { data: { user } } = await supabase.auth.getUser()
 
       if (!user) {
-        console.log('Subscription hook - no user found')
         // Don't overwrite existing subscription data if auth fails
         setIsLoading(false)
         return
@@ -54,8 +49,6 @@ export function useSubscription(): UseSubscriptionReturn {
         .select('*')
         .eq('user_id', user.id)
         .single()
-
-      console.log('Subscription hook - query result:', { data, error })
 
       if (error && error.code !== 'PGRST116') {
         // PGRST116 = no rows found, which is fine (free tier)
