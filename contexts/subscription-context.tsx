@@ -22,6 +22,9 @@ interface SubscriptionContextValue {
     limit: number | boolean
   }
   refresh: () => Promise<void>
+  // Cache for pets data to survive component remounts
+  petsCache: { data: unknown[] | null; fetched: boolean }
+  setPetsCache: (data: unknown[]) => void
 }
 
 const SubscriptionContext = createContext<SubscriptionContextValue | null>(null)
@@ -31,6 +34,12 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
   const [email, setEmail] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const hasFetched = useRef(false)
+  const [petsCache, setPetsCacheState] = useState<{ data: unknown[] | null; fetched: boolean }>({ data: null, fetched: false })
+
+  const setPetsCache = useCallback((data: unknown[]) => {
+    console.log('[SubscriptionProvider] Setting pets cache:', data.length)
+    setPetsCacheState({ data, fetched: true })
+  }, [])
 
   const fetchSubscription = useCallback(async () => {
     // Prevent duplicate fetches
@@ -133,6 +142,8 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
       limits,
       checkLimit,
       refresh,
+      petsCache,
+      setPetsCache,
     }}>
       {children}
     </SubscriptionContext.Provider>

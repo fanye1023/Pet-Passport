@@ -64,7 +64,7 @@ export function DashboardContent() {
   const [savedPets, setSavedPets] = useState<SavedPet[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [showUpgradePrompt, setShowUpgradePrompt] = useState(false)
-  const { isPremium, checkLimit, isLoading: isSubscriptionLoading, email } = useSubscription()
+  const { isPremium, checkLimit, isLoading: isSubscriptionLoading, email, petsCache, setPetsCache } = useSubscription()
   const [showPremiumBanner, setShowPremiumBanner] = useState(true)
   const hasFetchedPets = useRef(false)
 
@@ -81,9 +81,17 @@ export function DashboardContent() {
       return
     }
 
-    // Prevent duplicate fetches
+    // Use cached pets if available (survives component remounts)
+    if (petsCache.fetched && petsCache.data && petsCache.data.length > 0) {
+      console.log('[Dashboard] Using cached pets:', petsCache.data.length)
+      // Restore from cache - we'll need to refetch stats but at least we have pets
+      setIsLoading(false)
+      return
+    }
+
+    // Prevent duplicate fetches within same mount
     if (hasFetchedPets.current) {
-      console.log('[Dashboard] Skipping fetch - already fetched pets')
+      console.log('[Dashboard] Skipping fetch - already fetched pets this mount')
       return
     }
     hasFetchedPets.current = true
@@ -109,6 +117,9 @@ export function DashboardContent() {
         setIsLoading(false)
         return
       }
+
+      // Cache the pets data in context (survives component remounts)
+      setPetsCache(pets)
 
       const petIds = pets.map((p: Pet) => p.id)
 
