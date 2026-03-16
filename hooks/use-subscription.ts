@@ -30,7 +30,10 @@ export function useSubscription(): UseSubscriptionReturn {
 
   const fetchSubscription = useCallback(async () => {
     // Prevent multiple fetches
-    if (hasFetched.current) return
+    if (hasFetched.current) {
+      console.log('Subscription hook - already fetched, skipping')
+      return
+    }
     hasFetched.current = true
 
     const supabase = createClient()
@@ -41,7 +44,7 @@ export function useSubscription(): UseSubscriptionReturn {
 
       if (!user) {
         console.log('Subscription hook - no user found')
-        setSubscription(null)
+        // Don't overwrite existing subscription data if auth fails
         setIsLoading(false)
         return
       }
@@ -59,12 +62,15 @@ export function useSubscription(): UseSubscriptionReturn {
         console.error('Error fetching subscription:', error)
       }
 
-      // Check if subscription is expired
-      if (data && data.expires_at && new Date(data.expires_at) < new Date()) {
-        // Subscription expired, treat as free
-        setSubscription({ ...data, tier: 'free' })
-      } else {
-        setSubscription(data)
+      // Only update if we got data
+      if (data) {
+        // Check if subscription is expired
+        if (data.expires_at && new Date(data.expires_at) < new Date()) {
+          // Subscription expired, treat as free
+          setSubscription({ ...data, tier: 'free' })
+        } else {
+          setSubscription(data)
+        }
       }
     } catch (error) {
       console.error('Error fetching subscription:', error)
