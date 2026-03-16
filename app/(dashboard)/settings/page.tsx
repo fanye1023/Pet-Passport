@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -17,10 +17,11 @@ import { useCompanionOptional } from '@/components/ui/pet-companion'
 import { UpgradeButton } from '@/components/pricing/upgrade-button'
 import type { UserSubscription } from '@/lib/types/pet'
 
+// Get singleton client outside component to ensure stability
+const supabase = createClient()
+
 export default function SettingsPage() {
   const router = useRouter()
-  const supabaseRef = useRef(createClient())
-  const supabase = supabaseRef.current
   const companion = useCompanionOptional()
 
   const [email, setEmail] = useState('')
