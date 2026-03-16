@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import {
   SubscriptionTier,
@@ -28,6 +28,7 @@ export function useSubscription(): UseSubscriptionReturn {
   const [subscription, setSubscription] = useState<UserSubscription | null>(null)
   const [email, setEmail] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const hasFetched = useRef(false)
 
   const fetchSubscription = useCallback(async () => {
     const supabase = createClient()
@@ -77,6 +78,12 @@ export function useSubscription(): UseSubscriptionReturn {
   }, [])
 
   useEffect(() => {
+    // Prevent multiple fetches (e.g., from StrictMode or re-renders)
+    if (hasFetched.current) {
+      console.log('[useSubscription] Skipping fetch - already fetched')
+      return
+    }
+    hasFetched.current = true
     fetchSubscription()
   }, [fetchSubscription])
 
