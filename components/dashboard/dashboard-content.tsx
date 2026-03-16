@@ -98,9 +98,9 @@ export function DashboardContent() {
       console.log('[Dashboard] pets query result:', { count: pets?.length, error: petsError?.message })
 
       if (!pets || pets.length === 0) {
-        // Redirect new users to create their first pet
-        console.log('[Dashboard] No pets found, redirecting to onboarding')
-        router.push('/onboarding/new')
+        // TEMPORARY: Don't redirect, show message instead for debugging
+        console.log('[Dashboard] No pets found - NOT redirecting for debug')
+        setIsLoading(false)
         return
       }
 
