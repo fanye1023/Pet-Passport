@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -11,15 +11,12 @@ import { Switch } from '@/components/ui/switch'
 import { Badge } from '@/components/ui/badge'
 import { User, Mail, Shield, LogOut, Loader2, PawPrint, Crown, Check, ExternalLink } from 'lucide-react'
 import { toast } from 'sonner'
-import { useRouter } from 'next/navigation'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { useCompanionOptional } from '@/components/ui/pet-companion'
 import { useSubscription } from '@/hooks/use-subscription'
 import { UpgradeButton } from '@/components/pricing/upgrade-button'
 
 export default function SettingsPage() {
-  const router = useRouter()
-  const supabase = createClient()
   const companion = useCompanionOptional()
   const { isPremium, subscription, isLoading: subscriptionLoading } = useSubscription()
 
@@ -29,17 +26,27 @@ export default function SettingsPage() {
   const [isBillingLoading, setIsBillingLoading] = useState(false)
 
   useEffect(() => {
+    let mounted = true
+
     const getUser = async () => {
+      const supabase = createClient()
       const { data: { user } } = await supabase.auth.getUser()
-      if (user?.email) {
+      if (mounted && user?.email) {
         setEmail(user.email)
       }
-      setIsLoading(false)
+      if (mounted) {
+        setIsLoading(false)
+      }
     }
-    getUser()
-  }, [supabase])
 
-  const handleViewBilling = async () => {
+    getUser()
+
+    return () => {
+      mounted = false
+    }
+  }, [])
+
+  const handleViewBilling = useCallback(async () => {
     setIsBillingLoading(true)
     try {
       const response = await fetch('/api/billing-portal', {
@@ -57,10 +64,12 @@ export default function SettingsPage() {
       toast.error('Failed to open billing portal')
       setIsBillingLoading(false)
     }
-  }
+  }, [])
 
-  const handlePasswordReset = async () => {
+  const handlePasswordReset = useCallback(async () => {
+    if (!email) return
     setIsUpdating(true)
+    const supabase = createClient()
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/auth/callback?next=/reset-password`,
     })
@@ -72,11 +81,11 @@ export default function SettingsPage() {
     }
 
     toast.success('Password reset email sent! Check your inbox.')
-  }
+  }, [email])
 
-  const handleSignOut = () => {
+  const handleSignOut = useCallback(() => {
     window.location.href = '/logout'
-  }
+  }, [])
 
   if (isLoading) {
     return (
