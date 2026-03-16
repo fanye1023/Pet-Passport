@@ -64,7 +64,7 @@ export function DashboardContent() {
   const [savedPets, setSavedPets] = useState<SavedPet[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [showUpgradePrompt, setShowUpgradePrompt] = useState(false)
-  const { isPremium, checkLimit, isLoading: isSubscriptionLoading } = useSubscription()
+  const { isPremium, checkLimit, isLoading: isSubscriptionLoading, email } = useSubscription()
   const [showPremiumBanner, setShowPremiumBanner] = useState(true)
 
   useEffect(() => {
@@ -73,6 +73,14 @@ export function DashboardContent() {
       console.log('[Dashboard] Waiting for subscription context...')
       return
     }
+
+    // If no email after loading, auth failed - don't redirect to onboarding
+    if (!email) {
+      console.log('[Dashboard] No authenticated user found after subscription loaded')
+      return
+    }
+
+    console.log('[Dashboard] Auth ready, fetching pets for:', email)
 
     const fetchData = async () => {
       setIsLoading(true)
