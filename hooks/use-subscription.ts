@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import {
   SubscriptionTier,
@@ -26,7 +26,9 @@ interface UseSubscriptionReturn {
 export function useSubscription(): UseSubscriptionReturn {
   const [subscription, setSubscription] = useState<UserSubscription | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const supabase = createClient()
+
+  // Memoize supabase client to prevent recreation on every render
+  const supabase = useMemo(() => createClient(), [])
 
   const fetchSubscription = useCallback(async () => {
     try {
