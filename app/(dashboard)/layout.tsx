@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation'
+import { cookies } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
 import { Sidebar } from '@/components/dashboard/sidebar'
 import { DashboardHeader } from '@/components/dashboard/header'
@@ -15,6 +16,16 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode
 }) {
+  // Debug: Check what cookies are available
+  const cookieStore = await cookies()
+  const allCookies = cookieStore.getAll()
+  const authCookies = allCookies.filter(c => c.name.includes('sb-') || c.name.includes('auth'))
+  console.log('[DashboardLayout] Cookies:', {
+    total: allCookies.length,
+    authCookieCount: authCookies.length,
+    authCookieNames: authCookies.map(c => c.name),
+  })
+
   const supabase = await createClient()
   const { data: { user }, error } = await supabase.auth.getUser()
 

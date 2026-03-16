@@ -31,6 +31,7 @@ export default function SettingsPage() {
       const response = await fetch('/api/billing-portal', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
       })
       const data = await response.json()
       if (response.ok && data.url) {
