@@ -86,10 +86,8 @@ export function DashboardContent() {
       setIsLoading(true)
       const supabase = createClient()
 
-      // Debug: check auth state
-      const { data: { user }, error: authError } = await supabase.auth.getUser()
-      console.log('[Dashboard] getUser result:', { user: user?.id, error: authError?.message })
-
+      // Don't call getUser() here - the SubscriptionProvider already established auth
+      // Just query pets directly, RLS will use the existing session
       const { data: pets, error: petsError } = await supabase
         .from('pets')
         .select('*')
