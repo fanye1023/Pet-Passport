@@ -23,11 +23,22 @@ export default async function PetDetailPage({
   const { petId } = await params
   const supabase = await createClient()
 
+  // Debug: check server-side auth
+  const { data: { user }, error: authError } = await supabase.auth.getUser()
+  console.log('[PetDetailPage] Server auth:', { user: user?.id, error: authError?.message })
+
   // Fetch pet info and all section counts in parallel (2 queries instead of 13)
   const [petResult, countsResult] = await Promise.all([
     supabase.from('pets').select('species, breed, name').eq('id', petId).single(),
     supabase.rpc('get_pet_section_counts', { p_pet_id: petId }).single(),
   ])
+
+  console.log('[PetDetailPage] Query results:', {
+    pet: petResult.data,
+    petError: petResult.error?.message,
+    counts: countsResult.data,
+    countsError: countsResult.error?.message
+  })
 
   const pet = petResult.data as { species: string; breed: string | null; name: string } | null
   const counts = countsResult.data as {
