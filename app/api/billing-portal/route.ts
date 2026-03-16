@@ -7,6 +7,12 @@ export async function POST(request: NextRequest) {
     const supabase = await createClient()
     const { data: { user }, error: authError } = await supabase.auth.getUser()
 
+    console.log('[billing-portal] getUser result:', {
+      user: user?.id,
+      email: user?.email,
+      error: authError?.message
+    })
+
     if (authError || !user) {
       return NextResponse.json(
         { error: 'You must be logged in' },

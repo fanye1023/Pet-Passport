@@ -72,13 +72,20 @@ export function DashboardContent() {
       setIsLoading(true)
       const supabase = createClient()
 
-      const { data: pets } = await supabase
+      // Debug: check auth state
+      const { data: { user }, error: authError } = await supabase.auth.getUser()
+      console.log('[Dashboard] getUser result:', { user: user?.id, error: authError?.message })
+
+      const { data: pets, error: petsError } = await supabase
         .from('pets')
         .select('*')
         .order('created_at', { ascending: false })
 
+      console.log('[Dashboard] pets query result:', { count: pets?.length, error: petsError?.message })
+
       if (!pets || pets.length === 0) {
         // Redirect new users to create their first pet
+        console.log('[Dashboard] No pets found, redirecting to onboarding')
         router.push('/onboarding/new')
         return
       }
