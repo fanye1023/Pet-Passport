@@ -33,7 +33,10 @@ export async function middleware(request: NextRequest) {
 
           // Set cookies on the response so they're sent to the browser
           cookiesToSet.forEach(({ name, value, options }) => {
-            supabaseResponse.cookies.set(name, value, options)
+            supabaseResponse.cookies.set(name, value, {
+              ...options,
+              secure: true, // Required for HTTPS
+            })
           })
         },
       },
