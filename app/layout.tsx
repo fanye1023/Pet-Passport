@@ -19,6 +19,20 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Pet ShareLink - Share Your Pet's Info Safely",
   description: "Create secure, shareable links with your pet's care instructions, emergency contacts, and health records. Control exactly what each person can see.",
+  metadataBase: new URL('https://www.petsharelink.com'),
+  openGraph: {
+    title: "Pet ShareLink - Share Your Pet's Info Safely",
+    description: "Create secure, shareable links with your pet's care instructions, emergency contacts, and health records. Perfect for pet sitters, vets, and family.",
+    url: 'https://www.petsharelink.com',
+    siteName: 'Pet ShareLink',
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: "Pet ShareLink - Share Your Pet's Info Safely",
+    description: "Create secure, shareable links with your pet's care instructions, emergency contacts, and health records.",
+  },
   manifest: "/manifest.json",
   icons: {
     icon: [
